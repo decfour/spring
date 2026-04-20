@@ -13,10 +13,12 @@ import tools.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+// 1. JSON을 파싱해서 객체로 변환하려면 JSON 변환 라이브러리가 필요(Jackson, Gson)
 @WebServlet(name = "requestBodyJsonServlet", urlPatterns = "/request-body-json")
 public class RequestBodyJsonServlet extends HttpServlet {
+
+    // 1. 객체 파싱을 위한 ObjectMapper
     ObjectMapper objectMapper = new ObjectMapper();
-    
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ServletInputStream inputStream = request.getInputStream();

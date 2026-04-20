@@ -13,12 +13,16 @@ public class HelloServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("HelloServlet.service");
+
+        // request, response 객체
         System.out.println("request = " + request);
         System.out.println("response = " + response);
 
+        // parameter (http://localhost:8080/hello?username=kim)
         String username = request.getParameter("username");
         System.out.println("username = " + username);
 
+        // response(body)
         response.setContentType("text/plain");
         response.setCharacterEncoding("utf-8");
         response.getWriter().write("hello " + username);
