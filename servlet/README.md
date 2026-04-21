@@ -1,7 +1,7 @@
 # Spring MVC 실습
 
 ## 실습 목표
-서블릿에서 스프링 MVC로 넘어가는 설계를 직접 코딩하며, `DispatcherServlet`의 내부 동작 원리와 **어댑터 패턴(Adapter Pattern)**의 필요성을 이해.
+서블릿에서 스프링 MVC로 넘어가는 설계를 직접 코딩하며, `DispatcherServlet`의 내부 동작 원리와 어댑터 패턴(Adapter Pattern)의 필요성을 이해.
 
 ## Tech Stack
 - **Framework**: Spring Boot 3.x
