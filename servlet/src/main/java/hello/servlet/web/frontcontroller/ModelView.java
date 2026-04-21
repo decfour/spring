@@ -1,13 +1,12 @@
 package hello.servlet.web.frontcontroller;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class ModelView {
+    // view name
     private String viewName;
+    // data(key, value)
     private Map<String, Object> model = new HashMap<>();
 
     public ModelView(String viewName) {

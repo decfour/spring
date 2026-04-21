@@ -13,11 +13,14 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+// FrontControllerV1
 @WebServlet(name = "frontControllerServletV1", urlPatterns = "/front-controller/v1/*")
 public class FrontControllerServletV1 extends HttpServlet {
 
+    // Repository
     private Map<String, ControllerV1> controllerMap = new HashMap<>();
 
+    // Controller Map
     public FrontControllerServletV1() {
         controllerMap.put("/front-controller/v1/members/new-form", new MemberFormControllerV1());
         controllerMap.put("/front-controller/v1/members/save", new MemberSaveControllerV1());
@@ -26,7 +29,7 @@ public class FrontControllerServletV1 extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("FrontControllerServletV1.service");
+        System.out.println("FrontControllerServletV1.service"); // 404
         String requestURI = request.getRequestURI();
 
         ControllerV1 controller = controllerMap.get(requestURI);

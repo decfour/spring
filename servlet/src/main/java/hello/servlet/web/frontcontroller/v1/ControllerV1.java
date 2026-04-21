@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+// Controller Interface
 public interface ControllerV1 {
     void process(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException;

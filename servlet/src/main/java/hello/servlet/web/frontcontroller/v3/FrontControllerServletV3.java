@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+// FrontControllerV3 : servlet 종속성 제거(Map 활용)
 @WebServlet(name = "frontControllerServletV3", urlPatterns = "/front-controller/v3/*")
 public class FrontControllerServletV3 extends HttpServlet {
 
@@ -33,6 +34,7 @@ public class FrontControllerServletV3 extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
+
         Map<String, String> paramMap = createParamMap(request);
         ModelView mv = controller.process(paramMap);
         String viewName = mv.getViewName();

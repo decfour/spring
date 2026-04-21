@@ -11,11 +11,13 @@ import java.io.PrintWriter;
 
 @WebServlet(name = "memberFormServlet", urlPatterns = "/servlet/members/new-form")
 public class MemberFormServlet extends HttpServlet {
+
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         response.setCharacterEncoding("utf-8");
         PrintWriter w = response.getWriter();
+
         w.write("<!DOCTYPE html>\n" +
                 "<html>\n" +
                 "<head>\n" +
