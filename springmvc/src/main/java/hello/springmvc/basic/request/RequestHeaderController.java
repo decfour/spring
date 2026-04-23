@@ -15,6 +15,7 @@ import java.util.Locale;
 
 @RestController
 public class RequestHeaderController {
+
     Logger log = LoggerFactory.getLogger(getClass());
 
     @RequestMapping("/headers")

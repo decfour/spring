@@ -5,8 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// @Controller + @ResponseBody
 @RestController
 public class LogTestController {
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @RequestMapping("/log-test")
@@ -20,10 +22,8 @@ public class LogTestController {
         log.warn("warn log={}", name);
         log.error("error log={}", name);
 
-        /*
-        로그 미사용 시에도 +연산 적용 (사용 금지)
+        //로그 사용하지 않아도 +연산 먼저 실행
         log.debug("String concat log=" + name);
-        */
 
         return "ok";
     }

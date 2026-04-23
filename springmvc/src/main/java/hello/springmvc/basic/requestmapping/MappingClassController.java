@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.*;
 public class MappingClassController {
 
     @GetMapping
-    public String users() {
-        return "get users";
-    }
+    public String users() { return "get users"; }
     @PostMapping
     public String addUser() {
         return "post user";

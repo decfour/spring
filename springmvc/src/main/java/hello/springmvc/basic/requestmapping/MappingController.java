@@ -22,7 +22,7 @@ public class MappingController {
         return "ok";
     }
 
-    // 축약
+    // HTTP 메서드 특정 허용 축약
     @GetMapping(value = "/mapping-get-v2")
     public String mappingGetV2() {
         log.info("mapping-get-v2");
@@ -36,7 +36,7 @@ public class MappingController {
         return "ok";
     }
 
-    // 경로 변수 (다중)
+    // 경로 변수 다중
     @GetMapping("/mapping/users/{userId}/orders/{orderId}")
     public String mappingPath(@PathVariable String userId, @PathVariable Long orderId) {
         log.info("mappingPath userId={}, orderId={}", userId, orderId);
@@ -49,6 +49,7 @@ public class MappingController {
         log.info("mappingParam");
         return "ok";
     }
+
     // 특정 헤더 조건 매핑
     @GetMapping(value = "/mapping-header", headers = "mode=debug")
     public String mappingHeader() {
@@ -62,6 +63,7 @@ public class MappingController {
         log.info("mappingConsumes");
         return "ok";
     }
+
     // 미디어 타입 조건 매핑 (Accept, produce)
     @PostMapping(value = "/mapping-produce", produces = "text/html")
     public String mappingProduces() {
