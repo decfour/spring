@@ -5,15 +5,12 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Getter @Setter
 public class Member {
-    private Long id;
+    private long id;
     private String username;
     private String password;
     private String email;
-    private String role;                                // user/admin
-    private LocalDateTime createdAt;
 
     public Member() {
     }
