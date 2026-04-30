@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 상세 (Raw Data View)</title>
+</head>
+<body>
+
+<h1>상품 상세 정보</h1>
+
+<ul>
+    <li>상품 ID: <span th:text="${item.id}">1</span></li>
+    <li>상품명: <span th:text="${item.name}">상품명</span></li>
+    <li>가격: <span th:text="${item.price}">0</span>원</li>
+    <li>수량: <span th:text="${item.quantity}">0</span>개</li>
+    <li>상품 설명: <p th:text="${item.description}">설명입니다.</p></li>
+
+    <!-- boolean 필드 확인 -->
+    <li>판매 오픈 여부:
+        <span th:text="${item.open} ? '판매중' : '미오픈'"></span>
+    </li>
+
+    <!-- String 필드 확인 -->
+    <li>배송 방식: <span th:text="${item.delivery}">기본배송</span></li>
+</ul>
+
+<hr>
+
+<!-- 이동 버튼 -->
+<button type="button"
+        th:onclick="|location.href='@{/items/{itemId}/edit(itemId=${item.id})}'|">수정
+</button>
+
+<button type="button"
+        onclick="location.href='/shop'">목록으로 돌아가기
+</button>
+
+</body>
+</html>

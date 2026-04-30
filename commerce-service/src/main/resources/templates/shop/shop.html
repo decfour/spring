@@ -1,22 +1,46 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Commerce Home</title>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        .container { max-width: 800px; margin-top: 50px; }
+    </style>
 </head>
 <body>
 
-<h1>Shop</h1>
+<div class="container">
+    <div class="py-5 text-center">
+        <h2>상품 목록</h2>
+    </div>
 
-<hr>
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-primary"
+                th:onclick="|location.href='@{/shop/add}'|"
+                type="button">상품 등록</button>
+    </div>
 
-<h3>List</h3>
-
-<ul>
-    <li><a href="/info">INFO</a></li>
-    <li><a href="/shop">SHOP</a></li>
-    <li><a href="/members/login">LOGIN</a></li>
-</ul>
+    <table class="table table-hover">
+        <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>상품명</th>
+            <th>가격</th>
+            <th>수량</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${items}">
+            <td th:text="${item.id}">1</td>
+            <td>
+                <a th:href="@{/shop/item/{itemId}(itemId=${item.id})}" th:text="${item.name}">테스트 상품</a>
+            </td>
+            <td th:text="${item.price}">10,000</td>
+            <td th:text="${item.quantity}">5</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 </body>
 </html>
