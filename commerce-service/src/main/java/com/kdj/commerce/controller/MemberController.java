@@ -6,15 +6,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 
 @Controller
+@RequestMapping("members")
 public class MemberController {
     private final MemberService memberService;
 
@@ -23,19 +21,25 @@ public class MemberController {
         this.memberService = memberService;
     }
 
+    @GetMapping
+    public String list(Model model) {
+        model.addAttribute("members", memberService.findMembers());
+        return "members/memberList";
+    }
+
     // 로그인
-    @GetMapping("/members/login")
+    @GetMapping("/login")
     public String loginForm() {
         return "members/loginForm"; // loginForm.html로 연결
     }
 
     // 회원가입
-    @GetMapping("/members/new")
+    @GetMapping("/new")
     public String createForm() {
         return "members/createMemberForm";
     }
 
-    @PostMapping("/members/new")
+    @PostMapping("/new")
     public void create(@ModelAttribute Member member, HttpServletResponse response) throws IOException {
         try {
             memberService.join(member);
@@ -53,9 +57,4 @@ public class MemberController {
         }
     }
 
-    @GetMapping("members")
-    public String list(Model model) {
-        model.addAttribute("members", memberService.findMembers());
-        return "members/memberList";
-    }
 }

@@ -7,21 +7,19 @@
 <body>
 
 <div class="container">
-    <h2>상품 등록</h2>
+    <h1>상품 등록</h1>
 
-    <!-- th:object 사용 -->
     <form th:action th:object="${item}" method="post">
 
         <div>
-            <label for="name">상품명</label>
+            <label for="name">이름</label>
+            <label for="name"></label>
             <input type="text" id="name" th:field="*{name}" placeholder="이름을 입력하세요">
         </div>
-
         <div>
             <label for="price">가격</label>
             <input type="number" id="price" th:field="*{price}" placeholder="가격을 입력하세요">
         </div>
-
         <div>
             <label for="quantity">수량</label>
             <input type="number" id="quantity" th:field="*{quantity}" placeholder="수량을 입력하세요">
@@ -29,22 +27,19 @@
 
         <hr>
 
-        <!-- 추가 정보 -->
         <div>
-            <div>판매 오픈 여부</div>
             <input type="checkbox" id="open" th:field="*{open}">
-            <label for="open">판매 오픈</label>
+            <label for="open">판매 중</label>
         </div>
-
         <div>
-            <label for="description">상품 설명</label>
-            <textarea id="description" th:field="*{description}" rows="5"></textarea>
+            <label for="description">설명</label>
+            <textarea id="description" th:field="*{description}" rows="3"></textarea>
         </div>
 
         <hr>
 
         <div class="row">
-            <button type="submit">상품 등록 완료</button>
+            <button type="submit">등록</button>
             <button type="button" th:onclick="|location.href='@{/shop/items}'|">취소</button>
         </div>
 
