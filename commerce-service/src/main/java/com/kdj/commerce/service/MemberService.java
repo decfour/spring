@@ -1,6 +1,6 @@
 package com.kdj.commerce.service;
 
-import com.kdj.commerce.domain.Member;
+import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.repository.MemberRepository;
 import com.kdj.commerce.repository.MemoryMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;

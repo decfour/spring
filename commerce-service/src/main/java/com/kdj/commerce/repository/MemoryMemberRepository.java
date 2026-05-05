@@ -1,6 +1,6 @@
 package com.kdj.commerce.repository;
 
-import com.kdj.commerce.domain.Member;
+import com.kdj.commerce.domain.member.Member;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;

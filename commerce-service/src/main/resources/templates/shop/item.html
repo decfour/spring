@@ -13,6 +13,7 @@
     <li>이름: <span th:text="${item.name}">상품명</span></li>
     <li>가격: <span th:text="${item.price}">0</span>원</li>
     <li>수량: <span th:text="${item.quantity}">0</span>개</li>
+    <li>종류: <span th:text="${item.itemType}">1</span></li>
     <li>설명: <p th:text="${item.description}">설명입니다.</p></li>
     <li>판매 여부:
         <span th:text="${item.open} ? '판매중' : '미오픈'"></span>
@@ -22,7 +23,7 @@
 
 <hr>
 
-<button type="button" th:onclick="|location.href='@{/items/{itemId}/edit(itemId=${item.id})}'|">수정</button>
+<button type="button" th:onclick="|location.href='@{/shop/item/{itemId}/edit(itemId=${item.id})}'|">수정</button>
 <button type="button" onclick="location.href='/shop'">목록</button>
 
 </body>

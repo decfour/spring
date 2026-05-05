@@ -1,6 +1,6 @@
 package com.kdj.commerce.controller;
 
-import com.kdj.commerce.domain.Member;
+import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;

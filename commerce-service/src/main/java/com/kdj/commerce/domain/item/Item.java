@@ -1,9 +1,8 @@
-package com.kdj.commerce.domain;
+package com.kdj.commerce.domain.item;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter @Setter
+@Data
 public class Item {
     private Long id;
     private String name;
@@ -12,6 +11,7 @@ public class Item {
     private String description;
 
     private boolean open;
+    private ItemType itemType;
     private String delivery;
 
     public Item() {

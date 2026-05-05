@@ -1,6 +1,6 @@
 package com.kdj.commerce.repository;
 
-import com.kdj.commerce.domain.Item;
+import com.kdj.commerce.domain.item.Item;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,6 +1,6 @@
 package com.kdj.commerce.repository;
 
-import com.kdj.commerce.domain.Member;
+import com.kdj.commerce.domain.member.Member;
 
 import java.util.List;
 import java.util.Optional;

@@ -27,6 +27,7 @@
 
         <hr>
 
+        <!-- 판매 상태 -->
         <div>
             <input type="checkbox" id="open" th:field="*{open}">
             <label for="open">판매 중</label>
@@ -36,11 +37,23 @@
             <textarea id="description" th:field="*{description}" rows="3"></textarea>
         </div>
 
+        <!-- 상품 종류 -->
+        <div>
+            <div>상품 종류</div>
+            <div th:each="type : ${itemTypes}" class="form-check form-check-inline">
+                <input type="radio" th:field="*{itemType}" th:value="${type.name()}"
+                       class="form-check-input">
+                <label th:for="${#ids.prev('itemType')}" th:text="${type.description}" class="form-check-label">
+                    BOOK
+                </label>
+            </div>
+        </div>
+
         <hr>
 
         <div class="row">
             <button type="submit">등록</button>
-            <button type="button" th:onclick="|location.href='@{/shop/items}'|">취소</button>
+            <button type="button" th:onclick="|location.href='@{/shop}'|">취소</button>
         </div>
 
     </form>
