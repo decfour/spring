@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// 검증 오류 V1
+// 검증 오류 V1 - 직접 구현
 @Controller
 @RequestMapping("/validation/v1/items")
 @RequiredArgsConstructor
