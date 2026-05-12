@@ -12,6 +12,13 @@ public class MemoryMemberRepository implements MemberRepository {
     private static long sequence = 0L;
 
     @Override
+    public Optional<Member> findByLoginId(String loginId) {
+        return store.values().stream()
+                .filter(member -> member.getLoginId().equals(loginId))
+                .findFirst();
+    }
+
+    @Override
     public Member save(Member member) {
         member.setId(++sequence);
         store.put(member.getId(), member);

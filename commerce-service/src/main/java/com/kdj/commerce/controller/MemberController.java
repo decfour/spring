@@ -1,18 +1,25 @@
 package com.kdj.commerce.controller;
 
+import com.kdj.commerce.domain.member.LoginForm;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
+@Slf4j
 @Controller
-@RequestMapping("members")
+@RequestMapping("member")
 public class MemberController {
     private final MemberService memberService;
 
@@ -21,40 +28,47 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping
-    public String list(Model model) {
-        model.addAttribute("members", memberService.findMembers());
-        return "members/memberList";
+    // 회원가입
+    @GetMapping("/register")
+    public String register(Model model) {
+        model.addAttribute("member", new Member());
+        return "member/registerForm";
+    }
+
+    @PostMapping("/register")
+    public String registerForm(@Valid @ModelAttribute Member member, BindingResult result) {
+        if (result.hasErrors()) {
+            return "member/registerForm";
+        }
+        memberService.join(member);
+        List<Member> members = memberService.findMembers();
+        log.info("members={}", members);
+        return "redirect:/";
     }
 
     // 로그인
     @GetMapping("/login")
-    public String loginForm() {
-        return "members/loginForm"; // loginForm.html로 연결
+    public String login(Model model) {
+        model.addAttribute("loginForm", new LoginForm());
+        return "member/loginForm";
     }
 
-    // 회원가입
-    @GetMapping("/new")
-    public String createForm() {
-        return "members/createMemberForm";
-    }
-
-    @PostMapping("/new")
-    public void create(@ModelAttribute Member member, HttpServletResponse response) throws IOException {
-        try {
-            memberService.join(member);
-
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            out.println("<script>alert('회원가입이 완료되었습니다!'); location.href='/';</script>");
-            out.flush();
+    @PostMapping("/login")
+    public String loginForm(@Valid @ModelAttribute LoginForm form, BindingResult result) {
+        if (result.hasErrors()) {
+            return "member/loginForm";
         }
-        catch (IllegalStateException e){
-            response.setContentType("text/html; charset=UTF-8");
-            PrintWriter out = response.getWriter();
-            out.println("<script>alert('" + e.getMessage() + "'); history.back();</script>");
-            out.flush();
+
+        Member loginMember = memberService.login(form.getLoginId(), form.getLoginPassword());
+
+        if (loginMember == null) {
+            result.reject("loginError", "아이디 또는 비밀번호가 맞지 않습니다.");
+            return "member/loginForm";
         }
+
+        log.info("loginUser={}", loginMember);
+
+        return "redirect:/";
     }
 
 }

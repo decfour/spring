@@ -32,14 +32,6 @@ public class ItemController {
         return "shop/shop";
     }
 
-    @GetMapping("/item/{id}")
-    public String item(@PathVariable Long id, Model model) {
-        Item item = itemRepository.findById(id);
-        model.addAttribute("item", item);
-
-        return "shop/item";
-    }
-
     // Model 보내줘야 함
     @GetMapping("/add")
     public String add(Model model) {
@@ -54,6 +46,14 @@ public class ItemController {
         redirectAttributes.addAttribute("itemId", savedItem.getId());
 
         return "redirect:/shop/item/{itemId}";
+    }
+
+    @GetMapping("/item/{id}")
+    public String item(@PathVariable Long id, Model model) {
+        Item item = itemRepository.findById(id);
+        model.addAttribute("item", item);
+
+        return "shop/item";
     }
 
     @GetMapping("/item/{id}/edit")

@@ -28,6 +28,12 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    public Member login(String loginId, String loginPassword) {
+        return memberRepository.findByLoginId(loginId)
+                .filter(m -> m.getLoginPassword().equals(loginPassword)) // 2. 찾은 회원의 비밀번호가 입력한 것과 같은지 비교
+                .orElse(null); // 3. 없거나 틀리면 null 반환
+    }
+
     // 멤버 조회(개인)
     public Optional<Member> findMember(long id) {
 

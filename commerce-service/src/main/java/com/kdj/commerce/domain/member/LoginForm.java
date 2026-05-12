@@ -2,18 +2,11 @@ package com.kdj.commerce.domain.member;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import org.antlr.v4.runtime.misc.NotNull;
 
 @Data
-public class Member {
+public class LoginForm {
 
-    private long id;
-
-    @NotEmpty
-    private String username;
-    @NotEmpty
-    private String email;
     @NotEmpty
     private String loginId;
     @NotEmpty
