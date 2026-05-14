@@ -3,9 +3,12 @@ package com.kdj.commerce.controller;
 import com.kdj.commerce.domain.member.LoginForm;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
+import com.kdj.commerce.session.SessionManager;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,10 +25,12 @@ import java.util.List;
 @RequestMapping("member")
 public class MemberController {
     private final MemberService memberService;
+    private final SessionManager sessionManager;
 
     @Autowired
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, SessionManager sessionManager) {
         this.memberService = memberService;
+        this.sessionManager = sessionManager;
     }
 
     // 회원가입
@@ -54,20 +59,31 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String loginForm(@Valid @ModelAttribute LoginForm form, BindingResult result) {
+    public String loginForm(@Valid @ModelAttribute LoginForm form,
+                            BindingResult result,
+                            HttpServletResponse response) {
         if (result.hasErrors()) {
             return "member/loginForm";
         }
-
         Member loginMember = memberService.login(form.getLoginId(), form.getLoginPassword());
 
+        // 로그인 실패
         if (loginMember == null) {
             result.reject("loginError", "아이디 또는 비밀번호가 맞지 않습니다.");
             return "member/loginForm";
         }
 
+        // 로그인 성공
         log.info("loginUser={}", loginMember);
+        sessionManager.createSession(loginMember, response);
 
+        return "redirect:/";
+    }
+
+    // 로그아웃
+    @PostMapping("/logout")
+    public String logoutV2(HttpServletRequest request) {
+        sessionManager.expire(request);
         return "redirect:/";
     }
 
