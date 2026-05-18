@@ -23,10 +23,10 @@ public class SessionManager {
     public void createSession(Object value, HttpServletResponse response) {
         String sessionId = UUID.randomUUID().toString();
         sessionStore.put(sessionId, value);
-
         log.info("session={}", sessionStore);
 
         Cookie mySessionCookie = new Cookie(SESSION_COOKIE_NAME, sessionId);
+        // 적용 범위 (홈 화면)
         mySessionCookie.setPath("/");
         response.addCookie(mySessionCookie);
     }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>DON'T PANIC!</title>
@@ -15,7 +15,11 @@
 <ul>
     <li><a href="/info">INFO</a></li>
     <li><a href="/shop">SHOP</a></li>
-    <li><a href="/member/logout">LOGOUT</a></li>
+    <li>
+        <form th:action="@{/member/logout}" method="post">
+            <button type="submit">LOGOUT</button>
+        </form>
+    </li>
 </ul>
 
 </body>

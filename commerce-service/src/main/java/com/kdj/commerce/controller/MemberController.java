@@ -3,6 +3,7 @@ package com.kdj.commerce.controller;
 import com.kdj.commerce.domain.member.LoginForm;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
+import com.kdj.commerce.session.SessionConst;
 import com.kdj.commerce.session.SessionManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -61,7 +62,7 @@ public class MemberController {
     @PostMapping("/login")
     public String loginForm(@Valid @ModelAttribute LoginForm form,
                             BindingResult result,
-                            HttpServletResponse response) {
+                            HttpServletRequest request) {
         if (result.hasErrors()) {
             return "member/loginForm";
         }
@@ -74,8 +75,9 @@ public class MemberController {
         }
 
         // 로그인 성공
+        HttpSession session = request.getSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
         log.info("loginUser={}", loginMember);
-        sessionManager.createSession(loginMember, response);
 
         return "redirect:/";
     }
@@ -83,7 +85,11 @@ public class MemberController {
     // 로그아웃
     @PostMapping("/logout")
     public String logoutV2(HttpServletRequest request) {
-        sessionManager.expire(request);
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
         return "redirect:/";
     }
 
