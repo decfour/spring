@@ -1,23 +1,51 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>DON'T PANIC!</title>
+    <!-- 1. 상품 목록과 똑같은 부트스트랩 CSS를 먹여서 폰트를 일치시킵니다 -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        /* 2. 상품 목록 화면과 완벽하게 일치시킨 여백과 정렬 설정 */
+        body {
+            padding: 8px;
+        }
+        h1 {
+            font-size: 2em;
+            margin-top: 0.67em;
+            margin-bottom: 0.67em;
+            font-weight: bold;
+        }
+        ul.menu {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+        .link-style-btn {
+            background: none;
+            border: none;
+            color: -webkit-link;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
 
 <h1>The Hitchhiker's Guide to the Galaxy</h1>
-
 <hr>
 
 <h3>Menu</h3>
 
-<ul>
-    <li><a href="/info">INFO</a></li>
-    <li><a href="/shop">SHOP</a></li>
+<ul class="menu">
+    <li><a th:href="@{/info}">INFO</a></li>
+    <li><a th:href="@{/shop}">SHOP</a></li>
     <li>
         <form th:action="@{/member/logout}" method="post">
-            <button type="submit">LOGOUT</button>
+            <button type="submit" class="link-style-btn">LOGOUT</button>
         </form>
     </li>
 </ul>

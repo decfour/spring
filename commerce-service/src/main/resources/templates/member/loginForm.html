@@ -4,8 +4,24 @@
     <meta charset="UTF-8">
     <title>로그인</title>
     <style>
-        .field-error { color: #dc3545; font-size: 0.9em; }
+        /* 폼 내부 행(Row)들 사이에 간격 주기 */
+        form > div {
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 80px 250px; /* 라벨 80px, 입력창 250px로 고정 정렬 */
+            align-items: center;
+            gap: 10px;
+        }
+        /* 에러 메시지는 입력창 아래(두 번째 칸)에 예쁘게 떨어지도록 처리 */
+        .field-error {
+            grid-column: 2;
+            color: #dc3545;
+            font-size: 0.9em;
+        }
         .global-error { color: #dc3545; font-weight: bold; }
+
+        /* 버튼과 링크 정렬 맞추기 */
+        button, .bottom-link { margin-left: 90px; }
     </style>
 </head>
 <body>
@@ -14,13 +30,12 @@
 
 <form th:action="@{/member/login}" th:object="${loginForm}" method="post">
 
-    <div th:if="${#fields.hasGlobalErrors()}">
+    <div th:if="${#fields.hasGlobalErrors()}" style="display: block;">
         <p class="global-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
     </div>
 
     <div>
         <label for="loginId">아이디:</label>
-        <!-- 3. th:field를 쓰면 id, name, value 속성을 자동으로 생성해줍니다 -->
         <input type="text" th:field="*{loginId}" placeholder="아이디를 입력하세요" />
         <div class="field-error" th:errors="*{loginId}">아이디 필수 오류</div>
     </div>
@@ -31,13 +46,17 @@
         <div class="field-error" th:errors="*{loginPassword}">비밀번호 필수 오류</div>
     </div>
 
-    <button type="submit">로그인</button>
+    <div style="display: block;">
+        <button type="submit">로그인</button>
+    </div>
 </form>
 
 <hr>
 
-<p>아직 회원이 아니신가요?</p>
-<a th:href="@{/member/register}">회원가입</a>
+<div class="bottom-link">
+    <p style="margin-bottom: 5px;">아직 회원이 아니신가요?</p>
+    <a th:href="@{/member/register}">회원가입</a>
+</div>
 
 </body>
 </html>

@@ -4,17 +4,32 @@
     <meta charset="utf-8">
     <title>회원가입</title>
     <style>
-        .field-error { border-color: #dc3545; color: #dc3545; }
+        /* 로그인 폼과 동일한 바둑판 정렬 규칙 적용 */
+        form > div {
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 80px 250px;
+            align-items: center;
+            gap: 10px;
+        }
+        .field-error {
+            grid-column: 2;
+            color: #dc3545;
+            font-size: 0.9em;
+        }
+        .global-error { color: #dc3545; font-weight: bold; }
+
+        button { margin-left: 90px; }
     </style>
 </head>
 <body>
 
 <h2>Join</h2>
 
-<form action="/member/register" th:action="@{/member/register}" th:object="${member}" method="post">
+<form th:action="@{/member/register}" th:object="${member}" method="post">
 
-    <div th:if="${#fields.hasGlobalErrors()}">
-        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+    <div th:if="${#fields.hasGlobalErrors()}" style="display: block;">
+        <p class="global-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
     </div>
 
     <div>
@@ -43,7 +58,9 @@
 
     <hr>
 
-    <button type="submit">가입</button>
+    <div>
+        <button type="submit">가입</button>
+    </div>
 
 </form>
 
