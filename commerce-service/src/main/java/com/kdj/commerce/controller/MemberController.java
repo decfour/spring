@@ -4,12 +4,11 @@ import com.kdj.commerce.domain.member.LoginForm;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
 import com.kdj.commerce.session.SessionConst;
-import com.kdj.commerce.session.SessionManager;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,8 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 @Slf4j
@@ -26,21 +23,19 @@ import java.util.List;
 @RequestMapping("member")
 public class MemberController {
     private final MemberService memberService;
-    private final SessionManager sessionManager;
 
     @Autowired
-    public MemberController(MemberService memberService, SessionManager sessionManager) {
+    public MemberController(MemberService memberService) {
         this.memberService = memberService;
-        this.sessionManager = sessionManager;
     }
 
     // 회원가입
     @GetMapping("/register")
     public String register(Model model) {
         model.addAttribute("member", new Member());
+
         return "member/registerForm";
     }
-
     @PostMapping("/register")
     public String registerForm(@Valid @ModelAttribute Member member, BindingResult result) {
         if (result.hasErrors()) {
@@ -49,6 +44,7 @@ public class MemberController {
         memberService.join(member);
         List<Member> members = memberService.findMembers();
         log.info("members={}", members);
+
         return "redirect:/";
     }
 
@@ -58,10 +54,10 @@ public class MemberController {
         model.addAttribute("loginForm", new LoginForm());
         return "member/loginForm";
     }
-
     @PostMapping("/login")
     public String loginForm(@Valid @ModelAttribute LoginForm form,
                             BindingResult result,
+                            @RequestParam(defaultValue = "/") String redirectURL,
                             HttpServletRequest request) {
         if (result.hasErrors()) {
             return "member/loginForm";
@@ -79,16 +75,22 @@ public class MemberController {
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
         log.info("loginUser={}", loginMember);
 
-        return "redirect:/";
+        return "redirect:" + redirectURL;
     }
 
     // 로그아웃
     @PostMapping("/logout")
-    public String logoutV2(HttpServletRequest request) {
+    public String logoutV2(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
+
+        // 쿠키 제거
+        Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setMaxAge(0); // 유효기간을 0초로 세팅해서 브라우저가 바로 삭제하게 만듦
+        cookie.setPath("/"); // 내 서버 전체 경로에 적용
+        response.addCookie(cookie);
 
         return "redirect:/";
     }

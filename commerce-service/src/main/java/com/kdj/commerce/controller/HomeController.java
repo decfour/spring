@@ -18,27 +18,28 @@ public class HomeController {
     private final SessionManager sessionManager;
 
     @GetMapping("/")
-    public String homeLogin(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false)
-                                    Member loginMember,
-                                    Model model) {
-        // 세션 없으면
+    public String homeLogin(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                            Model model) {
+        // 세션 X
         if (loginMember == null) {
-            return "home";
+            return "guestHome";
         }
 
-        // 있으면
+        // 세션 O
         model.addAttribute("member", loginMember);
-        return "loginHome";
+        return "userHome";
     }
 
     @GetMapping("/info")
     public String info() {
+
         return "info/info";
     }
 
     @GetMapping("/oasis")
     @ResponseBody
     public String idiot() {
+
         return "You know, Oasis is the best band in the world";
     }
 }

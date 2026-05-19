@@ -1,0 +1,26 @@
+package com.kdj.commerce;
+
+import com.kdj.commerce.interceptor.LoginCheckInterceptor;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class config implements WebMvcConfigurer {
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoginCheckInterceptor())
+                .order(1)
+                .addPathPatterns("/shop/**")
+                .excludePathPatterns(
+                        "/",
+                        "/shop",
+                        "/shop/item/{id}",
+                        "/member/login",
+                        "/member/logout",
+                        "/member/register",
+                        "/css/**", "/*.ico", "/error"
+                );
+    }
+}

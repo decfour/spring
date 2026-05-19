@@ -1,13 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Commerce Home</title>
+    <title>DON'T PANIC!</title>
+    <!-- 폰트 통일을 위해 부트스트랩 주입 -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        body {
+            padding: 8px;
+        }
+        h1 {
+            font-size: 2em;
+            margin-top: 0.67em;
+            margin-bottom: 0.67em;
+            font-weight: bold;
+        }
+        ul.menu {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            gap: 20px;
+        }
+    </style>
 </head>
 <body>
 
-<h1>About Us</h1>
-
+<h1>The Hitchhiker's Guide to the Galaxy</h1>
 <hr>
 
 <h3>Menu</h3>
