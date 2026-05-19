@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
 
+// 세션 정보 조회
 @Slf4j
 @RestController
 public class SessionInfoController {
@@ -18,7 +19,8 @@ public class SessionInfoController {
         if (session == null) {
             return "세션이 없습니다.";
         }
-        //세션 데이터 출력
+
+        // 세션 데이터 출력
         session.getAttributeNames().asIterator()
                 .forEachRemaining(name -> log.info("session name={}, value={}", name, session.getAttribute(name)));
                         log.info("sessionId={}", session.getId());

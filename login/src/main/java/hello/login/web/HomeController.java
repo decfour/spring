@@ -24,12 +24,10 @@ public class HomeController {
 
     // @GetMapping("/")
     public String home() {
-
         return "home";
     }
 
-    /*
-    @GetMapping("/")
+    // @GetMapping("/")
     public String homeLoginV1(@CookieValue(name = "memberId", required = false) Long memberId, Model model) {
 
         if (memberId == null) {
@@ -44,10 +42,8 @@ public class HomeController {
         model.addAttribute("member", loginMember);
         return "loginHome";
     }
-    */
 
-    /*
-    @GetMapping("/")
+    // @GetMapping("/")
     public String homeLoginV2(HttpServletRequest request, Model model) {
 
         Member member = (Member) sessionManager.getSession(request);
@@ -58,10 +54,8 @@ public class HomeController {
         model.addAttribute("member", member);
         return "loginHome";
     }
-    */
 
-    /*
-    @GetMapping("/")
+    // @GetMapping("/")
     public String homeLoginV3(HttpServletRequest request, Model model) {
         //세션이 없으면 home
         HttpSession session = request.getSession(false);
@@ -81,11 +75,9 @@ public class HomeController {
         model.addAttribute("member", loginMember);
         return "loginHome";
     }
-    */
 
     @GetMapping("/")
-    public String homeLoginV3Spring(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false)
-                                    Member loginMember,
+    public String homeLoginV3Spring(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                                     Model model) {
         // 세션에 회원 데이터가 없으면 home
         if (loginMember == null) {

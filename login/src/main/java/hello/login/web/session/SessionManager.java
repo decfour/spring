@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+// 수작업 세션 관리자
 @Component
 public class SessionManager {
 
@@ -17,10 +18,10 @@ public class SessionManager {
 
     // 세션 생성
     public void createSession(Object value, HttpServletResponse response) {
-        //세션 id를 생성하고, 값을 세션에 저장
+        // 랜덤값 세션 id를 생성, 세션에 저장
         String sessionId = UUID.randomUUID().toString();
         sessionStore.put(sessionId, value);
-        //쿠키 생성
+        // 쿠키 생성, 쿠키 전달
         Cookie mySessionCookie = new Cookie(SESSION_COOKIE_NAME, sessionId);
         response.addCookie(mySessionCookie);
     }
