@@ -4,7 +4,9 @@ import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemType;
 import com.kdj.commerce.repository.ItemRepository;
 import com.kdj.commerce.repository.MemoryItemRepository;
+import com.kdj.commerce.service.ItemService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +19,10 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/shop")
 @Controller
+@RequiredArgsConstructor
 public class ItemController {
 
-    private final ItemRepository itemRepository = new MemoryItemRepository();
+    private final ItemService itemService;
 
     // 모든 반환(모델)에 아이템 타입 담기
     @ModelAttribute("itemTypes")
@@ -30,7 +33,7 @@ public class ItemController {
     // 상점 페이지
     @GetMapping
     public String shop(Model model) {
-        List<Item> items = itemRepository.findAll();
+        List<Item> items = itemService.findItems();
         model.addAttribute("items", items);
 
         return "shop/shop";
@@ -50,8 +53,8 @@ public class ItemController {
             return "shop/add";
         }
 
-        Item savedItem = itemRepository.save(item);
-        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        Long savedItemId = itemService.saveItem(item);
+        redirectAttributes.addAttribute("itemId", savedItemId);
 
         return "redirect:/shop/item/{itemId}";
     }
@@ -59,14 +62,14 @@ public class ItemController {
     // 아이템 정보
     @GetMapping("/item/{id}")
     public String item(@PathVariable Long id, Model model) {
-        Item item = itemRepository.findById(id);
+        Item item = itemService.findOne(id);
         model.addAttribute("item", item);
 
         return "shop/item";
     }
     @GetMapping("/item/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
-        Item item = itemRepository.findById(id);
+        Item item = itemService.findOne(id);
         model.addAttribute("item", item);
 
         return "shop/edit";
@@ -78,7 +81,7 @@ public class ItemController {
             return "shop/edit";
         }
 
-        itemRepository.update(id, item);
+        itemService.updateItem(id, item);
 
         return "redirect:/shop/item/{id}";
     }

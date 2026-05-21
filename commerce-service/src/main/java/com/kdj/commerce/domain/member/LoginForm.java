@@ -2,13 +2,12 @@ package com.kdj.commerce.domain.member;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import org.antlr.v4.runtime.misc.NotNull;
 
 @Data
 public class LoginForm {
 
-    @NotEmpty
+    @NotEmpty(message = "아이디를 입력해주세요.")
     private String loginId;
-    @NotEmpty
+    @NotEmpty(message = "비밀번호를 입력해주세요.")
     private String loginPassword;
 }
