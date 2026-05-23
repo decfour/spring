@@ -1,4 +1,4 @@
-package com.kdj.commerce.session;
+package com.kdj.commerce.web.session;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,16 +1,17 @@
-package com.kdj.commerce.repository;
+package com.kdj.commerce.domain.member;
 
-import com.kdj.commerce.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Member save(Member member);
-    Optional<Member> findById(Long id);
-    List<Member> findAll();
+    // 인터페이스 기본 제공 메서드
+    // Member save(Member member);
+    // Optional<Member> findById(Long id);
+    // List<Member> findAll();
 
+    // 커스텀 메서드
     Optional<Member> findByUsername(String username);
     Optional<Member> findByEmail(String email);
     Optional<Member> findByLoginId(String loginId);

@@ -30,7 +30,7 @@ public class Item {
     // 수량
     @NotNull(message = "수량은 필수입니다.")
     @Max(value = 9999, message = "수량은 최대 9,999개까지만 등록 가능합니다.")
-    private Integer quantity;
+    private Integer stock;
 
     // 설명
     private String description;
@@ -49,16 +49,16 @@ public class Item {
 
     // 재고 증가 (주문 취소)
     public void addStock(int quantity) {
-        this.quantity += quantity;
+        this.stock += quantity;
     }
 
     // 재고 감소 (주문 완료)
     public void removeStock(int quantity) {
-        int restStock = this.quantity - quantity;
+        int restStock = this.stock - quantity;
         if (restStock < 0) {
             throw new IllegalStateException("주문 가능한 재고가 부족합니다.");
         }
-        this.quantity = restStock;
+        this.stock = restStock;
     }
 
     public Item() {

@@ -1,7 +1,7 @@
 package com.kdj.commerce.service;
 
 import com.kdj.commerce.domain.item.Item;
-import com.kdj.commerce.repository.ItemRepository;
+import com.kdj.commerce.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +37,7 @@ public class ItemService {
 
         findItem.setName(updateParam.getName());
         findItem.setPrice(updateParam.getPrice());
-        findItem.setQuantity(updateParam.getQuantity());
+        findItem.setStock(updateParam.getStock());
         findItem.setDescription(updateParam.getDescription());
         findItem.setOpen(updateParam.isOpen());
         findItem.setItemType(updateParam.getItemType());

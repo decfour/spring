@@ -1,4 +1,4 @@
-package com.kdj.commerce.domain.member;
+package com.kdj.commerce.web.form;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;

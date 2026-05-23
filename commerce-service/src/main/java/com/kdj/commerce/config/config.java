@@ -1,6 +1,6 @@
-package com.kdj.commerce;
+package com.kdj.commerce.config;
 
-import com.kdj.commerce.interceptor.LoginCheckInterceptor;
+import com.kdj.commerce.web.interceptor.LoginCheckInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

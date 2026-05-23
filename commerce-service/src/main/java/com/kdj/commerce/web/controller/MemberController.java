@@ -1,9 +1,9 @@
-package com.kdj.commerce.controller;
+package com.kdj.commerce.web.controller;
 
-import com.kdj.commerce.domain.member.LoginForm;
+import com.kdj.commerce.web.form.LoginForm;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
-import com.kdj.commerce.session.SessionConst;
+import com.kdj.commerce.web.session.SessionConst;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -43,7 +43,7 @@ public class MemberController {
         }
         memberService.join(member);
         List<Member> members = memberService.findMembers();
-        log.info("members={}", members);
+        log.info("registerUser={}", members);
 
         return "redirect:/";
     }

@@ -2,24 +2,50 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>상품 정보</title>
+    <title>상품 상세</title>
 </head>
 <body>
 
-<h1>상품 정보</h1>
+<h1>상품 상세</h1>
+
+<hr>
+
+<h3>상품 정보</h3>
 
 <ul>
-    <li>ID: <span th:text="${item.id}">1</span></li>
+    <li>품번: <span th:text="${item.id}">1</span></li>
     <li>이름: <span th:text="${item.name}">상품명</span></li>
-    <li>가격: <span th:text="${item.price}">0</span>원</li>
-    <li>수량: <span th:text="${item.quantity}">0</span>개</li>
+    <li>가격: <span th:text="${item.price}">0</span></li>
+    <li>수량: <span th:text="${item.stock}">0</span></li>
     <li>종류: <span th:text="${item.itemType}">1</span></li>
     <li>설명: <p th:text="${item.description}">설명입니다.</p></li>
-    <li>판매 여부:
+</ul>
+
+<hr>
+
+<ul>
+    <li>상태:
         <span th:text="${item.open} ? '판매중' : '미오픈'"></span>
     </li>
-    <li>배송 방식: <span th:text="${item.delivery}">기본배송</span></li>
+    <li>배송: <span th:text="${item.delivery}">기본배송</span></li>
 </ul>
+
+<hr>
+
+<!-- 주문 구역 (수량 선택 및 주문 버튼) -->
+<h3>주문하기</h3>
+<!-- 판매중일 때만 주문 창이 보이도록 th:if 처리 -->
+<div th:if="${item.open}">
+    <form th:action="@{/shop/order}" method="post">
+        <input type="hidden" name="itemId" th:value="${item.id}" />
+        <label for="count">주문 수량 : </label>
+        <input type="number" id="count" name="count" min="1" th:max="${item.stock}" value="1" required />
+        <button type="submit">주문하기</button>
+    </form>
+</div>
+<div th:if="${!item.open}">
+    <p style="color: gray;">현재 판매 중이 아닙니다.</p>
+</div>
 
 <hr>
 

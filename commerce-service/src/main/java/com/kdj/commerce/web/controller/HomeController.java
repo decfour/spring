@@ -1,9 +1,8 @@
-package com.kdj.commerce.controller;
+package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.member.Member;
-import com.kdj.commerce.session.SessionConst;
-import com.kdj.commerce.session.SessionManager;
-import jakarta.servlet.http.HttpServletRequest;
+import com.kdj.commerce.web.session.SessionConst;
+import com.kdj.commerce.web.session.SessionManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

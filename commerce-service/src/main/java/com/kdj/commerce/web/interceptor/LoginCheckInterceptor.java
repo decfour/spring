@@ -1,6 +1,6 @@
-package com.kdj.commerce.interceptor;
+package com.kdj.commerce.web.interceptor;
 
-import com.kdj.commerce.session.SessionConst;
+import com.kdj.commerce.web.session.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

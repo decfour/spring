@@ -1,7 +1,7 @@
 package com.kdj.commerce.service;
 
 import com.kdj.commerce.domain.member.Member;
-import com.kdj.commerce.repository.MemberRepository;
+import com.kdj.commerce.domain.member.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,9 +1,7 @@
-package com.kdj.commerce.controller;
+package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemType;
-import com.kdj.commerce.repository.ItemRepository;
-import com.kdj.commerce.repository.MemoryItemRepository;
 import com.kdj.commerce.service.ItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
