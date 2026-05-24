@@ -16,7 +16,7 @@ public class config implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/",
                         "/shop",
-                        "/shop/item/{id}",
+                        "/shop/item/*",
                         "/member/login",
                         "/member/logout",
                         "/member/register",

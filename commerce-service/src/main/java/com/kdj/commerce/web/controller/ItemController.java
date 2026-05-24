@@ -42,13 +42,13 @@ public class ItemController {
     public String add(Model model) {
         model.addAttribute("item", new Item());
 
-        return "shop/add";
+        return "shop/addItemForm";
     }
     @PostMapping("/add")
     public String addItem(@Valid @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
-            return "shop/add";
+            return "shop/addItemForm";
         }
 
         Long savedItemId = itemService.saveItem(item);
@@ -70,13 +70,13 @@ public class ItemController {
         Item item = itemService.findOne(id);
         model.addAttribute("item", item);
 
-        return "shop/edit";
+        return "shop/editItemForm";
     }
     @PostMapping("/item/{id}/edit")
     public String edit(@PathVariable Long id, @Valid @ModelAttribute Item item, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
-            return "shop/edit";
+            return "shop/editItemForm";
         }
 
         itemService.updateItem(id, item);

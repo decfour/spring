@@ -2,7 +2,8 @@ package com.kdj.commerce.domain.order;
 
 import com.kdj.commerce.domain.member.Member;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,7 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
-@Data
+@Getter
+@Setter
 public class Order {
 
     // 주문 ID
@@ -21,7 +23,7 @@ public class Order {
 
     // 주문 회원(회원 1 : N 주문)
     @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩
-    @JoinColumn(name = "member_id")   // MySQL 테이블에 'member_id' FK 컬럼을 생성 후 회원과 조인
+    @JoinColumn(name = "member_id")   // order.member_id <-> member.id 조인
     private Member member;
 
     // 주문 시간
@@ -32,7 +34,7 @@ public class Order {
     private OrderStatus status; // 주문 상태 [ORDER, CANCEL]
 
     // 주문 상품 목록
-    @OneToMany(mappedBy = "order") // OrderItem 클래스에 있는 "order" 변수에 의해 매핑
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) // OrderItem 클래스에 있는 "order" 변수에 의해 매핑
     private List<OrderItem> orderItems = new ArrayList<>();
 
 

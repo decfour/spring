@@ -2,11 +2,13 @@ package com.kdj.commerce.domain.order;
 
 import com.kdj.commerce.domain.item.Item;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "order_item")
-@Data
+@Getter
+@Setter
 public class OrderItem {
 
     @Id
@@ -37,10 +39,12 @@ public class OrderItem {
     }
 
     public void cancel() {
+
         getItem().addStock(count);
     }
 
     public int getTotalPrice() {
+
         return getOrderPrice() * getCount();
     }
 }
