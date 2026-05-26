@@ -3,6 +3,8 @@ package com.kdj.commerce.web.controller;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemType;
 import com.kdj.commerce.service.ItemService;
+import com.kdj.commerce.web.form.ItemEditForm;
+import com.kdj.commerce.web.form.ItemSaveForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,16 +42,25 @@ public class ItemController {
     // 아이템 추가
     @GetMapping("/add")
     public String add(Model model) {
-        model.addAttribute("item", new Item());
+        model.addAttribute("item", new ItemSaveForm());
 
         return "shop/addItemForm";
     }
     @PostMapping("/add")
-    public String addItem(@Valid @ModelAttribute Item item, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String addItem(@Valid @ModelAttribute ItemSaveForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "shop/addItemForm";
         }
+
+        Item item = new Item();
+        item.setName(form.getName());
+        item.setPrice(form.getPrice());
+        item.setStock(form.getStock());
+        item.setDescription(form.getDescription());
+        item.setOpen(form.isOpen());
+        item.setItemType(form.getItemType());
+        item.setDelivery(form.getDelivery());
 
         Long savedItemId = itemService.saveItem(item);
         redirectAttributes.addAttribute("itemId", savedItemId);
@@ -68,16 +79,38 @@ public class ItemController {
     @GetMapping("/item/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
         Item item = itemService.findOne(id);
-        model.addAttribute("item", item);
+
+        ItemEditForm form = new ItemEditForm();
+        form.setId(item.getId());
+        form.setName(item.getName());
+        form.setPrice(item.getPrice());
+        form.setStock(item.getStock());
+        form.setDescription(item.getDescription());
+        form.setOpen(item.isOpen());
+        form.setItemType(item.getItemType());
+        form.setDelivery(item.getDelivery());
+
+        model.addAttribute("item", form);
 
         return "shop/editItemForm";
     }
     @PostMapping("/item/{id}/edit")
-    public String edit(@PathVariable Long id, @Valid @ModelAttribute Item item, BindingResult bindingResult) {
+    public String edit(@PathVariable Long id,
+                       @Valid @ModelAttribute ItemEditForm form,
+                       BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "shop/editItemForm";
         }
+
+        Item item = new Item();
+        item.setName(form.getName());
+        item.setPrice(form.getPrice());
+        item.setStock(form.getStock());
+        item.setDescription(form.getDescription());
+        item.setOpen(form.isOpen());
+        item.setItemType(form.getItemType());
+        item.setDelivery(form.getDelivery());
 
         itemService.updateItem(id, item);
 

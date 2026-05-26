@@ -25,15 +25,15 @@
 </head>
 <body>
 
-<h1>The Hitchhiker's Guide to the Galaxy</h1>
-<hr>
+<div th:replace="~{common/header :: mainHeader}"></div>
 
 <h3>Menu</h3>
+
+<hr>
 
 <ul class="menu">
     <li><a th:href="@{/info}">INFO</a></li>
     <li><a th:href="@{/shop}">SHOP</a></li>
-    <li><a th:href="@{/member/login}">LOGIN</a></li>
 </ul>
 
 </body>

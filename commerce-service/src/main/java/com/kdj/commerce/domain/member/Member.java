@@ -3,11 +3,13 @@ package com.kdj.commerce.domain.member;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 // @Table(name = "member")
-@Data
+@Getter
+@Setter
 public class Member {
 
     // 회원 ID

@@ -1,24 +1,14 @@
-package com.kdj.commerce.domain.item;
+package com.kdj.commerce.web.form;
 
-import jakarta.persistence.*;
+import com.kdj.commerce.domain.item.ItemType;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Entity
-// @Table(name = "item")
-@Getter
-@Setter
-public class Item {
-
-    // 상품 ID
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
-    private Long id;
+@Data
+public class ItemSaveForm {
 
     // 상품 이름
     @NotBlank(message = "상품 이름은 필수입니다.")
@@ -42,28 +32,8 @@ public class Item {
 
     // 상품 종류
     @NotNull(message = "상품 종류를 선택해주세요.")
-    @Enumerated(EnumType.STRING)    // enum을 문자 그대로 저장
     private ItemType itemType;
 
     // 배송 방식
     private String delivery;
-
-
-    // 재고 증가 (주문 취소)
-    public void addStock(int quantity) {
-
-        this.stock += quantity;
-    }
-
-    // 재고 감소 (주문 완료)
-    public void removeStock(int quantity) {
-        int restStock = this.stock - quantity;
-        if (restStock < 0) {
-            throw new IllegalStateException("주문 가능한 재고가 부족합니다.");
-        }
-        this.stock = restStock;
-    }
-
-    public Item() {
-    }
 }

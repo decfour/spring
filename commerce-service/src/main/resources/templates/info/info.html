@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <title>THGTTG - INFO</title>
     <title>DON'T PANIC!</title>
     <!-- 폰트 통일을 위해 부트스트랩 주입 -->
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
@@ -25,10 +26,11 @@
 </head>
 <body>
 
-<h1>The Hitchhiker's Guide to the Galaxy</h1>
-<hr>
+<div th:replace="~{common/header :: mainHeader}"></div>
 
 <h3>Menu</h3>
+
+<hr>
 
 <ul>
     <li><a href="/info/history">HISTORY</a></li>
