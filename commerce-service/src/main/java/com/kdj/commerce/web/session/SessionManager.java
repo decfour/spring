@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-// SessionManager 수작업
+// SessionManager 수작업 (사용 안 함, 학습 용)
 @Component
 @Slf4j
 public class SessionManager {

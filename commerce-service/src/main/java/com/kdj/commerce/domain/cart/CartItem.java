@@ -5,36 +5,41 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+// 장바구니 아이템(CartItem N:1 Cart)
 @Entity
 @Getter
 @Setter
 @Table(name = "cart_item")
 public class CartItem {
 
+    // 장바구니 속 아이템 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_item_id")
     private Long id;
 
+    // 카트 ID
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
+    // 아이템 ID
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
     private int count;
 
-    public static CartItem createCartItem(Cart cart, Item item, int amount) {
+    public static CartItem createCartItem(Cart cart, Item item, int count) {
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
         cartItem.setItem(item);
-        cartItem.setCount(amount);
+        cartItem.setCount(count);
         return cartItem;
     }
 
     public void addCount(int count) {
+
         this.count += count;
     }
 }

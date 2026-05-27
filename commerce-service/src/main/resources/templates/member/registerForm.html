@@ -19,12 +19,23 @@
         }
         .global-error { color: #dc3545; font-weight: bold; }
 
-        button { margin-left: 90px; }
+        .button-area {
+            display: block;
+            margin-top: 20px;
+        }
+
+        .button-area button {
+            margin-left: 90px;
+            padding: 6px 20px; /* 버튼 안쪽 여백도 살짝 주면 뚱뚱하고 예뻐집니다 */
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
 <h2>Join</h2>
+
+<hr>
 
 <form th:action="@{/member/register}" th:object="${member}" method="post">
 
@@ -58,7 +69,7 @@
 
     <hr>
 
-    <div>
+    <div class="button-area">
         <button type="submit">가입</button>
     </div>
 

@@ -17,27 +17,34 @@ public class MemberService {
 
     // 회원가입
     public void join(Member member) {
-        // 이메일 중복
+        // 이메일 중복 검증
         memberRepository.findByEmail(member.getEmail())
                 .ifPresent(m -> {
                     throw new IllegalStateException("이미 사용중인 이메일입니다.");
                 });
+
+        // 아이디 중복 검증
+        memberRepository.findByLoginId(member.getLoginId())
+                .ifPresent(m -> {
+                    throw new IllegalStateException("이미 사용중인 아이디입니다.");
+                });
         memberRepository.save(member);
     }
 
+    // 로그인
     public Member login(String loginId, String loginPassword) {
         return memberRepository.findByLoginId(loginId)
-                .filter(m -> m.getLoginPassword().equals(loginPassword)) // 2. 찾은 회원의 비밀번호가 입력한 것과 같은지 비교
-                .orElse(null); // 3. 없거나 틀리면 null 반환
+                .filter(m -> m.getLoginPassword().equals(loginPassword))
+                .orElse(null);
     }
 
-    // 멤버 조회(개인)
+    // 회원 조회 (개인)
     public Optional<Member> findMember(long id) {
 
         return memberRepository.findById(id);
     }
 
-    // 멤버 조회(모두)
+    // 회원 조회 (모두)
     public List<Member> findMembers() {
 
         return memberRepository.findAll();

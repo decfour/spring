@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,14 +21,11 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("member")
+@RequiredArgsConstructor
+@RequestMapping("/member")
 public class MemberController {
-    private final MemberService memberService;
 
-    @Autowired
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private final MemberService memberService;
 
     // 회원가입
     @GetMapping("/register")
@@ -41,10 +39,12 @@ public class MemberController {
         if (result.hasErrors()) {
             return "member/registerForm";
         }
-        memberService.join(member);
-        List<Member> members = memberService.findMembers();
-        log.info("registerUser={}", members);
-
+        try {
+            memberService.join(member);
+        } catch (IllegalStateException e) {
+            result.reject("duplicateEmail", e.getMessage());
+            return "member/registerForm";
+        }
         return "redirect:/";
     }
 

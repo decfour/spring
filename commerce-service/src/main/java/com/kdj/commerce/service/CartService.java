@@ -29,11 +29,13 @@ public class CartService {
     @Transactional
     public Long addCart(Long memberId, Long itemId, int count) {
 
+        // 1. 회원, 아이템 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다. id=" + memberId));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다. id=" + itemId));
 
+        // 2. 카트 조회 (없으면 생성)
         Cart cart = cartRepository.findByMemberId(memberId).orElse(null);
 
         if (cart == null) {
@@ -41,12 +43,14 @@ public class CartService {
             cartRepository.save(cart);
         }
 
+        // 3. 카트 내 아이템 조회
         Optional<CartItem> findCartItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
 
         if (findCartItem.isPresent()) {
             findCartItem.get().addCount(count);
             return findCartItem.get().getId();
-        } else {
+        }
+        else {
             CartItem cartItem = CartItem.createCartItem(cart, item, count);
             cartItemRepository.save(cartItem);
             return cartItem.getId();
@@ -61,5 +65,22 @@ public class CartService {
         }
 
         return cartItemRepository.findAllByCartId(cart.get().getId());
+    }
+
+    @Transactional
+    public void deleteCartItem(Long cartItemId) {
+        cartItemRepository.deleteById(cartItemId);
+    }
+
+    // 장바구니 비우기
+    @Transactional
+    public void clearCart(Long memberId) {
+        Optional<Cart> cart = cartRepository.findByMemberId(memberId);
+
+        if (cart.isPresent()) {
+            List<CartItem> cartItems = cartItemRepository.findAllByCartId(cart.get().getId());
+
+            cartItemRepository.deleteAllInBatch(cartItems);
+        }
     }
 }

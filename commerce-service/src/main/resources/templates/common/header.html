@@ -8,14 +8,14 @@
 
     <div>
         <span th:if="${session.loginMember == null}">
-            <button type="button" onclick="location.href='/member/login'">로그인</button>
-            <button type="button" onclick="location.href='/member/register'">회원가입</button>
+            <button type="button" onclick="location.href='/member/login'">Login</button>
+            <button type="button" onclick="location.href='/member/register'">Register</button>
         </span>
 
         <span th:if="${session.loginMember != null}">
-            <span th:text="${session.loginMember.username}" style="margin-right: 15px;">user</span>
-            <button type="button" onclick="location.href='/cart'">장바구니</button>
-            <button type="button" onclick="location.href='/logout'">로그아웃</button>
+            <span th:text="${session.loginMember.username}" style="margin-right: 15px;">User Name</span>
+            <button type="button" onclick="location.href='/cart'">Cart</button>
+            <button type="button" onclick="location.href='/logout'">Logout</button>
         </span>
     </div>
 </div>

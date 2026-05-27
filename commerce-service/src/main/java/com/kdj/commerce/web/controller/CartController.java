@@ -25,13 +25,11 @@ public class CartController {
 
     // 장바구니
     @GetMapping
-    public String cartList(HttpServletRequest request, Model model) {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
-            return "redirect:/login";
+    public String cartList(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                           Model model) {
+        if (loginMember == null) {
+            return "redirect:/member/login";
         }
-        Member loginMember = (Member) session.getAttribute(SessionConst.LOGIN_MEMBER);
-
         List<CartItem> cartItems = cartService.findCartItem(loginMember.getId());
         model.addAttribute("cartItems", cartItems);
 
@@ -42,8 +40,7 @@ public class CartController {
     @PostMapping("/add")
     public String addCart(@RequestParam("itemId") Long itemId,
                           @RequestParam("count") int count,
-                          @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                          RedirectAttributes redirectAttributes) {
+                          @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
 
         if (loginMember == null) {
             return "redirect:/member/login";
@@ -55,13 +52,14 @@ public class CartController {
     }
 
     // 장바구니 아이템 제거
-    @PostMapping("/delete")
-    public String deleteCart(@RequestParam("itemId") Long itemId,
-                             @RequestParam("count") int count,
-                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                             RedirectAttributes redirectAttributes) {
-        log.info("장바구니 아이템 추가 요청: memberId={}, itemId={}, count={}", loginMember.getId(), itemId, count);
+    @PostMapping("/items/{cartItemId}/delete")
+    public String deleteCartItem(@PathVariable("cartItemId") Long cartItemId,
+                                 @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+        if (loginMember == null) {
+            return "redirect:/member/login";
+        }
+        cartService.deleteCartItem(cartItemId);
 
-        return "redirect:/";
+        return "redirect:/cart";
     }
 }

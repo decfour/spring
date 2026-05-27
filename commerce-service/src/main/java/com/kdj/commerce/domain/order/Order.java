@@ -20,7 +20,7 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
-    // 주문 회원(회원 1 : N 주문)
+    // 주문 회원
     @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩
     @JoinColumn(name = "member_id")   // order.member_id <-> member.id 조인
     private Member member;
