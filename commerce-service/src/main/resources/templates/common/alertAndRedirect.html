@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>알림</title>
+</head>
+<body>
+<script th:inline="javascript">
+    // 컨트롤러가 넘겨준 에러 메시지를 꺼내 얼럿창으로 띄웁니다.
+    var message = [[${errorMessage}]];
+    alert(message);
+
+    // 얼럿 확인을 누르면 유저가 보던 장바구니 목록으로 안전하게 빽 시킵니다!
+    location.href = '/cart';
+</script>
+</body>
+</html>

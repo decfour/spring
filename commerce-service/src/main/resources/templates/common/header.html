@@ -15,7 +15,9 @@
         <span th:if="${session.loginMember != null}">
             <span th:text="${session.loginMember.username}" style="margin-right: 15px;">User Name</span>
             <button type="button" onclick="location.href='/cart'">Cart</button>
-            <button type="button" onclick="location.href='/logout'">Logout</button>
+            <form th:action="@{/member/logout}" method="post" style="display: inline; margin-left: 5px;">
+                <button type="submit" style="cursor: pointer;">Logout</button>
+            </form>
         </span>
     </div>
 </div>

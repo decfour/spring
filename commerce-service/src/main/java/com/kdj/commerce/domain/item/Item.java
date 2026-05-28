@@ -1,5 +1,6 @@
 package com.kdj.commerce.domain.item;
 
+import com.kdj.commerce.exception.NotEnoughStockException;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -57,8 +58,9 @@ public class Item {
     // 재고 감소 (주문 완료)
     public void removeStock(int quantity) {
         int restStock = this.stock - quantity;
+
         if (restStock < 0) {
-            throw new IllegalStateException("주문 가능한 재고가 부족합니다.");
+            throw new NotEnoughStockException("상품의 재고가 부족합니다. (현재 재고: " + this.stock + "개)");
         }
         this.stock = restStock;
     }

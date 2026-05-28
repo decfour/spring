@@ -43,7 +43,7 @@
             </td>
             <td>
                 <form th:if="${order.status.name() == 'ORDER'}"
-                      th:action="@{/orders/{id}/cancel (id=${order.id})}" method="post">
+                      th:action="@{/order/{id}/cancel (id=${order.id})}" method="post">
                     <button type="submit">주문 취소</button>
                 </form>
                 <span th:if="${order.status.name() == 'CANCEL'}">-</span>

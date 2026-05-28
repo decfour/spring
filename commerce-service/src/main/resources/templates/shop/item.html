@@ -71,20 +71,28 @@
 
 <!-- 판매중일 때만 주문 창이 보이도록 th:if 처리 -->
 <div th:if="${item.open}">
-    <form th:action="@{/shop/order}" method="post">
-        <input type="hidden" name="itemId" th:value="${item.id}" />
-        <label for="count">주문 수량 : </label>
-        <input type="number" id="count" name="count" min="1" th:max="${item.stock}" value="1" required />
-        <button type="submit">주문하기</button>
-    </form>
 
-    <form th:action="@{/cart/add}" method="post">
-        <input type="hidden" name="itemId" th:value="${item.id}" />
-        <label for="cartCount">장바구니 수량 : </label>
-        <input type="number" id="cartCount" name="count" min="1" th:max="${item.stock}" value="1" required />
-        <button type="submit" style="background-color: #28a745; color: white;">장바구니 담기</button>
-    </form>
+    <div th:if="${item.stock > 0}">
+        <form th:action="@{/order/one}" method="post" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <input type="hidden" name="itemId" th:value="${item.id}" />
+            <label for="count">주문 수량 : </label>
+            <input type="number" id="count" name="count" min="1" th:max="${item.stock}" value="1" required style="width: 80px;" />
+            <button type="submit" class="btn btn-primary" style="cursor: pointer; padding: 4px 12px;">주문하기</button>
+        </form>
+
+        <form th:action="@{/cart/add}" method="post">
+            <input type="hidden" name="itemId" th:value="${item.id}" />
+            <label for="cartCount">장바구니 수량 : </label>
+            <input type="number" id="cartCount" name="count" min="1" th:max="${item.stock}" value="1" required />
+            <button type="submit" class="btn btn-success" style="cursor: pointer;">장바구니 담기</button>
+        </form>
+    </div>
+
+    <div th:unless="${item.stock > 0}" style="color: #dc3545; font-weight: bold; padding: 10px 0;">
+        ❌ 현재 이 상품은 품절 상태입니다. (재고 없음)
+    </div>
 </div>
+
 <div th:if="${!item.open}">
     <p style="color: gray;">현재 판매 중이 아닙니다.</p>
 </div>

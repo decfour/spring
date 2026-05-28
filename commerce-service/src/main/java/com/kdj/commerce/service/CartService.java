@@ -8,6 +8,7 @@ import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemRepository;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberRepository;
+import com.kdj.commerce.exception.NotEnoughStockException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,21 +37,26 @@ public class CartService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다. id=" + itemId));
 
         // 2. 카트 조회 (없으면 생성)
-        Cart cart = cartRepository.findByMemberId(memberId).orElse(null);
+        Cart cart = cartRepository.findByMemberId(memberId)
+                .orElseGet(() -> cartRepository.save(Cart.createCart(member)));
 
-        if (cart == null) {
-            cart = Cart.createCart(member);
-            cartRepository.save(cart);
-        }
-
-        // 3. 카트 내 아이템 조회
+        // 3. 카트 내 아이템 조회 + 담기
         Optional<CartItem> findCartItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
 
         if (findCartItem.isPresent()) {
+            int totalCount = findCartItem.get().getCount() + count;
+            if (totalCount > item.getStock()) {
+                throw new NotEnoughStockException("장바구니에 담으려는 수량이 남아있는 재고보다 많습니다. (현재 재고: " + item.getStock() + "개)");
+            }
+
             findCartItem.get().addCount(count);
             return findCartItem.get().getId();
         }
         else {
+            if (count > item.getStock()) {
+                throw new NotEnoughStockException("상품의 재고가 부족하여 장바구니에 담을 수 없습니다. (현재 재고: " + item.getStock() + "개)");
+            }
+
             CartItem cartItem = CartItem.createCartItem(cart, item, count);
             cartItemRepository.save(cartItem);
             return cartItem.getId();
@@ -58,13 +64,10 @@ public class CartService {
     }
 
     public List<CartItem> findCartItem(Long memberId) {
-        Optional<Cart> cart = cartRepository.findByMemberId(memberId);
 
-        if (cart.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return cartItemRepository.findAllByCartId(cart.get().getId());
+        return cartRepository.findByMemberId(memberId)
+                .map(cart -> cartItemRepository.findAllByCartId(cart.getId()))
+                .orElse(Collections.emptyList());
     }
 
     @Transactional
@@ -72,7 +75,6 @@ public class CartService {
         cartItemRepository.deleteById(cartItemId);
     }
 
-    // 장바구니 비우기
     @Transactional
     public void clearCart(Long memberId) {
         Optional<Cart> cart = cartRepository.findByMemberId(memberId);
