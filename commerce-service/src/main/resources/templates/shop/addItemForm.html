@@ -3,61 +3,121 @@
 <head>
     <meta charset="utf-8">
     <title>상품 등록</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #1d1d1f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .main-container {
+            max-width: 540px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        /* 실무형 폼 컴포넌트 스타일 명명 (수정 폼과 통일) */
+        .form-label-custom {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #86868b;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .form-input-text {
+            width: 100%;
+            border: 1px solid #d2d2d7;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-input-text:focus {
+            border-color: #86868b;
+        }
+
+        /* 버튼 컴포넌트 스타일 및 호버 액션 정의 */
+        .btn-submit {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 24px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-submit:hover {
+            background-color: #323236;
+        }
+        .btn-cancel-link {
+            background: none;
+            border: none;
+            color: #6e6e73;
+            font-size: 0.9rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .btn-cancel-link:hover {
+            color: #1d1d1f;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div class="container">
-    <h1>상품 등록</h1>
+<div class="main-container">
+    <h2 class="fw-bold mb-4" style="font-size: 1.8rem; letter-spacing: -0.6px;">Add Product</h2>
 
     <form th:action th:object="${item}" method="post">
-
         <div>
-            <label for="name">이름</label>
-            <label for="name"></label>
-            <input type="text" id="name" th:field="*{name}" placeholder="이름을 입력하세요">
+            <label for="name" class="form-label-custom">상품명</label>
+            <input type="text" id="name" th:field="*{name}" class="form-input-text" placeholder="Product name">
         </div>
-        <div>
-            <label for="price">가격</label>
-            <input type="number" id="price" th:field="*{price}" placeholder="가격을 입력하세요">
-        </div>
-        <div>
-            <label for="stock">수량</label>
-            <input type="number" id="stock" th:field="*{stock}" placeholder="수량을 입력하세요">
-        </div>
-
-        <hr>
-
-        <!-- 판매 상태 -->
-        <div>
-            <input type="checkbox" id="open" th:field="*{open}">
-            <label for="open">판매 중</label>
-        </div>
-        <div>
-            <label for="description">설명</label>
-            <textarea id="description" th:field="*{description}" rows="3"></textarea>
-        </div>
-
-        <!-- 상품 종류 -->
-        <div>
-            <div>상품 종류</div>
-            <div th:each="type : ${itemTypes}" class="form-check form-check-inline">
-                <input type="radio" th:field="*{itemType}" th:value="${type.name()}"
-                       class="form-check-input">
-                <label th:for="${#ids.prev('itemType')}" th:text="${type.description}" class="form-check-label">
-                    BOOK
-                </label>
+        <div class="row">
+            <div class="col">
+                <label for="price" class="form-label-custom">가격</label>
+                <input type="number" id="price" th:field="*{price}" class="form-input-text" placeholder="Price">
+            </div>
+            <div class="col">
+                <label for="stock" class="form-label-custom">수량</label>
+                <input type="number" id="stock" th:field="*{stock}" class="form-input-text" placeholder="Stock">
             </div>
         </div>
 
-        <hr>
-
-        <div class="row">
-            <button type="submit">등록</button>
-            <button type="button" th:onclick="|location.href='@{/shop}'|">취소</button>
+        <div class="form-check mb-4 mt-2">
+            <input type="checkbox" id="open" th:field="*{open}" class="form-check-input" style="border-color:#d2d2d7;">
+            <label for="open" class="form-check-label" style="font-size:0.9rem; color:#424245;">즉시 판매 시작</label>
         </div>
 
+        <div class="mb-4">
+            <label for="description" class="form-label-custom">상세 설명</label>
+            <textarea id="description" th:field="*{description}" rows="3" class="form-input-text" placeholder="Description" style="resize:none;"></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label-custom">카테고리</label>
+            <div class="d-flex gap-4 pt-1">
+                <div th:each="type : ${itemTypes}" class="form-check">
+                    <input type="radio" th:field="*{itemType}" th:value="${type.name()}" class="form-check-input" style="border-color:#d2d2d7;">
+                    <label th:for="${#ids.prev('itemType')}" th:text="${type.description}" class="form-check-label text-dark" style="font-size:0.9rem;">BOOK</label>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4" style="border-color:#e5e5e7;">
+
+        <div class="d-flex gap-3 justify-content-end align-items-center">
+            <button type="button" class="btn-cancel-link" th:onclick="|location.href='@{/shop}'|">Cancel</button>
+            <button type="submit" class="btn-submit">등록 완료</button>
+        </div>
     </form>
 </div>
 

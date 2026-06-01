@@ -5,39 +5,64 @@
     <title>THGTTG - SHOP</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
-        /* 1. 홈 화면과 완벽한 타이틀 일치를 위해 부트스트랩 스타일 리셋 */
         body {
-            padding: 8px; /* 일반적인 브라우저 기본 여백(마진) 재현 */
+            background-color: #ffffff;
+            color: #1d1d1f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
-        h1 {
-            font-size: 2em; /* 브라우저 기본 h1 크기로 강제 고정 */
-            margin-top: 0.67em;
-            margin-bottom: 0.67em;
-            font-weight: bold;
-            color: #000; /* 부트스트랩 회색조 무력화 */
+        .main-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
         }
-        /* 2. 가로 메뉴 스타일 */
-        ul.menu {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .link-style-btn {
-            background: none;
-            border: none;
-            color: -webkit-link;
-            text-decoration: underline;
-            cursor: pointer;
-            padding: 0;
-            font-size: 16px;
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.8px;
         }
 
-        /* 3. 테이블만 부트스트랩 레이아웃 가두기 */
-        .table-container {
-            max-width: 800px;
-            margin-top: 30px;
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .product-table th {
+            padding: 14px 0;
+            font-weight: 500;
+            color: #86868b;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #d2d2d7;
+        }
+        .product-table td {
+            padding: 18px 0;
+            border-bottom: 1px solid #e5e5e7;
+            font-size: 0.95rem;
+        }
+
+        .btn-custom {
+            border-radius: 4px;
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .btn-primary-dark {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: none;
+        }
+        .btn-primary-dark:hover {
+            background-color: #323236;
+        }
+        .btn-secondary-outline {
+            background: none;
+            border: 1px solid #d2d2d7;
+            color: #1d1d1f;
+        }
+        .btn-secondary-outline:hover {
+            background-color: #f5f5f7;
+            border-color: #86868b;
         }
     </style>
 </head>
@@ -45,38 +70,35 @@
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<h3>Product List</h3>
+<div class="main-container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="section-title m-0">Store. <span class="text-muted" style="font-weight:400;">The products line.</span></h2>
+        <div class="d-flex gap-2">
+            <button class="btn-custom btn-primary-dark" th:onclick="|location.href='@{/shop/add}'|" type="button">상품 등록</button>
+            <button class="btn-custom btn-secondary-outline" th:onclick="|location.href='@{/}'|" type="button">뒤로</button>
+        </div>
+    </div>
 
-<hr>
-
-<ul class="menu">
-    <li>
-        <button class="link-style-btn" th:onclick="|location.href='@{/shop/add}'|" type="button">등록</button>
-    </li>
-    <li>
-        <button class="link-style-btn" th:onclick="|location.href='@{/}'|" type="button">뒤로</button>
-    </li>
-</ul>
-
-<!-- 테이블 영역만 깔끔하게 최대 너비를 제한 -->
-<div class="table-container">
-    <table class="table table-hover">
-        <thead class="table-light">
+    <table class="product-table">
+        <thead>
         <tr>
-            <th>ID</th>
-            <th>상품명</th>
-            <th>가격</th>
-            <th>수량</th>
+            <th style="width: 10%;">ID</th>
+            <th style="width: 50%;">Product</th>
+            <th style="width: 20%;">Price</th>
+            <th style="width: 20%;">Stock</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="item : ${items}">
-            <td th:text="${item.id}">1</td>
+            <td th:text="${item.id}" style="color: #86868b;">1</td>
             <td>
-                <a th:href="@{/shop/item/{itemId}(itemId=${item.id})}" th:text="${item.name}">테스트 상품</a>
+                <a th:href="@{/shop/item/{itemId}(itemId=${item.id})}" th:text="${item.name}" class="text-dark fw-medium text-decoration-none" style="letter-spacing: -0.2px;">테스트 상품</a>
             </td>
-            <td th:text="${item.price}">10,000</td>
-            <td th:text="${item.stock}">5</td>
+            <td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'" style="color: #424245;">10,000</td>
+            <td>
+                <span th:if="${item.stock > 0}" th:text="${item.stock} + '개'" style="color: #1d1d1f;">5개</span>
+                <span th:unless="${item.stock > 0}" style="color: #de363a; font-weight: 500;">품절</span>
+            </td>
         </tr>
         </tbody>
     </table>

@@ -4,14 +4,11 @@ import com.kdj.commerce.domain.cart.CartItem;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.CartService;
 import com.kdj.commerce.web.session.SessionConst;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -33,6 +30,11 @@ public class CartController {
         List<CartItem> cartItems = cartService.findCartItem(loginMember.getId());
         model.addAttribute("cartItems", cartItems);
 
+        int totalPrice = cartItems.stream()
+                .mapToInt(cartItem -> cartItem.getItem().getPrice() * cartItem.getCount())
+                .sum();
+        model.addAttribute("totalPrice", totalPrice);
+
         return "cart/cartList";
     }
 
@@ -52,7 +54,7 @@ public class CartController {
     }
 
     // 장바구니 아이템 제거
-    @PostMapping("/items/{cartItemId}/delete")
+    @PostMapping("/item/{cartItemId}/delete")
     public String deleteCartItem(@PathVariable("cartItemId") Long cartItemId,
                                  @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
         if (loginMember == null) {

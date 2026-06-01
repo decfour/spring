@@ -31,7 +31,7 @@ public class OrderService {
         // 1. 회원, 상품 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-        Item item = itemRepository.findById(itemId)
+        Item item = itemRepository.findByIdWithLock(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
         // 2. 주문 상품 생성
@@ -74,6 +74,10 @@ public class OrderService {
         // 2. 주문 상품 목록 생성
         List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem : cartItems) {
+
+            Item lockItem = itemRepository.findByIdWithLock(cartItem.getItem().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않거나 품절된 상품입니다."));
+
             OrderItem orderItem = OrderItem.createOrderItem(
                     cartItem.getItem(),
                     cartItem.getItem().getPrice(),

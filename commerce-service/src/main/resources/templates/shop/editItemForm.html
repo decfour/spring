@@ -2,11 +2,70 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}"
-          href="../css/bootstrap.min.css" rel="stylesheet">
+    <title>상품 수정</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
-        .container {
-            max-width: 560px;
+        body {
+            background-color: #ffffff;
+            color: #1d1d1f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .main-container {
+            max-width: 540px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        /* 실무형 폼 컴포넌트 스타일 명명 */
+        .form-label-custom {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #86868b;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .form-input-text {
+            width: 100%;
+            border: 1px solid #d2d2d7;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-input-text:focus {
+            border-color: #86868b;
+        }
+
+        /* 버튼 세트 스타일 통일 및 호버 액션 추가 */
+        .btn-form-action {
+            width: 100%;
+            border-radius: 6px;
+            padding: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .btn-submit {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: none;
+        }
+        .btn-submit:hover {
+            background-color: #323236;
+        }
+        .btn-cancel-outline {
+            background-color: #ffffff;
+            border: 1px solid #d2d2d7;
+            color: #555559;
+        }
+        .btn-cancel-outline:hover {
+            background-color: #f5f5f7;
+            border-color: #86868b;
+            color: #1d1d1f;
         }
     </style>
 </head>
@@ -14,64 +73,63 @@
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div class="container">
+<div class="main-container">
+    <h2 class="fw-bold mb-4" style="font-size: 1.8rem; letter-spacing: -0.6px;">Edit Specification</h2>
 
-    <div class="py-5 text-center">
-        <h2>상품 수정 폼</h2>
-    </div>
-
-    <form action="item.html" th:action th:object="${item}" method="post">
+    <form th:action th:object="${item}" method="post">
         <div>
-            <label for="id">ID</label>
-            <input type="text" id="id" th:field="*{id}" class="form-control" readonly>
+            <label for="id" class="form-label-custom">ID (Read Only)</label>
+            <input type="text" id="id" th:field="*{id}" class="form-input-text" style="background-color: #f5f5f7; color: #86868b; border-color: #e5e5e7;" readonly>
         </div>
         <div>
-            <label for="itemName">이름</label>
-            <input type="text" id="itemName" th:field="*{name}" class="form-control">
+            <label for="itemName" class="form-label-custom">상품명</label>
+            <input type="text" id="itemName" th:field="*{name}" class="form-input-text">
         </div>
-        <div>
-            <label for="price">가격</label>
-            <input type="text" id="price" th:field="*{price}" class="form-control">
-        </div>
-        <div>
-            <label for="stock">수량</label>
-            <input type="text" id="stock" th:field="*{stock}" class="form-control">
-        </div>
-
-        <hr class="my-4">
-
-        <!-- 판매 상태 -->
-        <div>
-            <input type="checkbox" id="open" th:field="*{open}">
-            <label for="open">판매 중</label>
-        </div>
-        <div>
-            <label for="description">설명</label>
-            <textarea id="description" th:field="*{description}" rows="3"></textarea>
-        </div>
-
-        <!-- 상품 종류 -->
-        <div>
-            <div>상품 종류</div>
-            <div th:each="type : ${itemTypes}" class="form-check form-check-inline">
-                <input type="radio" th:field="*{itemType}" th:value="${type.name()}" class="form-check-input">
-                <label th:for="${#ids.prev('itemType')}" th:text="${type.description}" class="form-check-label">ETC</label>
-            </div>
-        </div>
-
         <div class="row">
             <div class="col">
-                <button class="w-100 btn btn-primary btn-lg" type="submit">저장</button>
+                <label for="price" class="form-label-custom">가격</label>
+                <input type="text" id="price" th:field="*{price}" class="form-input-text">
             </div>
             <div class="col">
-                <button class="w-100 btn btn-secondary btn-lg"
-                        onclick="location.href='item.html'"
-                        th:onclick="|location.href='@{/shop/item/{id}(id=${item.id})}'|"
+                <label for="stock" class="form-label-custom">수량</label>
+                <input type="text" id="stock" th:field="*{stock}" class="form-input-text">
+            </div>
+        </div>
+
+        <div class="form-check mb-4 mt-2">
+            <input type="checkbox" id="open" th:field="*{open}" class="form-check-input" style="border-color:#d2d2d7;">
+            <label for="open" class="form-check-label" style="font-size: 0.9rem; color: #424245;">공개 및 판매 허용</label>
+        </div>
+
+        <div class="mb-4">
+            <label for="description" class="form-label-custom">설명 수정</label>
+            <textarea id="description" th:field="*{description}" rows="3" class="form-input-text" style="resize:none;"></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label-custom">카테고리</label>
+            <div class="d-flex gap-4 pt-1">
+                <div th:each="type : ${itemTypes}" class="form-check">
+                    <input type="radio" th:field="*{itemType}" th:value="${type.name()}" class="form-check-input" style="border-color:#d2d2d7;">
+                    <label th:for="${#ids.prev('itemType')}" th:text="${type.description}" class="form-check-label text-dark" style="font-size:0.9rem;">ETC</label>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4" style="border-color:#e5e5e7;">
+
+        <div class="row g-2">
+            <div class="col">
+                <button class="btn-form-action btn-cancel-outline"
+                        th:onclick="location.href=[[@{/shop/item/{id}(id=${item.id})}]]"
                         type="button">취소</button>
+            </div>
+            <div class="col">
+                <button class="btn-form-action btn-submit" type="submit">수정 사항 저장</button>
             </div>
         </div>
     </form>
+</div>
 
-</div> <!-- /container -->
 </body>
 </html>

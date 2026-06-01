@@ -3,59 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <title>THGTTG - CART</title>
-    <title>내 장바구니</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
-        th { background-color: #f4f4f4; }
+        body {
+            background-color: #ffffff;
+            color: #1d1d1f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .main-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        /* 장바구니 전용 테이블 컴포넌트 명명 */
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .cart-table th {
+            padding: 14px 0;
+            font-weight: 500;
+            color: #86868b;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #d2d2d7;
+        }
+        .cart-table td {
+            padding: 18px 0;
+            border-bottom: 1px solid #e5e5e7;
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+        .text-end-align {
+            text-align: right;
+        }
+
+        /* 테이블 내부 개별 제어 버튼 */
+        .btn-action-danger {
+            background: none;
+            border: none;
+            padding: 0;
+            color: #de363a;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .btn-action-danger:hover {
+            text-decoration: underline;
+        }
+
+        /* 하단 요약 및 메인 구매 액션 영역 */
+        .summary-section {
+            border-top: 1px solid #1d1d1f;
+            padding-top: 24px;
+            margin-top: 40px;
+        }
+        .btn-cart-order {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 32px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-cart-order:hover {
+            background-color: #323236;
+        }
     </style>
 </head>
 <body>
 
-<h1>🛒 내 장바구니 목록</h1>
-<hr>
+<div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:if="${#lists.isEmpty(cartItems)}">
-    <p>장바구니가 텅 비어있습니다. 상품을 담아보세요!</p>
+<div class="main-container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="fw-bold m-0" style="font-size: 2rem; letter-spacing: -0.8px;">Cart. <span class="text-muted" style="font-weight:400;">Review items.</span></h2>
+        <a href="/shop" class="text-decoration-none" style="color: #0066cc; font-size: 0.95rem;">쇼핑 계속하기</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(cartItems)}" class="text-center py-5" style="border-top: 1px solid #d2d2d7;">
+        <p class="text-muted">장바구니가 비어 있습니다.</p>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(cartItems)}">
+        <table class="cart-table">
+            <thead>
+            <tr>
+                <th style="width: 45%;">Product</th>
+                <th style="width: 20%;">Price</th>
+                <th style="width: 15%;">Quantity</th>
+                <th style="width: 20%;" class="text-end-align">Total</th>
+                <th style="width: 10%;"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cartItem : ${cartItems}">
+                <td>
+                    <span th:text="${cartItem.item.name}" class="fw-medium">상품명</span>
+                </td>
+                <td th:text="${#numbers.formatInteger(cartItem.item.price, 0, 'COMMA')} + '원'" style="color: #424245;">0원</td>
+                <td th:text="${cartItem.count} + '개'">1개</td>
+                <td th:text="${#numbers.formatInteger(cartItem.item.price * cartItem.count, 0, 'COMMA')} + '원'" class="fw-medium text-end-align">0원</td>
+                <td class="text-end-align">
+                    <form th:action="@{/cart/item/{id}/delete(id=${cartItem.id})}" method="post" class="m-0">
+                        <button type="submit" class="btn-action-danger">삭제</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="summary-section d-flex justify-content-between align-items-center">
+            <div>
+                <span style="color: #86868b; font-size: 0.95rem; margin-right: 15px;">총 결제 금액</span>
+                <span style="font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px;" th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원'">0원</span>
+            </div>
+            <form th:action="@{/order/cart}" method="post" class="m-0">
+                <button type="submit" class="btn-cart-order">장바구니 전체 주문하기</button>
+            </form>
+        </div>
+    </div>
 </div>
-
-<div th:if="${!#lists.isEmpty(cartItems)}">
-    <table>
-        <thead>
-        <tr>
-            <th>상품명</th>
-            <th>가격</th>
-            <th>담은 수량</th>
-            <th>총 금액</th>
-            <th>관리</th> </tr>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="item : ${cartItems}">
-            <td th:text="${item.item.name}">상품이름</td>
-            <td th:text="${item.item.price} + '원'">0원</td>
-            <td th:text="${item.count} + '개'">0개</td>
-            <td th:text="${item.item.price * item.count} + '원'">0원</td>
-            <td>
-                <form th:action="@{/cart/items/{id}/delete(id=${item.id})}" method="post" style="margin: 0;">
-                    <button type="submit" style="color: white; background-color: #dc3545; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
-                        삭제
-                    </button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-<hr>
-<button type="button" onclick="location.href='/shop'">쇼핑 계속하기</button>
-
-<form th:action="@{/order/cart}" method="post" style="display: inline; margin-left: 10px;">
-    <button type="submit" style="color: white; background-color: #28a745; border: none; padding: 6px 20px; border-radius: 3px; cursor: pointer; font-weight: bold;">
-        🛒 장바구니 상품 모두 주문하기
-    </button>
-</form>
 
 </body>
 </html>

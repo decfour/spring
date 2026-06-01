@@ -1,79 +1,107 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>THGTTG - REGISTER</title>
+    <title>회원가입</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
-        /* 로그인 폼과 동일한 바둑판 정렬 규칙 적용 */
-        form > div {
-            margin-bottom: 15px;
-            display: grid;
-            grid-template-columns: 80px 250px;
-            align-items: center;
-            gap: 10px;
+        body {
+            background-color: #ffffff;
+            color: #1d1d1f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
-        .field-error {
-            grid-column: 2;
-            color: #dc3545;
-            font-size: 0.9em;
+        .auth-container {
+            max-width: 400px;
+            margin: 80px auto;
+            padding: 0 20px;
         }
-        .global-error { color: #dc3545; font-weight: bold; }
-
-        .button-area {
+        .form-label-custom {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #86868b;
+            margin-bottom: 6px;
             display: block;
-            margin-top: 20px;
         }
-
-        .button-area button {
-            margin-left: 90px;
-            padding: 6px 20px; /* 버튼 안쪽 여백도 살짝 주면 뚱뚱하고 예뻐집니다 */
+        .form-input-text {
+            width: 100%;
+            border: 1px solid #d2d2d7;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-input-text:focus {
+            border-color: #86868b;
+        }
+        .btn-auth-submit {
+            width: 100%;
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
             cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-auth-submit:hover {
+            background-color: #323236;
+        }
+        .auth-link-box {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.85rem;
+        }
+        .auth-link {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .auth-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
-<h2>Join</h2>
+<div th:replace="~{common/header :: mainHeader}"></div>
 
-<hr>
+<div class="auth-container">
+    <h2 class="fw-bold mb-4 text-center" style="font-size: 1.8rem; letter-spacing: -0.6px;">Create Account</h2>
 
-<form th:action="@{/member/register}" th:object="${member}" method="post">
+    <form th:action th:object="${member}" method="post">
 
-    <div th:if="${#fields.hasGlobalErrors()}" style="display: block;">
-        <p class="global-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">전체 오류 메시지</p>
+        <div th:if="${#fields.hasGlobalErrors()}" class="mb-3">
+            <p class="text-danger small m-0" th:each="err : ${#fields.globalErrors()}" th:text="${err}">오류 메시지</p>
+        </div>
+
+        <div>
+            <label for="loginId" class="form-label-custom">아이디</label>
+            <input type="text" id="loginId" th:field="*{loginId}" class="form-input-text" th:errorclass="is-invalid" placeholder="Choose your ID">
+            <div class="invalid-feedback mb-2" th:errors="*{loginId}">아이디 오류</div>
+        </div>
+        <div>
+            <label for="password" class="form-label-custom">비밀번호</label>
+            <input type="password" id="password" th:field="*{loginPassword}" class="form-input-text" th:errorclass="is-invalid" placeholder="Password">
+            <div class="invalid-feedback mb-2" th:errors="*{loginPassword}">비밀번호 오류</div>
+        </div>
+        <div>
+            <label for="username" class="form-label-custom">이름</label>
+            <input type="text" id="username" th:field="*{username}" class="form-input-text" th:errorclass="is-invalid" placeholder="Your name">
+            <div class="invalid-feedback mb-2" th:errors="*{username}">이름 오류</div>
+        </div>
+
+        <button class="btn-auth-submit" type="submit">가입 완료</button>
+    </form>
+
+    <div class="auth-link-box">
+        <span class="text-muted">이미 계정이 있으신가요?</span>
+        <a href="/member/login" class="auth-link">로그인 하기</a>
     </div>
-
-    <div>
-        <label for="username">이름</label>
-        <input type="text" id="username" th:field="*{username}" placeholder="이름을 입력하세요" />
-        <div class="field-error" th:errors="*{username}">이름 오류</div>
-    </div>
-
-    <div>
-        <label for="email">이메일</label>
-        <input type="text" id="email" th:field="*{email}" placeholder="example@email.com" />
-        <div class="field-error" th:errors="*{email}">이메일 오류</div>
-    </div>
-
-    <div>
-        <label for="loginId">아이디</label>
-        <input type="text" id="loginId" th:field="*{loginId}" />
-        <div class="field-error" th:errors="*{loginId}">아이디 오류</div>
-    </div>
-
-    <div>
-        <label for="loginPassword">비밀번호</label>
-        <input type="password" id="loginPassword" th:field="*{loginPassword}" />
-        <div class="field-error" th:errors="*{loginPassword}">비밀번호 오류</div>
-    </div>
-
-    <hr>
-
-    <div class="button-area">
-        <button type="submit">가입</button>
-    </div>
-
-</form>
+</div>
 
 </body>
 </html>

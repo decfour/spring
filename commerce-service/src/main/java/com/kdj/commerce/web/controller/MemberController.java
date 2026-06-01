@@ -16,8 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -49,8 +47,10 @@ public class MemberController {
 
     // 로그인
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(@RequestParam(defaultValue = "/") String redirectURL,
+                        Model model) {
         model.addAttribute("loginForm", new LoginForm());
+        model.addAttribute("redirectURL", redirectURL);
         return "member/loginForm";
     }
     @PostMapping("/login")
@@ -61,6 +61,12 @@ public class MemberController {
         if (result.hasErrors()) {
             return "member/loginForm";
         }
+
+        if (redirectURL.contains(",")) {
+            redirectURL = redirectURL.split(",")[0];
+        }
+
+
         Member loginMember = memberService.login(form.getLoginId(), form.getLoginPassword());
 
         // 로그인 실패

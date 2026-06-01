@@ -5,39 +5,77 @@
     <title>THGTTG - ITEM</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
-        /* 1. 홈 화면과 완벽한 타이틀 일치를 위해 부트스트랩 스타일 리셋 */
         body {
-            padding: 8px; /* 일반적인 브라우저 기본 여백(마진) 재현 */
+            background-color: #ffffff;
+            color: #1d1d1f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
-        h1 {
-            font-size: 2em; /* 브라우저 기본 h1 크기로 강제 고정 */
-            margin-top: 0.67em;
-            margin-bottom: 0.67em;
-            font-weight: bold;
-            color: #000; /* 부트스트랩 회색조 무력화 */
+        .main-container {
+            max-width: 680px;
+            margin: 60px auto;
+            padding: 0 20px;
         }
-        /* 2. 가로 메뉴 스타일 */
-        ul.menu {
-            list-style: none;
-            padding: 0;
+        .detail-row {
             display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid #e5e5e7;
+            font-size: 0.95rem;
         }
-        .link-style-btn {
-            background: none;
-            border: none;
-            color: -webkit-link;
-            text-decoration: underline;
-            cursor: pointer;
-            padding: 0;
-            font-size: 16px;
+        .detail-label {
+            width: 140px;
+            color: #86868b;
+        }
+        .detail-value {
+            flex: 1;
+            color: #1d1d1f;
         }
 
-        /* 3. 테이블만 부트스트랩 레이아웃 가두기 */
-        .table-container {
-            max-width: 800px;
-            margin-top: 30px;
+        .form-label-fixed {
+            font-size: 0.9rem;
+            width: 110px;
+            color: #424245;
+        }
+        .input-quantity {
+            width: 70px;
+            height: 36px;
+            border: 1px solid #d2d2d7;
+            border-radius: 6px;
+            padding: 0 8px;
+            font-size: 0.9rem;
+            text-align: center;
+            outline: none;
+        }
+        .input-quantity:focus {
+            border-color: #86868b;
+        }
+        .btn-action {
+            width: 120px;
+            height: 36px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .btn-solid-dark {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: none;
+        }
+        .btn-solid-dark:hover {
+            background-color: #323236;
+        }
+        .btn-outline-dark {
+            background-color: #ffffff;
+            color: #1d1d1f;
+            border: 1px solid #1d1d1f;
+        }
+        .btn-outline-dark:hover {
+            background-color: #f5f5f7;
         }
     </style>
 </head>
@@ -45,62 +83,52 @@
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<h3>상품 상세</h3>
-
-<hr>
-
-<ul>
-    <li>품번: <span th:text="${item.id}">1</span></li>
-    <li>이름: <span th:text="${item.name}">상품명</span></li>
-    <li>가격: <span th:text="${item.price}">0</span></li>
-    <li>수량: <span th:text="${item.stock}">0</span></li>
-    <li>종류: <span th:text="${item.itemType}">1</span></li>
-    <li>설명: <p th:text="${item.description}">설명입니다.</p></li>
-</ul>
-
-<hr>
-
-<ul>
-    <li>상태:
-        <span th:text="${item.open} ? '판매중' : '미오픈'"></span>
-    </li>
-    <li>배송: <span th:text="${item.delivery}">기본배송</span></li>
-</ul>
-
-<hr>
-
-<!-- 판매중일 때만 주문 창이 보이도록 th:if 처리 -->
-<div th:if="${item.open}">
-
-    <div th:if="${item.stock > 0}">
-        <form th:action="@{/order/one}" method="post" style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-            <input type="hidden" name="itemId" th:value="${item.id}" />
-            <label for="count">주문 수량 : </label>
-            <input type="number" id="count" name="count" min="1" th:max="${item.stock}" value="1" required style="width: 80px;" />
-            <button type="submit" class="btn btn-primary" style="cursor: pointer; padding: 4px 12px;">주문하기</button>
-        </form>
-
-        <form th:action="@{/cart/add}" method="post">
-            <input type="hidden" name="itemId" th:value="${item.id}" />
-            <label for="cartCount">장바구니 수량 : </label>
-            <input type="number" id="cartCount" name="count" min="1" th:max="${item.stock}" value="1" required />
-            <button type="submit" class="btn btn-success" style="cursor: pointer;">장바구니 담기</button>
-        </form>
+<div class="main-container">
+    <div class="d-flex justify-content-between align-items-baseline mb-4">
+        <h2 class="fw-bold m-0" style="font-size: 2rem; letter-spacing: -0.8px;" th:text="${item.name}">상품 상세</h2>
+        <span th:text="${item.open} ? '판매 중' : '판매 중지'" style="font-size: 0.85rem; color: #86868b;">상태</span>
     </div>
 
-    <div th:unless="${item.stock > 0}" style="color: #dc3545; font-weight: bold; padding: 10px 0;">
-        ❌ 현재 이 상품은 품절 상태입니다. (재고 없음)
+    <div style="border-top: 1px solid #1d1d1f; margin-bottom: 30px;">
+        <div class="detail-row"><div class="detail-label">품번</div><div class="detail-value" th:text="${item.id}">1</div></div>
+        <div class="detail-row"><div class="detail-label">가격</div><div class="detail-value fw-semibold" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">0</div></div>
+        <div class="detail-row"><div class="detail-label">보유 수량</div><div class="detail-value" th:text="${item.stock} + '개'">0</div></div>
+        <div class="detail-row"><div class="detail-label">종류</div><div class="detail-value" th:text="${item.itemType}">1</div></div>
+        <div class="detail-row"><div class="detail-label">설명</div><div class="detail-value text-muted" th:text="${item.description}">설명</div></div>
+        <div class="detail-row" style="border:none;"><div class="detail-label">배송 안내</div><div class="detail-value" th:text="${item.delivery}">기본배송</div></div>
     </div>
-</div>
 
-<div th:if="${!item.open}">
-    <p style="color: gray;">현재 판매 중이 아닙니다.</p>
-</div>
+    <div th:if="${item.open}" style="background-color: #f5f5f7; border-radius: 8px; padding: 24px; margin-bottom: 30px;">
+        <div th:if="${item.stock > 0}">
+            <form th:action="@{/order/one}" method="post" class="d-flex align-items-center gap-3 mb-3">
+                <input type="hidden" name="itemId" th:value="${item.id}" />
+                <span class="form-label-fixed">일반 주문 수량</span>
+                <input type="number" id="count" name="count" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
+                <button type="submit" class="btn-action btn-solid-dark">주문하기</button>
+            </form>
 
-<hr>
+            <form th:action="@{/cart/add}" method="post" class="d-flex align-items-center gap-3">
+                <input type="hidden" name="itemId" th:value="${item.id}" />
+                <span class="form-label-fixed">장바구니 수량</span>
+                <input type="number" id="cartCount" name="count" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
+                <button type="submit" class="btn-action btn-outline-dark">장바구니 담기</button>
+            </form>
+        </div>
+        <div th:unless="${item.stock > 0}" style="color: #de363a; font-size: 0.9rem; font-weight: 500;">
+            현재 제품 재고가 부족하여 대기 중입니다.
+        </div>
+    </div>
 
-<button type="button" th:onclick="|location.href='@{/shop/item/{itemId}/edit(itemId=${item.id})}'|">수정</button>
-<button type="button" onclick="location.href='/shop'">목록</button>
+    <div class="d-flex justify-content-end gap-2" style="margin-top: 40px; border-top: 1px solid #e5e5e7; padding-top: 20px;">
+        <button class="btn-action btn-outline-dark"
+                th:onclick="|location.href='@{/shop/item/{itemId}/edit(itemId=${item.id})}'|"
+                type="button">상품 수정</button>
 
-</body>
+        <button class="btn-action"
+                style="background-color: #f5f5f7; color: #1d1d1f; border: none;"
+                th:onclick="|location.href='@{/shop}'|"
+                type="button">목록으로</button>
+    </div>
+
+</div> </body>
 </html>

@@ -34,4 +34,14 @@ public class Member {
     @NotBlank(message = "비밀번호는 필수입니다.")
     @Column(name = "login_password")
     private String loginPassword;
+
+    public static Member createMember(String username, String email, String loginId, String loginPassword) {
+        Member member = new Member();
+        member.setUsername(username);
+        member.setEmail(email);
+        member.setLoginId(loginId);
+        member.setLoginPassword(loginPassword);
+        return member;
+    }
+
 }

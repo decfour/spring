@@ -1,24 +1,101 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:fragment="mainHeader" style="background-color: #1d1d1f; padding: 15px; color: white; display: flex; justify-content: space-between; align-items: center;">
+<head>
+    <meta charset="UTF-8">
+    <title>Header Fragment</title>
+</head>
+<body>
+
+<div th:fragment="mainHeader" class="global-nav">
+
+    <style>
+        /* 헤더 컴포넌트 내부 포함 스타일 명세 */
+        .global-nav {
+            background-color: #1a1a1c;
+            padding: 12px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+
+            /* [수정] 박스 모델 기준을 변경하여 패딩이 너비 100% 안쪽으로 포함되도록 합니다 */
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .global-nav-logo {
+            color: #f5f5f7;
+            font-weight: 500;
+            font-size: 0.85rem;
+            text-decoration: none;
+            letter-spacing: -0.2px;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+        }
+        .global-nav-logo:hover {
+            opacity: 1;
+        }
+        .global-nav-menu-set {
+            font-size: 0.8rem;
+            letter-spacing: -0.1px;
+        }
+        .global-nav-link-group {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        .global-nav-link {
+            color: #f5f5f7;
+            text-decoration: none;
+            opacity: 0.65;
+            transition: opacity 0.2s;
+        }
+        .global-nav-link:hover {
+            opacity: 1;
+        }
+        .global-nav-user-text {
+            color: #86868b;
+            font-weight: 400;
+        }
+        .btn-nav-logout-link {
+            background: none;
+            border: none;
+            padding: 0;
+            color: #f5f5f7;
+            opacity: 0.45;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            font-size: 0.8rem;
+        }
+        .btn-nav-logout-link:hover {
+            opacity: 0.8;
+        }
+    </style>
 
     <div>
-        <a href="/" style="color: white; font-weight: bold; text-decoration: none; margin-right: 20px;">The Hitchhiker's Guide to the Galaxy</a>
+        <a href="/" class="global-nav-logo">
+            The Hitchhiker's Guide to the Galaxy
+        </a>
     </div>
 
-    <div>
-        <span th:if="${session.loginMember == null}">
-            <button type="button" onclick="location.href='/member/login'">Login</button>
-            <button type="button" onclick="location.href='/member/register'">Register</button>
+    <div class="global-nav-menu-set">
+
+        <span th:if="${session.loginMember == null}" class="global-nav-link-group">
+            <a href="/member/login" class="global-nav-link">Login</a>
+            <a href="/member/register" class="global-nav-link">Register</a>
         </span>
 
-        <span th:if="${session.loginMember != null}">
-            <span th:text="${session.loginMember.username}" style="margin-right: 15px;">User Name</span>
-            <button type="button" onclick="location.href='/cart'">Cart</button>
-            <form th:action="@{/member/logout}" method="post" style="display: inline; margin-left: 5px;">
-                <button type="submit" style="cursor: pointer;">Logout</button>
+        <span th:if="${session.loginMember != null}" class="global-nav-link-group">
+            <span th:text="${session.loginMember.username}" class="global-nav-user-text">User Name</span>
+            <a href="/cart" class="global-nav-link">Cart</a>
+
+            <form th:action="@{/member/logout}" method="post" style="display: inline; margin: 0;">
+                <button type="submit" class="btn-nav-logout-link">Logout</button>
             </form>
         </span>
+
     </div>
 </div>
+
+</body>
 </html>
