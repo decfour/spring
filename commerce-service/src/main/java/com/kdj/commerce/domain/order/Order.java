@@ -14,37 +14,30 @@ import java.util.List;
 @Setter
 public class Order {
 
-    // 주문 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long id;
 
-    // 주문 회원
     @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩
     @JoinColumn(name = "member_id")   // order.member_id <-> member.id 조인
     private Member member;
 
-    // 주문 시간
     private LocalDateTime orderDate;
 
-    // 주문 상태
     @Enumerated(EnumType.STRING)
-    private OrderStatus status; // 주문 상태 [ORDER, CANCEL]
+    private OrderStatus status;
 
-    // 주문 상품 목록
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) // OrderItem 클래스에 있는 "order" 변수에 의해 매핑
     private List<OrderItem> orderItems = new ArrayList<>();
 
 
 
-    // 주문 상품 목록 추가
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
         orderItem.setOrder(this);
     }
 
-    // 주문 생성
     public static Order createOrder(Member member, OrderItem... orderItems) {
         Order order = new Order();
         order.setMember(member);
@@ -56,7 +49,6 @@ public class Order {
         return order;
     }
 
-    // 주문 취소
     public void cancel() {
         this.setStatus(OrderStatus.CANCEL);
         for (OrderItem orderItem : orderItems) {
@@ -64,7 +56,6 @@ public class Order {
         }
     }
 
-    // 영수증
     public int getTotalPrice() {
         int totalPrice = 0;
         for (OrderItem orderItem : orderItems) {

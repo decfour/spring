@@ -76,18 +76,18 @@
         <input type="hidden" name="redirectURL" th:value="${redirectURL}" />
 
         <div th:if="${#fields.hasGlobalErrors()}" class="mb-3">
-            <p class="text-danger small m-0" th:each="err : ${#fields.globalErrors()}" th:text="${err}">오류 메시지</p>
+            <p class="text-danger small m-0" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
         </div>
 
         <div>
             <label for="loginId" class="form-label-custom">아이디</label>
             <input type="text" id="loginId" th:field="*{loginId}" class="form-input-text" th:errorclass="is-invalid" placeholder="Enter your ID" autofocus>
-            <div class="invalid-feedback mb-2" th:errors="*{loginId}">아이디를 입력해주세요.</div>
+            <div class="invalid-feedback mb-2" th:errors="*{loginId}">아이디를 입력하세요</div>
         </div>
         <div>
             <label for="password" class="form-label-custom">비밀번호</label>
             <input type="password" id="password" th:field="*{loginPassword}" class="form-input-text" th:errorclass="is-invalid" placeholder="Enter your password">
-            <div class="invalid-feedback mb-2" th:errors="*{loginPassword}">비밀번호를 입력해주세요.</div>
+            <div class="invalid-feedback mb-2" th:errors="*{loginPassword}">비밀번호를 입력하세요</div>
         </div>
 
         <button class="btn-auth-submit" type="submit">로그인</button>
@@ -95,7 +95,7 @@
 
     <div class="auth-link-box">
         <span class="text-muted">계정이 없으신가요?</span>
-        <a href="/member/register" class="auth-link">회원가입 하기</a>
+        <a href="/member/register" class="auth-link">회원가입</a>
     </div>
 </div>
 

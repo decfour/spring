@@ -37,9 +37,9 @@ public class OrderController {
 
     // 바로 구매
     @PostMapping("/one")
-    public String order(@RequestParam("itemId") Long itemId,
-                        @RequestParam("count") int count,
-                        @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+    public String order(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                        @RequestParam("itemId") Long itemId,
+                        @RequestParam("count") int count) {
 
         if (loginMember == null) {
             return "redirect:/member/login";
@@ -69,8 +69,8 @@ public class OrderController {
 
     // 주문 취소
     @PostMapping("/{orderId}/cancel")
-    public String cancelOrder(@PathVariable("orderId") Long orderId,
-                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+    public String cancelOrder(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                              @PathVariable("orderId") Long orderId) {
         if (loginMember == null) {
             return "redirect:/member/login";
         }

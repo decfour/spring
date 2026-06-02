@@ -17,14 +17,13 @@ public class HomeController {
     private final SessionManager sessionManager;
 
     @GetMapping("/")
-    public String homeLogin(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+    public String home(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                             Model model) {
-        // 세션 X
+
         if (loginMember == null) {
             return "guestHome";
         }
 
-        // 세션 O
         model.addAttribute("member", loginMember);
         return "userHome";
     }

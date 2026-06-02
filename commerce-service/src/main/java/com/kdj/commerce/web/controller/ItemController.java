@@ -1,10 +1,13 @@
 package com.kdj.commerce.web.controller;
 
+import com.kdj.commerce.domain.item.DeliveryType;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemType;
+import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.ItemService;
 import com.kdj.commerce.web.form.ItemEditForm;
 import com.kdj.commerce.web.form.ItemSaveForm;
+import com.kdj.commerce.web.session.SessionConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,13 +27,20 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    // 모든 반환(모델)에 아이템 타입 담기
+    // 모든 반환(모델)에 타입 담기
     @ModelAttribute("itemTypes")
     public ItemType[] itemTypes() {
+
         return ItemType.values();
     }
 
-    // 상점 페이지
+    @ModelAttribute("deliveryTypes")
+    public DeliveryType[] deliveryTypes() {
+
+        return DeliveryType.values();
+    }
+
+    // 상점
     @GetMapping
     public String shop(Model model) {
         List<Item> items = itemService.findItems();
@@ -46,8 +56,17 @@ public class ItemController {
 
         return "shop/addItemForm";
     }
+
     @PostMapping("/add")
-    public String addItem(@Valid @ModelAttribute ItemSaveForm form, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String addItem(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                          @Valid @ModelAttribute ItemSaveForm form,
+                          BindingResult bindingResult,
+                          RedirectAttributes redirectAttributes) {
+
+        if (loginMember == null) {
+            return "redirect:/member/login";
+        }
+
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "shop/addItemForm";
@@ -60,7 +79,8 @@ public class ItemController {
         item.setDescription(form.getDescription());
         item.setOpen(form.isOpen());
         item.setItemType(form.getItemType());
-        item.setDelivery(form.getDelivery());
+        item.setDeliveryType(form.getDeliveryType());
+        item.setCreatedBy(loginMember.getId());
 
         Long savedItemId = itemService.saveItem(item);
         redirectAttributes.addAttribute("itemId", savedItemId);
@@ -76,9 +96,23 @@ public class ItemController {
 
         return "shop/item";
     }
+
+    // 아이템 수정
     @GetMapping("/item/{id}/edit")
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Long id,
+                           @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                           Model model) {
+
+        if (loginMember == null) {
+            return "redirect:/member/login";
+        }
+
         Item item = itemService.findOne(id);
+
+        if (!item.getCreatedBy().equals(loginMember.getId())) {
+            log.warn("권한 없는 사용자의 수정 시도 - 유저 ID: {}, 상품 ID: {}", loginMember.getId(), id);
+            return "redirect:/shop/item/" + id;
+        }
 
         ItemEditForm form = new ItemEditForm();
         form.setId(item.getId());
@@ -88,31 +122,46 @@ public class ItemController {
         form.setDescription(item.getDescription());
         form.setOpen(item.isOpen());
         form.setItemType(item.getItemType());
-        form.setDelivery(item.getDelivery());
+        form.setDeliveryType(item.getDeliveryType());
 
         model.addAttribute("item", form);
 
         return "shop/editItemForm";
     }
+
     @PostMapping("/item/{id}/edit")
     public String edit(@PathVariable Long id,
+                       @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                        @Valid @ModelAttribute ItemEditForm form,
                        BindingResult bindingResult) {
+
+        if (loginMember == null) {
+            return "redirect:/member/login";
+        }
+
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "shop/editItemForm";
         }
 
-        Item item = new Item();
-        item.setName(form.getName());
-        item.setPrice(form.getPrice());
-        item.setStock(form.getStock());
-        item.setDescription(form.getDescription());
-        item.setOpen(form.isOpen());
-        item.setItemType(form.getItemType());
-        item.setDelivery(form.getDelivery());
+        Item findItem = itemService.findOne(id);
+        if (!findItem.getCreatedBy().equals(loginMember.getId())) {
+            log.warn("권한 없는 사용자의 상품 수정 시도 거부 - 유저 ID: {}, 상품 ID: {}", loginMember.getId(), id);
+            return "redirect:/shop/item/" + id;
+        }
 
-        itemService.updateItem(id, item);
+        Item updateParam = new Item();
+        updateParam.setName(form.getName());
+        updateParam.setPrice(form.getPrice());
+        updateParam.setStock(form.getStock());
+        updateParam.setDescription(form.getDescription());
+        updateParam.setOpen(form.isOpen());
+        updateParam.setItemType(form.getItemType());
+        updateParam.setDeliveryType(form.getDeliveryType());
+
+        updateParam.setCreatedBy(findItem.getCreatedBy());
+
+        itemService.updateItem(id, updateParam);
 
         return "redirect:/shop/item/{id}";
     }

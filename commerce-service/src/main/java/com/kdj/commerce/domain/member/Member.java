@@ -11,29 +11,28 @@ import lombok.Setter;
 @Setter
 public class Member {
 
-    // 회원 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    // 회원 이름
-    @NotBlank(message = "사용자 이름은 필수입니다.")
+    @NotBlank(message = "이름은 필수입니다.")
     private String username;
 
-    // 이메일
     @NotBlank(message = "이메일은 필수입니다.")
-    @Email(message = "올바른 이메일 형식이 아닙니다.")
+    @Email(message = "올바른 이메일이 아닙니다.")
     private String email;
 
-    // 회원 로그인 아이디
     @NotBlank(message = "아이디는 필수입니다.")
     @Column(name = "login_id")
     private String loginId;
 
-    // 회원 로그인 비밀번호
     @NotBlank(message = "비밀번호는 필수입니다.")
     @Column(name = "login_password")
     private String loginPassword;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "member_type", nullable = false)
+    private MemberType memberType = MemberType.USER; // 기본값 선언 유지
 
     public static Member createMember(String username, String email, String loginId, String loginPassword) {
         Member member = new Member();
@@ -41,7 +40,19 @@ public class Member {
         member.setEmail(email);
         member.setLoginId(loginId);
         member.setLoginPassword(loginPassword);
+
+        // 생성 메서드 호출 시 USER 세팅
+        member.setMemberType(MemberType.USER);
+
         return member;
     }
 
+    public static Member createMemberWithRole(String username, String email, String loginId, String loginPassword, MemberType memberType) {
+        Member member = createMember(username, email, loginId, loginPassword);
+        member.setMemberType(memberType); // 권한(ADMIN, SELLER) 덮어쓰기
+        return member;
+    }
+
+    protected Member() {
+    }
 }

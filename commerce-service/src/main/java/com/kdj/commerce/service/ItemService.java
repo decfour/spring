@@ -42,6 +42,6 @@ public class ItemService {
         findItem.setDescription(updateParam.getDescription());
         findItem.setOpen(updateParam.isOpen());
         findItem.setItemType(updateParam.getItemType());
-        findItem.setDelivery(updateParam.getDelivery()); //
+        findItem.setDeliveryType(updateParam.getDeliveryType()); //
     }
 }

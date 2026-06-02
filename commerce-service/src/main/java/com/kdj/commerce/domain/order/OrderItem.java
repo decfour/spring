@@ -17,15 +17,15 @@ public class OrderItem {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id") // MySQL 테이블에 'order_id' FK 컬럼 생성
+    @JoinColumn(name = "order_id")
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id") // MySQL 테이블에 'item_id' FK 컬럼 생성
+    @JoinColumn(name = "item_id")
     private Item item;
 
-    private int orderPrice; // 주문 당시 상품 가격 (할인이 적용될 수 있음)
-    private int count; // 구매 수량
+    private int orderPrice;     // 할인 고려
+    private int count;
 
     public static OrderItem createOrderItem(Item item, int orderPrice, int count) {
         OrderItem orderItem = new OrderItem();

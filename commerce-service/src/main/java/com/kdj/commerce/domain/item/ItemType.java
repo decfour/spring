@@ -1,5 +1,8 @@
 package com.kdj.commerce.domain.item;
 
+import lombok.Getter;
+
+@Getter
 public enum ItemType {
     BOOK("도서"), VIDEO("영상"), ETC("기타");
 

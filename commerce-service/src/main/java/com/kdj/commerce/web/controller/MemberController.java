@@ -3,6 +3,7 @@ package com.kdj.commerce.web.controller;
 import com.kdj.commerce.web.form.LoginForm;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
+import com.kdj.commerce.web.form.MemberSaveForm;
 import com.kdj.commerce.web.session.SessionConst;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,24 +25,37 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    // 회원가입
+    // 회원가입 화면 진입
     @GetMapping("/register")
     public String register(Model model) {
-        model.addAttribute("member", new Member());
+        model.addAttribute("member", new MemberSaveForm()); // 💡 폼 객체로 변경
 
         return "member/registerForm";
     }
+
+    // 회원가입 처리
     @PostMapping("/register")
-    public String registerForm(@Valid @ModelAttribute Member member, BindingResult result) {
+    public String registerForm(@Valid @ModelAttribute("member") MemberSaveForm form,
+                               BindingResult result) {
+
         if (result.hasErrors()) {
             return "member/registerForm";
         }
+
         try {
+            Member member = Member.createMember(
+                    form.getUsername(),
+                    form.getEmail(),
+                    form.getLoginId(),
+                    form.getLoginPassword()
+            );
             memberService.join(member);
+
         } catch (IllegalStateException e) {
             result.reject("duplicateEmail", e.getMessage());
             return "member/registerForm";
         }
+
         return "redirect:/";
     }
 
@@ -53,6 +67,7 @@ public class MemberController {
         model.addAttribute("redirectURL", redirectURL);
         return "member/loginForm";
     }
+
     @PostMapping("/login")
     public String loginForm(@Valid @ModelAttribute LoginForm form,
                             BindingResult result,

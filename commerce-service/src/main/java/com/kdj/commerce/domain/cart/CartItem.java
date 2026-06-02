@@ -12,18 +12,15 @@ import lombok.Setter;
 @Table(name = "cart_item")
 public class CartItem {
 
-    // 장바구니 속 아이템 ID
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_item_id")
     private Long id;
 
-    // 카트 ID
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
-    // 아이템 ID
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;

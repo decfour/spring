@@ -24,12 +24,16 @@ public class CartController {
     @GetMapping
     public String cartList(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                            Model model) {
+
         if (loginMember == null) {
             return "redirect:/member/login";
         }
+
+        // 1. 아이템 목록
         List<CartItem> cartItems = cartService.findCartItem(loginMember.getId());
         model.addAttribute("cartItems", cartItems);
 
+        // 2. 총 가격
         int totalPrice = cartItems.stream()
                 .mapToInt(cartItem -> cartItem.getItem().getPrice() * cartItem.getCount())
                 .sum();
@@ -40,14 +44,14 @@ public class CartController {
 
     // 장바구니 아이템 추가
     @PostMapping("/add")
-    public String addCart(@RequestParam("itemId") Long itemId,
-                          @RequestParam("count") int count,
-                          @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+    public String addCart(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                          @RequestParam("itemId") Long itemId,
+                          @RequestParam("count") int count) {
 
         if (loginMember == null) {
             return "redirect:/member/login";
         }
-        log.info("장바구니 아이템 추가 요청: memberId={}, itemId={}, count={}", loginMember.getId(), itemId, count);
+
         cartService.addCart(loginMember.getId(), itemId, count);
 
         return "redirect:/shop/item/" + itemId;
@@ -55,11 +59,13 @@ public class CartController {
 
     // 장바구니 아이템 제거
     @PostMapping("/item/{cartItemId}/delete")
-    public String deleteCartItem(@PathVariable("cartItemId") Long cartItemId,
-                                 @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+    public String deleteCartItem(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                                 @PathVariable("cartItemId") Long cartItemId) {
+
         if (loginMember == null) {
             return "redirect:/member/login";
         }
+
         cartService.deleteCartItem(cartItemId);
 
         return "redirect:/cart";

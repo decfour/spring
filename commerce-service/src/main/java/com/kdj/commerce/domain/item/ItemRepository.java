@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    // 동시성 제어 (황금 자물쇠!)
+    // 동시성 제어 (비관적 Lock)
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select i from Item i where i.id = :id")
     Optional<Item> findByIdWithLock(@Param("id") Long id);

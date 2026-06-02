@@ -90,37 +90,41 @@
     </div>
 
     <div style="border-top: 1px solid #1d1d1f; margin-bottom: 30px;">
-        <div class="detail-row"><div class="detail-label">품번</div><div class="detail-value" th:text="${item.id}">1</div></div>
+        <div class="detail-row"><div class="detail-label">이름</div><div class="detail-value" th:text="${item.name}">상품명</div></div>
         <div class="detail-row"><div class="detail-label">가격</div><div class="detail-value fw-semibold" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">0</div></div>
-        <div class="detail-row"><div class="detail-label">보유 수량</div><div class="detail-value" th:text="${item.stock} + '개'">0</div></div>
-        <div class="detail-row"><div class="detail-label">종류</div><div class="detail-value" th:text="${item.itemType}">1</div></div>
+        <div class="detail-row"><div class="detail-label">재고</div><div class="detail-value" th:text="${item.stock} + '개'">0</div></div>
+
+        <div class="detail-row"><div class="detail-label">종류</div><div class="detail-value" th:text="${item.itemType.description}">도서</div></div>
+
         <div class="detail-row"><div class="detail-label">설명</div><div class="detail-value text-muted" th:text="${item.description}">설명</div></div>
-        <div class="detail-row" style="border:none;"><div class="detail-label">배송 안내</div><div class="detail-value" th:text="${item.delivery}">기본배송</div></div>
+
+        <div class="detail-row" style="border:none;"><div class="detail-label">배송</div><div class="detail-value" th:text="${item.deliveryType.description}">일반배송</div></div>
     </div>
 
     <div th:if="${item.open}" style="background-color: #f5f5f7; border-radius: 8px; padding: 24px; margin-bottom: 30px;">
         <div th:if="${item.stock > 0}">
             <form th:action="@{/order/one}" method="post" class="d-flex align-items-center gap-3 mb-3">
                 <input type="hidden" name="itemId" th:value="${item.id}" />
-                <span class="form-label-fixed">일반 주문 수량</span>
+                <span class="form-label-fixed">즉시 결제</span>
                 <input type="number" id="count" name="count" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
-                <button type="submit" class="btn-action btn-solid-dark">주문하기</button>
+                <button type="submit" class="btn-action btn-solid-dark">결제</button>
             </form>
 
             <form th:action="@{/cart/add}" method="post" class="d-flex align-items-center gap-3">
                 <input type="hidden" name="itemId" th:value="${item.id}" />
-                <span class="form-label-fixed">장바구니 수량</span>
+                <span class="form-label-fixed">카트 담기</span>
                 <input type="number" id="cartCount" name="count" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
-                <button type="submit" class="btn-action btn-outline-dark">장바구니 담기</button>
+                <button type="submit" class="btn-action btn-outline-dark">담기</button>
             </form>
         </div>
         <div th:unless="${item.stock > 0}" style="color: #de363a; font-size: 0.9rem; font-weight: 500;">
-            현재 제품 재고가 부족하여 대기 중입니다.
+            재고 없음
         </div>
     </div>
 
     <div class="d-flex justify-content-end gap-2" style="margin-top: 40px; border-top: 1px solid #e5e5e7; padding-top: 20px;">
         <button class="btn-action btn-outline-dark"
+                th:disabled="${session.loginMember == null or item.createdBy != session.loginMember.id}"
                 th:onclick="|location.href='@{/shop/item/{itemId}/edit(itemId=${item.id})}'|"
                 type="button">상품 수정</button>
 
@@ -130,5 +134,6 @@
                 type="button">목록으로</button>
     </div>
 
-</div> </body>
+</div>
+</body>
 </html>

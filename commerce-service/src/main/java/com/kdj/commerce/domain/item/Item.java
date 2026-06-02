@@ -14,39 +14,37 @@ import lombok.Setter;
 @Setter
 public class Item {
 
-    // 상품 ID
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")
     private Long id;
 
-    // 상품 이름
-    @NotBlank(message = "상품 이름은 필수입니다.")
+    @NotBlank(message = "이름은 필수입니다.")
     private String name;
 
-    // 가격
     @NotNull(message = "가격은 필수입니다.")
     @Min(value = 100, message = "가격은 최소 100원 이상이어야 합니다.")
     private Integer price;
 
-    // 수량
     @NotNull(message = "수량은 필수입니다.")
     @Max(value = 9999, message = "수량은 최대 9,999개까지만 등록 가능합니다.")
     private Integer stock;
 
-    // 설명
     private String description;
 
-    // 판매 유무
     private boolean open;
 
-    // 상품 종류
-    @NotNull(message = "상품 종류를 선택해주세요.")
+    @NotNull(message = "상품 종류를 선택하세요")
     @Enumerated(EnumType.STRING)    // enum을 문자 그대로 저장
     private ItemType itemType;
 
-    // 배송 방식
-    private String delivery;
+    @NotNull(message = "배송 방식을 선택하세요")
+    @Enumerated(EnumType.STRING)
+    private DeliveryType deliveryType;
+
+    @NotNull
+    private Long createdBy;
 
 
     // 재고 증가 (주문 취소)

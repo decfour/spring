@@ -72,7 +72,7 @@
 
 <div class="main-container">
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h2 class="section-title m-0">Store. <span class="text-muted" style="font-weight:400;">The products line.</span></h2>
+        <h2 class="section-title m-0">Store <span class="text-muted" style="font-weight:400;">products</span></h2>
         <div class="d-flex gap-2">
             <button class="btn-custom btn-primary-dark" th:onclick="|location.href='@{/shop/add}'|" type="button">상품 등록</button>
             <button class="btn-custom btn-secondary-outline" th:onclick="|location.href='@{/}'|" type="button">뒤로</button>
@@ -82,20 +82,27 @@
     <table class="product-table">
         <thead>
         <tr>
-            <th style="width: 10%;">ID</th>
-            <th style="width: 50%;">Product</th>
-            <th style="width: 20%;">Price</th>
-            <th style="width: 20%;">Stock</th>
+            <th style="width: 10%; text-align: center;">ID</th>
+            <th style="width: 50%; text-align: center;">Product</th>
+            <th style="width: 20%; text-align: center;">Price</th>
+            <th style="width: 20%; text-align: center;">Stock</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="item : ${items}">
-            <td th:text="${item.id}" style="color: #86868b;">1</td>
-            <td>
+            <!-- id -->
+            <td th:text="${item.id}" style="width: 10%; color: #86868b; text-align: center;">1</td>
+
+            <!-- name -->
+            <td style="width: 50%; text-align: center;">
                 <a th:href="@{/shop/item/{itemId}(itemId=${item.id})}" th:text="${item.name}" class="text-dark fw-medium text-decoration-none" style="letter-spacing: -0.2px;">테스트 상품</a>
             </td>
-            <td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'" style="color: #424245;">10,000</td>
-            <td>
+
+            <!-- price -->
+            <td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'" style="width: 20%; color: #424245; text-align: center;">10,000원</td>
+
+            <!-- stock -->
+            <td style="width: 20%; text-align: center;">
                 <span th:if="${item.stock > 0}" th:text="${item.stock} + '개'" style="color: #1d1d1f;">5개</span>
                 <span th:unless="${item.stock > 0}" style="color: #de363a; font-weight: 500;">품절</span>
             </td>
