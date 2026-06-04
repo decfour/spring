@@ -34,10 +34,4 @@ public class HomeController {
         return "info/info";
     }
 
-    @GetMapping("/oasis")
-    @ResponseBody
-    public String idiot() {
-
-        return "You know, Oasis is the best band in the world";
-    }
 }

@@ -1,4 +1,4 @@
-package com.kdj.commerce.web.form;
+package com.kdj.commerce.web.form.item;
 
 import com.kdj.commerce.domain.item.DeliveryType;
 import com.kdj.commerce.domain.item.ItemType;
@@ -9,7 +9,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class ItemSaveForm {
+public class ItemEditForm {
+
+    private Long id;
 
     @NotBlank(message = "상품 이름은 필수입니다.")
     private String name;
@@ -31,5 +33,4 @@ public class ItemSaveForm {
 
     @NotNull(message = "배송 방식을 선택해주세요.")
     private DeliveryType deliveryType;
-
 }

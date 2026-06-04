@@ -25,10 +25,6 @@ public class CartController {
     public String cartList(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                            Model model) {
 
-        if (loginMember == null) {
-            return "redirect:/member/login";
-        }
-
         // 1. 아이템 목록
         List<CartItem> cartItems = cartService.findCartItem(loginMember.getId());
         model.addAttribute("cartItems", cartItems);
@@ -48,10 +44,6 @@ public class CartController {
                           @RequestParam("itemId") Long itemId,
                           @RequestParam("count") int count) {
 
-        if (loginMember == null) {
-            return "redirect:/member/login";
-        }
-
         cartService.addCart(loginMember.getId(), itemId, count);
 
         return "redirect:/shop/item/" + itemId;
@@ -61,10 +53,6 @@ public class CartController {
     @PostMapping("/item/{cartItemId}/delete")
     public String deleteCartItem(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                                  @PathVariable("cartItemId") Long cartItemId) {
-
-        if (loginMember == null) {
-            return "redirect:/member/login";
-        }
 
         cartService.deleteCartItem(cartItemId);
 

@@ -22,12 +22,10 @@ public class OrderController {
     private final OrderService orderService;
     private final CartService cartService;
 
+    // 주문 내역
     @GetMapping("/list")
     public String orderList(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                             Model model) {
-        if (loginMember == null) {
-            return "redirect:/member/login";
-        }
 
         List<Order> orders = orderService.findOrdersByMember(loginMember.getId());
         model.addAttribute("orders", orders);
@@ -41,10 +39,6 @@ public class OrderController {
                         @RequestParam("itemId") Long itemId,
                         @RequestParam("count") int count) {
 
-        if (loginMember == null) {
-            return "redirect:/member/login";
-        }
-
         orderService.order(loginMember.getId(), itemId, count);
         return "redirect:/order/list";
     }
@@ -52,9 +46,6 @@ public class OrderController {
     // 전체 구매
     @PostMapping("/cart")
     public String orderCart(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
-        if (loginMember == null) {
-            return "redirect:/member/login";
-        }
 
         List<CartItem> cartItems = cartService.findCartItem(loginMember.getId());
 
@@ -71,9 +62,6 @@ public class OrderController {
     @PostMapping("/{orderId}/cancel")
     public String cancelOrder(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                               @PathVariable("orderId") Long orderId) {
-        if (loginMember == null) {
-            return "redirect:/member/login";
-        }
 
         orderService.cancelOrder(orderId);
         return "redirect:/order/list";

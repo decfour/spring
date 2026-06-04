@@ -1,9 +1,9 @@
 package com.kdj.commerce.web.controller;
 
-import com.kdj.commerce.web.form.LoginForm;
+import com.kdj.commerce.web.form.member.LoginForm;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
-import com.kdj.commerce.web.form.MemberSaveForm;
+import com.kdj.commerce.web.form.member.MemberSaveForm;
 import com.kdj.commerce.web.session.SessionConst;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

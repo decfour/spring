@@ -32,7 +32,7 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "member_type", nullable = false)
-    private MemberType memberType = MemberType.USER; // 기본값 선언 유지
+    private MemberType memberType = MemberType.USER;
 
     public static Member createMember(String username, String email, String loginId, String loginPassword) {
         Member member = new Member();

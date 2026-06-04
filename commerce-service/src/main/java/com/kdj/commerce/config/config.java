@@ -13,7 +13,7 @@ public class config implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginCheckInterceptor())
                 .order(1)
-                .addPathPatterns("/shop/**")
+                .addPathPatterns("/shop/**", "/cart/**", "/order/**")
                 .excludePathPatterns(
                         "/",
                         "/shop",

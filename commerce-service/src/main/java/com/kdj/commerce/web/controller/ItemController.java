@@ -5,8 +5,8 @@ import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemType;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.ItemService;
-import com.kdj.commerce.web.form.ItemEditForm;
-import com.kdj.commerce.web.form.ItemSaveForm;
+import com.kdj.commerce.web.form.item.ItemEditForm;
+import com.kdj.commerce.web.form.item.ItemSaveForm;
 import com.kdj.commerce.web.session.SessionConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -63,9 +63,12 @@ public class ItemController {
                           BindingResult bindingResult,
                           RedirectAttributes redirectAttributes) {
 
-        if (loginMember == null) {
-            return "redirect:/member/login";
+        /*
+        if (loginMember.getMemberType() == MemberType.USER) {
+            log.warn("일반 회원 상품 등록 차단 ID={}", loginMember.getId());
+            return "redirect:/shop";
         }
+        */
 
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
@@ -103,14 +106,10 @@ public class ItemController {
                            @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                            Model model) {
 
-        if (loginMember == null) {
-            return "redirect:/member/login";
-        }
-
         Item item = itemService.findOne(id);
 
         if (!item.getCreatedBy().equals(loginMember.getId())) {
-            log.warn("권한 없는 사용자의 수정 시도 - 유저 ID: {}, 상품 ID: {}", loginMember.getId(), id);
+            log.warn("등록자 외 수정 시도 차단 ID={}, 상품={}", loginMember.getId(), id);
             return "redirect:/shop/item/" + id;
         }
 
@@ -135,10 +134,6 @@ public class ItemController {
                        @Valid @ModelAttribute ItemEditForm form,
                        BindingResult bindingResult) {
 
-        if (loginMember == null) {
-            return "redirect:/member/login";
-        }
-
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
             return "shop/editItemForm";
@@ -146,7 +141,7 @@ public class ItemController {
 
         Item findItem = itemService.findOne(id);
         if (!findItem.getCreatedBy().equals(loginMember.getId())) {
-            log.warn("권한 없는 사용자의 상품 수정 시도 거부 - 유저 ID: {}, 상품 ID: {}", loginMember.getId(), id);
+            log.warn("등록자 외 수정 시도 차단 ID={}, 상품={}", loginMember.getId(), id);
             return "redirect:/shop/item/" + id;
         }
 
@@ -158,7 +153,6 @@ public class ItemController {
         updateParam.setOpen(form.isOpen());
         updateParam.setItemType(form.getItemType());
         updateParam.setDeliveryType(form.getDeliveryType());
-
         updateParam.setCreatedBy(findItem.getCreatedBy());
 
         itemService.updateItem(id, updateParam);

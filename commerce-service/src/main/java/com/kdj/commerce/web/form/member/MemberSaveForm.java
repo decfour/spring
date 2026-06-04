@@ -1,4 +1,4 @@
-package com.kdj.commerce.web.form;
+package com.kdj.commerce.web.form.member;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

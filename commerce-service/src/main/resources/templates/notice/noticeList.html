@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>THGTTG - NOTICE</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #1d1d1f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .main-container {
+            max-width: 680px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+        }
+
+        /* 공지사항 테이블 스펙 고도화 */
+        .notice-table {
+            width: 100%;
+            margin-top: 30px;
+            border-top: 1px solid #1d1d1f;
+        }
+        .notice-row {
+            border-bottom: 1px solid #e5e5e7;
+            transition: background-color 0.2s;
+        }
+        .notice-row:hover {
+            background-color: #f5f5f7; /* 애플 특유의 연한 그레이 호버 피드백 */
+        }
+        .notice-link {
+            display: block;
+            padding: 20px 10px;
+            color: #1d1d1f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .notice-date {
+            color: #86868b;
+            font-size: 0.85rem;
+            text-align: right;
+            padding: 20px 10px;
+            font-weight: 400;
+        }
+
+        /* 미니멀한 애플 스타일 버튼 */
+        .btn-apple-dark {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 980px; /* 완벽한 라운드 처리 */
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .btn-apple-dark:hover {
+            background-color: #434344;
+            color: #ffffff;
+        }
+
+        /* 공지가 없을 때 정갈한 안내 */
+        .empty-notice {
+            text-align: center;
+            padding: 60px 0;
+            color: #86868b;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{common/header :: mainHeader}"></div>
+
+<div class="main-container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h2 class="section-title m-0">Notice <span class="text-muted" style="font-weight:400;">Service Announcements</span></h2>
+        </div>
+
+        <div th:if="${session.loginMember != null && session.loginMember.memberType.name() == 'ADMIN'}">
+            <a href="/notice/add" class="btn-apple-dark">글쓰기</a>
+        </div>
+    </div>
+
+    <div class="notice-table">
+        <table class="w-100">
+            <tbody>
+            <tr class="notice-row" th:each="notice : ${notices}">
+                <td>
+                    <a th:href="@{/notice/{id}(id=${notice.id})}" class="notice-link" th:text="${notice.title}">
+                        [안내] 커머스 서비스 시스템 정기 점검 안내
+                    </a>
+                </td>
+                <td class="notice-date" th:text="${#temporals.format(notice.createdDate, 'yyyy.MM.dd')}">
+                    2026.06.04
+                </td>
+            </tr>
+
+            <tr th:if="${#lists.isEmpty(notices)}">
+                <td colspan="2" class="empty-notice">
+                    등록된 공지사항이 없습니다.
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
