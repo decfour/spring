@@ -4,6 +4,7 @@ import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
 import com.kdj.commerce.domain.notice.Notice;
 import com.kdj.commerce.service.NoticeService;
+import com.kdj.commerce.web.form.NoticeEditForm;
 import com.kdj.commerce.web.form.NoticeSaveForm;
 import com.kdj.commerce.web.session.SessionConst;
 import jakarta.validation.Valid;
@@ -77,5 +78,48 @@ public class NoticeController {
         noticeService.saveNotice(notice);
 
         return "redirect:/notice";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String editForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                           @PathVariable Long id,
+                           Model model) {
+
+        Notice notice = noticeService.findOne(id);
+
+        if (loginMember == null || loginMember.getMemberType() != MemberType.ADMIN) {
+            log.warn("권한 없는 사용자의 공지사항 작성 폼 진입 시도 차단");
+            return "redirect:/notice";
+        }
+
+        NoticeEditForm form = new NoticeEditForm();
+
+        form.setTitle(notice.getTitle());
+        form.setContent(notice.getContent());
+
+        model.addAttribute("noticeForm", form);
+
+        return "notice/editNoticeForm";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String editNotice(@PathVariable Long id,
+                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                             @Valid @ModelAttribute Notice form,
+                             BindingResult bindingResult) {
+
+        if (loginMember == null || loginMember.getMemberType() != MemberType.ADMIN) {
+            log.warn("권한 없는 사용자의 공지사항 작성 폼 진입 시도 차단");
+            return "redirect:/notice";
+        }
+
+        if (bindingResult.hasErrors()) {
+            log.info("errors={}", bindingResult);
+            return "shop/editItemForm";
+        }
+
+        noticeService.updateNotice(id, form.getTitle(), form.getContent());
+
+        return "redirect:/notice/" + id;
     }
 }

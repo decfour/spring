@@ -38,13 +38,13 @@ public class MemberService {
                 .orElse(null);
     }
 
-    // 회원 조회 (개인)
+    // 개인 회원 조회
     public Optional<Member> findMember(long id) {
 
         return memberRepository.findById(id);
     }
 
-    // 회원 조회 (모두)
+    // 전체 회원 조회
     public List<Member> findMembers() {
 
         return memberRepository.findAll();

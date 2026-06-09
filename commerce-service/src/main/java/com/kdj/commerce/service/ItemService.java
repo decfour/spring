@@ -15,22 +15,14 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
+    // 상품 추가
     @Transactional
     public Long saveItem(Item item) {
         Item savedItem = itemRepository.save(item);
         return savedItem.getId();
     }
 
-    public Item findOne(Long itemId) {
-        // findById는 Optional을 반환, 데이터가 없으면 null을 반환
-        return itemRepository.findById(itemId).orElse(null);
-    }
-
-    public List<Item> findItems() {
-
-        return itemRepository.findAll();
-    }
-
+    // 상품 수정
     @Transactional
     public void updateItem(Long itemId, Item updateParam) {
         Item findItem = itemRepository.findById(itemId)
@@ -44,4 +36,17 @@ public class ItemService {
         findItem.setItemType(updateParam.getItemType());
         findItem.setDeliveryType(updateParam.getDeliveryType()); //
     }
+
+    // 개별 상품 찾기
+    public Item findOne(Long itemId) {
+        // findById는 Optional을 반환, 데이터가 없으면 null을 반환
+        return itemRepository.findById(itemId).orElse(null);
+    }
+
+    // 모든 상품 찾기
+    public List<Item> findItems() {
+
+        return itemRepository.findAll();
+    }
+
 }

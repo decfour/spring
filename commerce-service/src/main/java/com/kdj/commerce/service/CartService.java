@@ -27,6 +27,7 @@ public class CartService {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
 
+    // 카트 상품 추가
     @Transactional
     public Long addCart(Long memberId, Long itemId, int count) {
 
@@ -63,6 +64,7 @@ public class CartService {
         }
     }
 
+    // 카트 상품 조회
     public List<CartItem> findCartItem(Long memberId) {
 
         return cartRepository.findByMemberId(memberId)
@@ -70,11 +72,13 @@ public class CartService {
                 .orElse(Collections.emptyList());
     }
 
+    // 카트 상품 제거
     @Transactional
     public void deleteCartItem(Long cartItemId) {
         cartItemRepository.deleteById(cartItemId);
     }
 
+    // 카트 초기화
     @Transactional
     public void clearCart(Long memberId) {
         Optional<Cart> cart = cartRepository.findByMemberId(memberId);

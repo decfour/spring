@@ -65,4 +65,25 @@ public class Item {
 
     public Item() {
     }
+
+    public static Item createItem(String name, Integer price, Integer stock,
+                                  String description, boolean open,
+                                  ItemType itemType, DeliveryType deliveryType, Long createdBy) {
+
+        if (stock != null && stock < 0) {
+            throw new NotEnoughStockException("재고는 음수(-)가 될 수 없습니다.");
+        }
+
+        Item item = new Item();
+        item.setName(name);
+        item.setPrice(price);
+        item.setStock(stock);
+        item.setDescription(description);
+        item.setOpen(open);
+        item.setItemType(itemType);
+        item.setDeliveryType(deliveryType);
+        item.setCreatedBy(createdBy);
+
+        return item;
+    }
 }
