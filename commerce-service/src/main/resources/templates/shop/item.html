@@ -76,6 +76,24 @@
         }
         .btn-outline-dark:hover {
             background-color: #f5f5f7;
+            border-color: #1d1d1f;
+        }
+        .img-square-wrapper {
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            max-width: 350px;
+            margin: 0 auto;
+            background-color: #f5f5f7;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .img-square-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -88,6 +106,12 @@
         <h2 class="fw-bold m-0" style="font-size: 2rem; letter-spacing: -0.8px;" th:text="${item.name}">상품 상세</h2>
         <span th:text="${item.open} ? '판매 중' : '판매 중지'" style="font-size: 0.85rem; color: #86868b;">상태</span>
     </div>
+
+    <div th:if="${item.storeFileName != null}" class="img-square-wrapper mb-4">
+        <img th:src="@{/shop/images/{filename}(filename=${item.storeFileName})}" alt="상품 이미지" />
+    </div>
+
+    <br>
 
     <div style="border-top: 1px solid #1d1d1f; margin-bottom: 30px;">
         <div class="detail-row"><div class="detail-label">이름</div><div class="detail-value" th:text="${item.name}">상품명</div></div>
@@ -127,7 +151,6 @@
                 th:disabled="${session.loginMember == null or item.createdBy != session.loginMember.id}"
                 th:onclick="|location.href='@{/shop/item/{itemId}/edit(itemId=${item.id})}'|"
                 type="button">상품 수정</button>
-
         <button class="btn-action"
                 style="background-color: #f5f5f7; color: #1d1d1f; border: none;"
                 th:onclick="|location.href='@{/shop}'|"

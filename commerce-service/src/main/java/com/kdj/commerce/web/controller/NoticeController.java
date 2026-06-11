@@ -25,8 +25,12 @@ public class NoticeController {
 
     private final NoticeService noticeService;
 
+    private boolean isNotAdmin(Member loginMember) {
+        return loginMember == null || loginMember.getMemberType() != MemberType.ADMIN;
+    }
+
     @GetMapping
-    public String noticeList(Model model) {
+    public String list(Model model) {
 
         List<Notice> notices = noticeService.findNotices();
         model.addAttribute("notices", notices);
@@ -35,7 +39,7 @@ public class NoticeController {
     }
 
     @GetMapping("/{id}")
-    public String notice(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id, Model model) {
 
         Notice notice = noticeService.findOne(id);
         model.addAttribute("notice", notice);
@@ -47,7 +51,7 @@ public class NoticeController {
     public String addForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                           Model model) {
 
-        if (loginMember == null || loginMember.getMemberType() != MemberType.ADMIN) {
+        if (isNotAdmin(loginMember)) {
             log.warn("권한 없는 사용자의 공지사항 작성 폼 진입 시도 차단");
             return "redirect:/notice";
         }
@@ -58,12 +62,12 @@ public class NoticeController {
     }
 
     @PostMapping("/add")
-    public String addNotice(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+    public String add(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
                             @Valid @ModelAttribute("noticeForm") NoticeSaveForm form,
                             BindingResult bindingResult) {
 
-        if (loginMember == null || loginMember.getMemberType() != MemberType.ADMIN) {
-            log.warn("권한 없는 사용자의 공지사항 작성 폼 진입 시도 차단");
+        if (isNotAdmin(loginMember)) {
+            log.warn("권한 없는 사용자의 공지사항 등록 시도 차단");
             return "redirect:/notice";
         }
 
@@ -74,7 +78,6 @@ public class NoticeController {
         Notice notice = new Notice();
         notice.setTitle(form.getTitle());
         notice.setContent(form.getContent());
-
         noticeService.saveNotice(notice);
 
         return "redirect:/notice";
@@ -85,15 +88,13 @@ public class NoticeController {
                            @PathVariable Long id,
                            Model model) {
 
-        Notice notice = noticeService.findOne(id);
-
-        if (loginMember == null || loginMember.getMemberType() != MemberType.ADMIN) {
-            log.warn("권한 없는 사용자의 공지사항 작성 폼 진입 시도 차단");
+        if (isNotAdmin(loginMember)) {
+            log.warn("권한 없는 사용자의 공지사항 수정 폼 진입 시도 차단");
             return "redirect:/notice";
         }
 
+        Notice notice = noticeService.findOne(id);
         NoticeEditForm form = new NoticeEditForm();
-
         form.setTitle(notice.getTitle());
         form.setContent(notice.getContent());
 
@@ -103,23 +104,31 @@ public class NoticeController {
     }
 
     @PostMapping("/{id}/edit")
-    public String editNotice(@PathVariable Long id,
+    public String edit(@PathVariable Long id,
                              @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                             @Valid @ModelAttribute Notice form,
+                             @Valid @ModelAttribute("noticeForm") NoticeEditForm form,
                              BindingResult bindingResult) {
 
-        if (loginMember == null || loginMember.getMemberType() != MemberType.ADMIN) {
-            log.warn("권한 없는 사용자의 공지사항 작성 폼 진입 시도 차단");
+        if (isNotAdmin(loginMember)) {
+            log.warn("권한 없는 사용자의 공지사항 수정 시도 차단");
             return "redirect:/notice";
         }
 
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
-            return "shop/editItemForm";
+            return "notice/editNoticeForm";
         }
 
         noticeService.updateNotice(id, form.getTitle(), form.getContent());
 
         return "redirect:/notice/" + id;
     }
+
+    /*
+    @PostMapping("/{id}/delete")
+    public String deleteNotice(@PathVariable Long id,
+                               @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+
+    }
+    */
 }

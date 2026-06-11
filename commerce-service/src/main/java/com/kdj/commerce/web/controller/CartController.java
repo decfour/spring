@@ -14,16 +14,16 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/cart")
+@RequiredArgsConstructor
 public class CartController {
 
     private final CartService cartService;
 
     // 장바구니
     @GetMapping
-    public String cartList(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                           Model model) {
+    public String list(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+                       Model model) {
 
         // 1. 아이템 목록
         List<CartItem> cartItems = cartService.findCartItem(loginMember.getId());
@@ -40,9 +40,9 @@ public class CartController {
 
     // 장바구니 아이템 추가
     @PostMapping("/add")
-    public String addCart(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                          @RequestParam("itemId") Long itemId,
-                          @RequestParam("count") int count) {
+    public String add(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+                      @RequestParam("itemId") Long itemId,
+                      @RequestParam("count") int count) {
 
         cartService.addCart(loginMember.getId(), itemId, count);
 
@@ -51,8 +51,8 @@ public class CartController {
 
     // 장바구니 아이템 제거
     @PostMapping("/item/{cartItemId}/delete")
-    public String deleteCartItem(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                                 @PathVariable("cartItemId") Long cartItemId) {
+    public String delete(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+                         @PathVariable("cartItemId") Long cartItemId) {
 
         cartService.deleteCartItem(cartItemId);
 

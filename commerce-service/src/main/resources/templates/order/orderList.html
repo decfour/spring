@@ -16,8 +16,11 @@
             margin: 60px auto;
             padding: 0 20px;
         }
-
-        /* 주문 목록 테이블 실무형 컴포넌트화 */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+        }
         .order-table {
             width: 100%;
             border-collapse: collapse;
@@ -31,30 +34,42 @@
             border-bottom: 1px solid #d2d2d7;
         }
         .order-table td {
-            padding: 16px 0;
+            padding: 18px 0;
             border-bottom: 1px solid #e5e5e7;
             font-size: 0.95rem;
         }
-
-        /* 테이블 내부 우측 정렬 전용 헬퍼 클래스 */
-        .text-end-align {
-            text-align: right;
-        }
-
-        /* 취소 요청 텍스트 링크 버튼 스타일화 */
-        .btn-action-danger {
-            background: none;
-            border: none;
-            padding: 0;
-            color: #de363a;
-            font-size: 0.9rem;
-            text-decoration: none;
+        .btn-custom {
+            border-radius: 6px;
+            font-size: 0.85rem;
+            padding: 10px 20px;
+            font-weight: 500;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: background-color 0.2s, border-color 0.2s;
         }
-        .btn-action-danger:hover {
-            opacity: 0.7;
-            text-decoration: underline;
+        .btn-secondary-outline {
+            background: none;
+            border: 1px solid #d2d2d7;
+            color: #1d1d1f;
+            text-decoration: none;
+        }
+        .btn-secondary-outline:hover {
+            background-color: #f5f5f7;
+            border-color: #86868b;
+        }
+        .btn-table-action-danger {
+            background: none;
+            border: 1px solid #de363a;
+            color: #de363a;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .btn-table-action-danger:hover {
+            background-color: #de363a;
+            color: #ffffff;
         }
     </style>
 </head>
@@ -64,12 +79,12 @@
 
 <div class="main-container">
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h2 class="fw-bold m-0" style="font-size: 2rem; letter-spacing: -0.8px;">Order <span class="text-muted" style="font-weight:400;">History</span></h2>
-        <a href="/shop" class="text-decoration-none" style="color: #0066cc; font-size: 0.95rem;">쇼핑 계속하기 →</a>
+        <h2 class="section-title m-0">Order <span class="text-muted" style="font-weight:400;">History</span></h2>
+        <button class="btn-custom btn-secondary-outline" th:onclick="|location.href='@{/member/my-page}'|" type="button">마이페이지</button>
     </div>
 
-    <div th:if="${#lists.isEmpty(orders)}" class="text-center py-5" style="border-top: 1px solid #d2d2d7;">
-        <p class="text-muted">주문 내역 없음</p>
+    <div th:if="${#lists.isEmpty(orders)}" class="text-center py-5" style="border-top: 1px solid #d2d2d7; border-bottom: 1px solid #e5e5e7;">
+        <p class="text-muted m-0" style="font-size: 0.95rem; letter-spacing: -0.2px;">주문 내역이 존재하지 않습니다.</p>
     </div>
 
     <div th:if="${not #lists.isEmpty(orders)}" class="table-responsive">
@@ -89,26 +104,27 @@
             <tr th:each="order : ${orders}">
                 <td th:text="${order.id}" style="width: 10%; color: #86868b; text-align: center;">1</td>
 
-                <td th:text="${order.member.username}" style="width: 12%; text-align: center;">홍길동</td>
+                <td th:text="${order.member.username}" style="width: 12%; text-align: center; color: #424245;">홍길동</td>
 
                 <td style="width: 33%; text-align: center;">
-                    <span th:text="${order.orderItems[0].item.name}" class="fw-medium">상품명</span>
+                    <span th:text="${order.orderItems[0].item.name}" class="text-dark fw-medium" style="letter-spacing: -0.2px;">상품명</span>
                     <span th:if="${order.orderItems.size() > 1}" th:text="' 외 ' + ${order.orderItems.size() - 1} + '건'" style="color: #86868b; font-size: 0.85rem;"> 외 1건</span>
                 </td>
 
-                <td th:text="${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')} + '원'" class="fw-medium" style="width: 15%; text-align: center;">10,000원</td>
+                <td th:text="${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')} + '원'" class="fw-medium" style="width: 15%; color: #1d1d1f; text-align: center;">10,000원</td>
 
                 <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}" style="width: 15%; color: #86868b; font-size: 0.85rem; text-align: center;">2026-05-24</td>
 
                 <td style="width: 10%; text-align: center;">
-                    <span th:text="${order.status.name() == 'ORDER'} ? '완료' : '취소'" th:style="${order.status.name() == 'ORDER'} ? 'color:#1d1d1f;' : 'color:#de363a;'">ORDER</span>
+                    <span th:if="${order.status.name() == 'ORDER'}" class="badge bg-light text-dark border" style="font-weight: 500; font-size: 0.8rem; padding: 5px 10px;">주문 완료</span>
+                    <span th:unless="${order.status.name() == 'ORDER'}" class="badge bg-secondary" style="font-weight: 500; font-size: 0.8rem; padding: 5px 10px; opacity: 0.7;">주문 취소</span>
                 </td>
 
                 <td style="width: 5%; text-align: center;">
-                    <form th:if="${order.status.name() == 'ORDER'}" th:action="@{/order/{id}/cancel (id=${order.id})}" method="post" class="m-0">
-                        <button type="submit" class="btn-action-danger">취소</button>
+                    <form th:if="${order.status.name() == 'ORDER'}" th:action="@{/order/{id}/cancel (id=${order.id})}" method="post" class="m-0 d-inline-block">
+                        <button type="submit" class="btn-table-action-danger">취소</button>
                     </form>
-                    <span th:if="${order.status.name() == 'CANCEL'}" style="color: #86868b;">-</span>
+                    <span th:unless="${order.status.name() == 'ORDER'}" style="color: #d2d2d7;">-</span>
                 </td>
             </tr>
             </tbody>

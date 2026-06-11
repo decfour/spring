@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class config implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     // 회원 확인 인터셉터
     @Override
@@ -21,7 +21,7 @@ public class config implements WebMvcConfigurer {
                         "/member/login",
                         "/member/logout",
                         "/member/register",
-                        "/css/**", "/*.ico", "/error"
+                        "/css/**", "/js/**", "/images/**", "/webjars/**", "/*.ico", "/error", "/shop/images/**"
                 );
     }
 }

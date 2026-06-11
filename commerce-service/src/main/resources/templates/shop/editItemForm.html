@@ -17,7 +17,6 @@
             padding: 0 20px;
         }
 
-        /* 실무형 폼 컴포넌트 스타일 명명 */
         .form-label-custom {
             font-size: 0.85rem;
             font-weight: 500;
@@ -39,15 +38,13 @@
             border-color: #86868b;
         }
 
-        /* 버튼 세트 스타일 통일 및 호버 액션 추가 */
-        .btn-form-action {
-            width: 100%;
+        .btn-custom-pack {
             border-radius: 6px;
-            padding: 10px;
+            padding: 10px 20px;
             font-size: 0.9rem;
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.2s, border-color 0.2s;
+            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
         }
         .btn-submit {
             background-color: #1d1d1f;
@@ -57,6 +54,26 @@
         .btn-submit:hover {
             background-color: #323236;
         }
+        .btn-delete-outline {
+            background-color: #ffffff;
+            border: 1px solid #de363a;
+            color: #de363a;
+        }
+        .btn-delete-outline:hover {
+            background-color: #de363a;
+            color: #ffffff;
+        }
+
+        .btn-restore-outline {
+            background-color: #ffffff;
+            border: 1px solid #0066cc;
+            color: #0066cc;
+        }
+        .btn-restore-outline:hover {
+            background-color: #0066cc;
+            color: #ffffff;
+        }
+
         .btn-cancel-outline {
             background-color: #ffffff;
             border: 1px solid #d2d2d7;
@@ -74,9 +91,9 @@
 <div th:replace="~{common/header :: mainHeader}"></div>
 
 <div class="main-container">
-    <h2 class="fw-bold mb-4" style="font-size: 1.8rem; letter-spacing: -0.6px;">Edit Specification</h2>
+    <h2 class="fw-bold mb-4" style="font-size: 1.8rem; letter-spacing: -0.6px;">Edit Product</h2>
 
-    <form th:action th:object="${item}" method="post">
+    <form id="editForm" th:action th:object="${item}" method="post" enctype="multipart/form-data">
         <div>
             <label for="id" class="form-label-custom">ID</label>
             <input type="text" id="id" th:field="*{id}" class="form-input-text" style="background-color: #f5f5f7; color: #86868b; border-color: #e5e5e7;" readonly>
@@ -98,7 +115,7 @@
 
         <div class="mb-4">
             <label for="description" class="form-label-custom">설명</label>
-            <textarea id="description" th:field="*{description}" rows="3" class="form-input-text" style="resize:none;"></textarea>
+            <textarea id="description" th:field="*{description}" rows="2" class="form-input-text" style="resize:none;"></textarea>
         </div>
 
         <div class="mb-4">
@@ -111,6 +128,8 @@
             </div>
         </div>
 
+        <br>
+
         <div class="mb-4">
             <label for="deliveryType" class="form-label-custom">배송 방식</label>
             <select id="deliveryType" th:field="*{deliveryType}" class="form-input-text" style="background-color: #ffffff; -webkit-appearance: none; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2386868b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 12px top 50%; background-size: 10px auto;">
@@ -121,24 +140,35 @@
             </select>
         </div>
 
+        <div class="mb-4">
+            <label for="imageFile" class="form-label-custom">상품 이미지 변경</label>
+            <input type="file" id="imageFile" th:field="*{imageFile}" class="form-input-text" style="padding: 6px 10px;">
+        </div>
+
         <div class="form-check mb-4 mt-2">
             <input type="checkbox" id="open" th:field="*{open}" class="form-check-input" style="border-color:#d2d2d7;">
             <label for="open" class="form-check-label" style="font-size: 0.9rem; color: #424245;">판매 중</label>
         </div>
 
         <hr class="my-4" style="border-color:#e5e5e7;">
-
-        <div class="row g-2">
-            <div class="col">
-                <button class="btn-form-action btn-submit" type="submit">수정 사항 저장</button>
-            </div>
-            <div class="col">
-                <button class="btn-form-action btn-cancel-outline"
-                        th:onclick="location.href=[[@{/shop/item/{id}(id=${item.id})}]]"
-                        type="button">취소</button>
-            </div>
-        </div>
     </form>
+
+    <div class="d-flex gap-2 justify-content-end align-items-center">
+
+        <button class="btn-custom-pack btn-submit" form="editForm" type="submit">수정</button>
+
+        <form th:if="${!item.deleted}" th:action="@{/shop/item/{id}/delete(id=${item.id})}" method="post" style="display: inline;"
+              onsubmit="return confirm('삭제하시겠습니까?');">
+            <button class="btn-custom-pack btn-delete-outline" type="submit">삭제</button>
+        </form>
+
+        <form th:if="${item.deleted}" th:action="@{/shop/item/{id}/restore(id=${item.id})}" method="post" style="display: inline;"
+              onsubmit="return confirm('복원하시겠습니까?');">
+            <button class="btn-custom-pack btn-restore-outline" type="submit">복원</button>
+        </form>
+
+        <a th:href="@{/shop/item/{id}(id=${item.id})}" class="btn-custom-pack btn-cancel-outline text-decoration-none d-inline-flex align-items-center">취소</a>
+    </div>
 </div>
 
 </body>

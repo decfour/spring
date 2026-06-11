@@ -1,5 +1,7 @@
 package com.kdj.commerce.web.controller;
 
+import com.kdj.commerce.domain.item.Item;
+import com.kdj.commerce.service.ItemService;
 import com.kdj.commerce.web.form.member.LoginForm;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
@@ -17,6 +19,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -24,16 +28,17 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final ItemService itemService;
 
-    // 회원가입 화면 진입
+    // 회원가입
     @GetMapping("/register")
     public String register(Model model) {
+
         model.addAttribute("member", new MemberSaveForm()); // 💡 폼 객체로 변경
 
         return "member/registerForm";
     }
 
-    // 회원가입 처리
     @PostMapping("/register")
     public String registerForm(@Valid @ModelAttribute("member") MemberSaveForm form,
                                BindingResult result) {
@@ -50,9 +55,8 @@ public class MemberController {
                     form.getLoginPassword()
             );
             memberService.join(member);
-
         } catch (IllegalStateException e) {
-            result.reject("duplicateEmail", e.getMessage());
+            result.reject("이메일 중복", e.getMessage());
             return "member/registerForm";
         }
 
@@ -63,8 +67,10 @@ public class MemberController {
     @GetMapping("/login")
     public String login(@RequestParam(defaultValue = "/") String redirectURL,
                         Model model) {
+
         model.addAttribute("loginForm", new LoginForm());
         model.addAttribute("redirectURL", redirectURL);
+
         return "member/loginForm";
     }
 
@@ -73,6 +79,7 @@ public class MemberController {
                             BindingResult result,
                             @RequestParam(defaultValue = "/") String redirectURL,
                             HttpServletRequest request) {
+
         if (result.hasErrors()) {
             return "member/loginForm";
         }
@@ -80,7 +87,6 @@ public class MemberController {
         if (redirectURL.contains(",")) {
             redirectURL = redirectURL.split(",")[0];
         }
-
 
         Member loginMember = memberService.login(form.getLoginId(), form.getLoginPassword());
 
@@ -100,19 +106,43 @@ public class MemberController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public String logoutV2(HttpServletRequest request, HttpServletResponse response) {
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+
         HttpSession session = request.getSession(false);
+
         if (session != null) {
             session.invalidate();
         }
 
         // 쿠키 제거
         Cookie cookie = new Cookie("JSESSIONID", null);
-        cookie.setMaxAge(0); // 유효기간을 0초로 세팅해서 브라우저가 바로 삭제하게 만듦
-        cookie.setPath("/"); // 내 서버 전체 경로에 적용
+        cookie.setMaxAge(0); // 유효기간을 0초로 세팅
+        cookie.setPath("/"); // 서버 전체 경로 적용
         response.addCookie(cookie);
 
         return "redirect:/";
+    }
+
+    // 마이페이지
+    @GetMapping("/my-page")
+    public String myPage(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+                         Model model) {
+
+        model.addAttribute("member", loginMember);
+
+        return "member/myPage";
+    }
+
+    @GetMapping("/my-page/my-item")
+    public String myItems(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+                         Model model) {
+
+        List<Item> myItems = itemService.findItemsByCreatedBy(loginMember.getId());
+
+        model.addAttribute("member", loginMember);
+        model.addAttribute("myItems", myItems);
+
+        return "member/myItem";
     }
 
 }

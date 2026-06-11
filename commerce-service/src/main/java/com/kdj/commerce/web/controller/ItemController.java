@@ -5,75 +5,71 @@ import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemType;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.ItemService;
+import com.kdj.commerce.web.file.FileStore;
 import com.kdj.commerce.web.form.item.ItemEditForm;
 import com.kdj.commerce.web.form.item.ItemSaveForm;
 import com.kdj.commerce.web.session.SessionConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
-@RequestMapping("/shop")
 @Controller
+@RequestMapping("/shop")
 @RequiredArgsConstructor
 public class ItemController {
 
     private final ItemService itemService;
+    private final FileStore fileStore;
 
-    // 모든 반환(모델)에 타입 담기
-    @ModelAttribute("itemTypes")
-    public ItemType[] itemTypes() {
+    // 공통 모델 바인딩
+    @ModelAttribute("itemTypes") public ItemType[] itemTypes() {return ItemType.values();}
+    @ModelAttribute("deliveryTypes") public DeliveryType[] deliveryTypes() {return DeliveryType.values();}
 
-        return ItemType.values();
-    }
-
-    @ModelAttribute("deliveryTypes")
-    public DeliveryType[] deliveryTypes() {
-
-        return DeliveryType.values();
+    // 검증 메서드
+    private boolean isNotOwner(Item item, Member loginMember) {
+        return !item.getCreatedBy().equals(loginMember.getId());
     }
 
     // 상점
     @GetMapping
-    public String shop(Model model) {
-        List<Item> items = itemService.findItems();
+    public String list(Model model) {
+        List<Item> items = itemService.findItemsByDeletedFalse();
         model.addAttribute("items", items);
 
         return "shop/shop";
     }
 
-    // 아이템 추가
+    // 상품 추가
     @GetMapping("/add")
-    public String add(Model model) {
+    public String addForm(Model model) {
         model.addAttribute("item", new ItemSaveForm());
 
         return "shop/addItemForm";
     }
 
     @PostMapping("/add")
-    public String addItem(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                          @Valid @ModelAttribute ItemSaveForm form,
-                          BindingResult bindingResult,
-                          RedirectAttributes redirectAttributes) {
-
-        /*
-        if (loginMember.getMemberType() == MemberType.USER) {
-            log.warn("일반 회원 상품 등록 차단 ID={}", loginMember.getId());
-            return "redirect:/shop";
-        }
-        */
+    public String add(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+                      @Valid @ModelAttribute ItemSaveForm form,
+                      BindingResult bindingResult,
+                      RedirectAttributes redirectAttributes) throws IOException {
 
         if (bindingResult.hasErrors()) {
-            log.info("errors={}", bindingResult);
             return "shop/addItemForm";
         }
+
+        String storeFileName = fileStore.storeFile(form.getImageFile());
+        String uploadFileName = form.getImageFile() != null ? form.getImageFile().getOriginalFilename() : null;
 
         Item item = new Item();
         item.setName(form.getName());
@@ -84,6 +80,8 @@ public class ItemController {
         item.setItemType(form.getItemType());
         item.setDeliveryType(form.getDeliveryType());
         item.setCreatedBy(loginMember.getId());
+        item.setStoreFileName(storeFileName);
+        item.setUploadFileName(uploadFileName);
 
         Long savedItemId = itemService.saveItem(item);
         redirectAttributes.addAttribute("itemId", savedItemId);
@@ -91,25 +89,25 @@ public class ItemController {
         return "redirect:/shop/item/{itemId}";
     }
 
-    // 아이템 정보
+    // 상품 정보
     @GetMapping("/item/{id}")
-    public String item(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id, Model model) {
         Item item = itemService.findOne(id);
         model.addAttribute("item", item);
 
         return "shop/item";
     }
 
-    // 아이템 수정
+    // 상품 수정
     @GetMapping("/item/{id}/edit")
     public String editForm(@PathVariable Long id,
-                           @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                           @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
                            Model model) {
 
         Item item = itemService.findOne(id);
 
-        if (!item.getCreatedBy().equals(loginMember.getId())) {
-            log.warn("등록자 외 수정 시도 차단 ID={}, 상품={}", loginMember.getId(), id);
+        if (isNotOwner(item, loginMember)) {
+            log.warn("수정 시도 차단 ID={}, 상품={}", loginMember.getId(), id);
             return "redirect:/shop/item/" + id;
         }
 
@@ -122,6 +120,7 @@ public class ItemController {
         form.setOpen(item.isOpen());
         form.setItemType(item.getItemType());
         form.setDeliveryType(item.getDeliveryType());
+        form.setDeleted(item.isDeleted());
 
         model.addAttribute("item", form);
 
@@ -130,18 +129,17 @@ public class ItemController {
 
     @PostMapping("/item/{id}/edit")
     public String edit(@PathVariable Long id,
-                       @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+                       @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
                        @Valid @ModelAttribute ItemEditForm form,
-                       BindingResult bindingResult) {
+                       BindingResult bindingResult) throws IOException {
 
         if (bindingResult.hasErrors()) {
-            log.info("errors={}", bindingResult);
             return "shop/editItemForm";
         }
 
         Item findItem = itemService.findOne(id);
-        if (!findItem.getCreatedBy().equals(loginMember.getId())) {
-            log.warn("등록자 외 수정 시도 차단 ID={}, 상품={}", loginMember.getId(), id);
+        if (isNotOwner(findItem, loginMember)) {
+            log.warn("수정 시도 차단 ID={}", loginMember.getId());
             return "redirect:/shop/item/" + id;
         }
 
@@ -155,9 +153,62 @@ public class ItemController {
         updateParam.setDeliveryType(form.getDeliveryType());
         updateParam.setCreatedBy(findItem.getCreatedBy());
 
+        if (form.getImageFile() != null && !form.getImageFile().isEmpty()) {
+            String storeFileName = fileStore.storeFile(form.getImageFile());
+            updateParam.setStoreFileName(storeFileName);
+            updateParam.setUploadFileName(form.getImageFile().getOriginalFilename());
+        } else {
+            // 새 사진을 안 올렸으면 기존 이미지를 고스란히 유지
+            updateParam.setStoreFileName(findItem.getStoreFileName());
+            updateParam.setUploadFileName(findItem.getUploadFileName());
+        }
+
         itemService.updateItem(id, updateParam);
 
         return "redirect:/shop/item/{id}";
+    }
+
+    @PostMapping("/item/{id}/delete")
+    public String delete(@PathVariable Long id,
+                         @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember) {
+
+        Item item = itemService.findOne(id);
+        if (item == null)
+            return "redirect:/shop";
+
+        if (isNotOwner(item, loginMember)) {
+            log.warn("상품 삭제 차단={}", id);
+            return "redirect:/shop/item/" + id;
+        }
+
+        itemService.deleteItem(id);
+        log.info("상품 삭제 완료={}", id);
+
+        return "redirect:/shop";
+    }
+
+    @PostMapping("/item/{id}/restore")
+    public String restore(@PathVariable Long id,
+                          @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember) {
+
+        Item item = itemService.findOne(id);
+        if (item == null) return "redirect:/shop";
+
+        if (isNotOwner(item, loginMember)) {
+            log.warn("상품 복원 차단={}", id);
+            return "redirect:/shop/item/" + id;
+        }
+
+        itemService.restoreItem(id);
+        log.info("상품 복원 완료={}", id);
+
+        return "redirect:/shop/item/" + id;
+    }
+
+    @ResponseBody
+    @GetMapping("/images/{filename}")
+    public Resource downloadImage(@PathVariable String filename) {
+        return new FileSystemResource(fileStore.getFullPath(filename));
     }
 
 }

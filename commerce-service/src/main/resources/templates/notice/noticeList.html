@@ -21,8 +21,6 @@
             font-weight: 700;
             letter-spacing: -0.8px;
         }
-
-        /* 공지사항 테이블 스펙 고도화 */
         .notice-table {
             width: 100%;
             margin-top: 30px;
@@ -33,7 +31,7 @@
             transition: background-color 0.2s;
         }
         .notice-row:hover {
-            background-color: #f5f5f7; /* 애플 특유의 연한 그레이 호버 피드백 */
+            background-color: #f5f5f7;
         }
         .notice-link {
             display: block;
@@ -49,8 +47,6 @@
             padding: 20px 10px;
             font-weight: 400;
         }
-
-        /* 미니멀한 애플 스타일 버튼 */
         .btn-apple-dark {
             background-color: #1d1d1f;
             color: #ffffff;
@@ -58,7 +54,7 @@
             padding: 8px 16px;
             font-size: 0.9rem;
             font-weight: 500;
-            border-radius: 980px; /* 완벽한 라운드 처리 */
+            border-radius: 980px;
             text-decoration: none;
             transition: background-color 0.2s;
         }
@@ -66,8 +62,6 @@
             background-color: #434344;
             color: #ffffff;
         }
-
-        /* 공지가 없을 때 정갈한 안내 */
         .empty-notice {
             text-align: center;
             padding: 60px 0;
@@ -107,7 +101,7 @@
 
             <tr th:if="${#lists.isEmpty(notices)}">
                 <td colspan="2" class="empty-notice">
-                    등록된 공지사항이 없습니다.
+                    공지사항이 없습니다
                 </td>
             </tr>
             </tbody>

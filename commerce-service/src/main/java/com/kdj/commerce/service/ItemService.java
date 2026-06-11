@@ -34,7 +34,25 @@ public class ItemService {
         findItem.setDescription(updateParam.getDescription());
         findItem.setOpen(updateParam.isOpen());
         findItem.setItemType(updateParam.getItemType());
-        findItem.setDeliveryType(updateParam.getDeliveryType()); //
+        findItem.setDeliveryType(updateParam.getDeliveryType());
+        findItem.setStoreFileName(updateParam.getStoreFileName());
+        findItem.setUploadFileName(updateParam.getUploadFileName());
+    }
+
+    @Transactional
+    public void deleteItem(Long itemId) {
+        Item findItem = itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다. id=" + itemId));
+
+        findItem.delete();
+    }
+
+    @Transactional
+    public void restoreItem(Long itemId) {
+        Item findItem = itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다. id=" + itemId));
+
+        findItem.restore();
     }
 
     // 개별 상품 찾기
@@ -47,6 +65,17 @@ public class ItemService {
     public List<Item> findItems() {
 
         return itemRepository.findAll();
+    }
+
+    // 등록자 아이템 찾기
+    public List<Item> findItemsByCreatedBy(Long id) {
+
+        return itemRepository.findByCreatedBy(id);
+    }
+
+    // 삭제되지 않은 아이템 찾기
+    public List<Item> findItemsByDeletedFalse() {
+        return itemRepository.findByDeletedFalse();
     }
 
 }

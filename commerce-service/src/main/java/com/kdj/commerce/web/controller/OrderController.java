@@ -24,8 +24,8 @@ public class OrderController {
 
     // 주문 내역
     @GetMapping("/list")
-    public String orderList(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                            Model model) {
+    public String list(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+                       Model model) {
 
         List<Order> orders = orderService.findOrdersByMember(loginMember.getId());
         model.addAttribute("orders", orders);
@@ -35,17 +35,18 @@ public class OrderController {
 
     // 바로 구매
     @PostMapping("/one")
-    public String order(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                        @RequestParam("itemId") Long itemId,
-                        @RequestParam("count") int count) {
+    public String orderOne(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+                           @RequestParam("itemId") Long itemId,
+                           @RequestParam("count") int count) {
 
         orderService.order(loginMember.getId(), itemId, count);
+
         return "redirect:/order/list";
     }
 
     // 전체 구매
     @PostMapping("/cart")
-    public String orderCart(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
+    public String orderCart(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember) {
 
         List<CartItem> cartItems = cartService.findCartItem(loginMember.getId());
 
@@ -60,15 +61,17 @@ public class OrderController {
 
     // 주문 취소
     @PostMapping("/{orderId}/cancel")
-    public String cancelOrder(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                              @PathVariable("orderId") Long orderId) {
+    public String cancel(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+                         @PathVariable("orderId") Long orderId) {
 
         orderService.cancelOrder(orderId);
+
         return "redirect:/order/list";
     }
 
     @ExceptionHandler(NotEnoughStockException.class)
     public String handleNotEnoughStockException(NotEnoughStockException e, Model model) {
+
         model.addAttribute("errorMessage", e.getMessage());
 
         return "common/alertAndRedirect";

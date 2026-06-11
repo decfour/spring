@@ -14,10 +14,8 @@ public class GlobalExceptionHandler {
     public String handleNotEnoughStockException(NotEnoughStockException e, Model model) {
         log.error("NotEnoughStockException 발생 : {}", e.getMessage());
 
-        // 화면에 에러 메시지 전달
         model.addAttribute("errorMessage", e.getMessage());
 
-        // 에러 전용 Thymeleaf 뷰, 기존 페이지로 이동
         return "error/businessError";
     }
 
