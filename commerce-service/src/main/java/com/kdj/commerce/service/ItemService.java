@@ -3,6 +3,8 @@ package com.kdj.commerce.service;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +28,7 @@ public class ItemService {
     @Transactional
     public void updateItem(Long itemId, Item updateParam) {
         Item findItem = itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다. id=" + itemId));
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
 
         findItem.setName(updateParam.getName());
         findItem.setPrice(updateParam.getPrice());
@@ -42,7 +44,7 @@ public class ItemService {
     @Transactional
     public void deleteItem(Long itemId) {
         Item findItem = itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다. id=" + itemId));
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
 
         findItem.delete();
     }
@@ -50,32 +52,29 @@ public class ItemService {
     @Transactional
     public void restoreItem(Long itemId) {
         Item findItem = itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다. id=" + itemId));
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
 
         findItem.restore();
     }
 
-    // 개별 상품 찾기
     public Item findOne(Long itemId) {
-        // findById는 Optional을 반환, 데이터가 없으면 null을 반환
-        return itemRepository.findById(itemId).orElse(null);
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
     }
 
     // 모든 상품 찾기
     public List<Item> findItems() {
-
         return itemRepository.findAll();
     }
 
     // 등록자 아이템 찾기
     public List<Item> findItemsByCreatedBy(Long id) {
-
         return itemRepository.findByCreatedBy(id);
     }
 
     // 삭제되지 않은 아이템 찾기
-    public List<Item> findItemsByDeletedFalse() {
-        return itemRepository.findByDeletedFalse();
+    public Page<Item> findItemsByDeletedFalse(Pageable pageable) {
+        return itemRepository.findByDeletedFalse(pageable);
     }
 
 }

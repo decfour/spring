@@ -20,13 +20,13 @@ public class MemberService {
         // 이메일 중복 검증
         memberRepository.findByEmail(member.getEmail())
                 .ifPresent(m -> {
-                    throw new IllegalStateException("이미 사용중인 이메일입니다.");
+                    throw new IllegalStateException("사용중인 이메일입니다.");
                 });
 
         // 아이디 중복 검증
         memberRepository.findByLoginId(member.getLoginId())
                 .ifPresent(m -> {
-                    throw new IllegalStateException("이미 사용중인 아이디입니다.");
+                    throw new IllegalStateException("사용중인 아이디입니다.");
                 });
         memberRepository.save(member);
     }
@@ -40,13 +40,11 @@ public class MemberService {
 
     // 개인 회원 조회
     public Optional<Member> findMember(long id) {
-
         return memberRepository.findById(id);
     }
 
     // 전체 회원 조회
     public List<Member> findMembers() {
-
         return memberRepository.findAll();
     }
 }

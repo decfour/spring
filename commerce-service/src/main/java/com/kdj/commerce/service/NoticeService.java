@@ -3,6 +3,8 @@ package com.kdj.commerce.service;
 import com.kdj.commerce.domain.notice.Notice;
 import com.kdj.commerce.domain.notice.NoticeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +23,8 @@ public class NoticeService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 ID=" + id));
     }
 
-    public List<Notice> findNotices() {
-        return noticeRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+    public Page<Notice> findNotices(Pageable pageable) {
+        return noticeRepository.findAll(pageable);
     }
 
     @Transactional
@@ -35,7 +37,7 @@ public class NoticeService {
     @Transactional
     public void updateNotice(Long id, String title, String content) {
         Notice notice = noticeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다. ID=" + id));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 ID=" + id));
 
         notice.setTitle(title);
         notice.setContent(content);
@@ -44,7 +46,7 @@ public class NoticeService {
     @Transactional
     public void deleteNotice(Long id) {
         Notice notice = noticeRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항입니다. ID = " + id));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 ID = " + id));
 
         noticeRepository.delete(notice);
     }

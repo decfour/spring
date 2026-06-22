@@ -33,9 +33,9 @@ public class CartService {
 
         // 1. 회원, 아이템 조회
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다. id=" + memberId));
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다 id=" + memberId));
         Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다. id=" + itemId));
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
 
         // 2. 카트 조회 (없으면 생성)
         Cart cart = cartRepository.findByMemberId(memberId)
@@ -47,7 +47,7 @@ public class CartService {
         if (findCartItem.isPresent()) {
             int totalCount = findCartItem.get().getCount() + count;
             if (totalCount > item.getStock()) {
-                throw new NotEnoughStockException("장바구니에 담으려는 수량이 남아있는 재고보다 많습니다. (현재 재고: " + item.getStock() + "개)");
+                throw new NotEnoughStockException("담으려는 수량이 재고보다 많습니다 (현재 재고: " + item.getStock() + "개)");
             }
 
             findCartItem.get().addCount(count);
@@ -55,7 +55,7 @@ public class CartService {
         }
         else {
             if (count > item.getStock()) {
-                throw new NotEnoughStockException("상품의 재고가 부족하여 장바구니에 담을 수 없습니다. (현재 재고: " + item.getStock() + "개)");
+                throw new NotEnoughStockException("재고가 부족하여 담을 수 없습니다 (현재 재고: " + item.getStock() + "개)");
             }
 
             CartItem cartItem = CartItem.createCartItem(cart, item, count);

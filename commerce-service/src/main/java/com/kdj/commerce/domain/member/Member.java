@@ -40,8 +40,6 @@ public class Member {
         member.setEmail(email);
         member.setLoginId(loginId);
         member.setLoginPassword(loginPassword);
-
-        // 생성 메서드 호출 시 USER 세팅
         member.setMemberType(MemberType.USER);
 
         return member;
@@ -49,7 +47,7 @@ public class Member {
 
     public static Member createMemberWithRole(String username, String email, String loginId, String loginPassword, MemberType memberType) {
         Member member = createMember(username, email, loginId, loginPassword);
-        member.setMemberType(memberType); // 권한(ADMIN, SELLER) 덮어쓰기
+        member.setMemberType(memberType);
         return member;
     }
 

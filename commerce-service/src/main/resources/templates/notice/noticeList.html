@@ -68,6 +68,45 @@
             color: #86868b;
             font-size: 0.95rem;
         }
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 40px;
+        }
+        .page-link-custom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #000000;
+            text-decoration: none;
+            background-color: #ffffff;
+            border: 1px solid #d2d2d7;
+            transition: all 0.2s;
+        }
+        .page-link-custom:hover {
+            background-color: #f5f5f7;
+            border-color: #86868b;
+            color: #000000;
+        }
+        .page-link-custom.active-page {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border-color: #1d1d1f;
+        }
+        .page-link-custom.disabled-page {
+            color: #d2d2d7;
+            border-color: #e5e5e7;
+            background-color: #ffffff;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -99,13 +138,32 @@
                 </td>
             </tr>
 
-            <tr th:if="${#lists.isEmpty(notices)}">
+            <tr th:if="${notices.isEmpty()}">
                 <td colspan="2" class="empty-notice">
                     공지사항이 없습니다
                 </td>
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <div th:if="${notices.totalPages > 1}" class="pagination-container">
+
+        <a th:href="@{/notice(page=${notices.number - 1})}"
+           class="page-link-custom"
+           th:classappend="${notices.first} ? 'disabled-page' : ''">이전</a>
+
+        <th:block th:each="pageNumber : ${#numbers.sequence(0, notices.totalPages - 1)}">
+            <a th:href="@{/notice(page=${pageNumber})}"
+               th:text="${pageNumber + 1}"
+               class="page-link-custom"
+               th:classappend="${pageNumber == notices.number} ? 'active-page' : ''">1</a>
+        </th:block>
+
+        <a th:href="@{/notice(page=${notices.number + 1})}"
+           class="page-link-custom"
+           th:classappend="${notices.last} ? 'disabled-page' : ''">다음</a>
+
     </div>
 </div>
 

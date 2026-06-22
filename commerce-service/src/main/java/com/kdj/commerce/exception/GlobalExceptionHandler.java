@@ -9,36 +9,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 1. 상품 재고 부족 예외 처리
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleIllegalArgumentException(IllegalArgumentException ex, Model model) {
+        log.error("IllegalArgumentException 발생: {}", ex.getMessage());
+        model.addAttribute("errorMessage", ex.getMessage());
+
+        return "error/4xx";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleAllException(Exception ex, Model model) {
+        log.error("예상치 못한 Exception 발생: ", ex);
+        model.addAttribute("errorMessage", "오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+
+        return "error/4xx";
+    }
+
     @ExceptionHandler(NotEnoughStockException.class)
     public String handleNotEnoughStockException(NotEnoughStockException e, Model model) {
         log.error("NotEnoughStockException 발생 : {}", e.getMessage());
-
         model.addAttribute("errorMessage", e.getMessage());
 
-        return "error/businessError";
+        return "error/4xx";
     }
-
-    // 2. 잘못된 파라미터 요청 및 비즈니스 제약 조건 위반 처리
-    @ExceptionHandler(IllegalArgumentException.class)
-    public String handleIllegalArgumentException(IllegalArgumentException e, Model model) {
-        log.warn("IllegalArgumentException 발생: {}", e.getMessage());
-
-        model.addAttribute("errorMessage", e.getMessage());
-
-        return "error/businessError";
-    }
-
-    /*
-    // 3. 서버 내부 예상치 못한 심각한 에러 처리
-    @ExceptionHandler(Exception.class)
-    public String handleAllException(Exception e, Model model) {
-        log.error("예상치 못한 에러 발생", e);
-
-        model.addAttribute("errorMessage", "서버 내부 오류가 발생했습니다. 관리자에게 문의하세요.");
-
-        return "error/systemError";
-    }
-    */
-
 }

@@ -10,6 +10,10 @@ import com.kdj.commerce.web.session.SessionConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,9 +34,10 @@ public class NoticeController {
     }
 
     @GetMapping
-    public String list(Model model) {
+    public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                       Model model) {
 
-        List<Notice> notices = noticeService.findNotices();
+        Page<Notice> notices = noticeService.findNotices(pageable);
         model.addAttribute("notices", notices);
 
         return "notice/noticeList";

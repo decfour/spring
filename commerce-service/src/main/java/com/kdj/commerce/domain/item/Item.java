@@ -35,12 +35,11 @@ public class Item {
 
     // 판매 여부
     private boolean open;
-
     // 삭제 여부
     private boolean deleted = false;
 
     @NotNull(message = "상품 종류를 선택하세요")
-    @Enumerated(EnumType.STRING)    // enum을 문자 그대로 저장
+    @Enumerated(EnumType.STRING)            // enum을 문자 그대로 저장
     private ItemType itemType;
 
     @NotNull(message = "배송 방식을 선택하세요")
@@ -50,8 +49,8 @@ public class Item {
     @NotNull
     private Long createdBy;
 
-    private String uploadFileName; // 유저가 업로드한 파일명
-    private String storeFileName;  // 서버가 관리하는 파일명
+    private String uploadFileName;          // 유저가 업로드한 파일명
+    private String storeFileName;           // 서버가 관리하는 파일명
 
 
 
@@ -67,14 +66,14 @@ public class Item {
         int restStock = this.stock - quantity;
 
         if (restStock < 0) {
-            throw new NotEnoughStockException("상품의 재고가 부족합니다. (현재 재고: " + this.stock + "개)");
+            throw new NotEnoughStockException("재고가 부족 (현재 : " + this.stock + "개)");
         }
         this.stock = restStock;
     }
 
     public void delete() {
         this.deleted = true;
-        this.open = false; // 삭제하면 판매도 중지
+        this.open = false;
     }
 
     public void restore() {
@@ -88,7 +87,7 @@ public class Item {
     public static Item createItem(String name, Integer price, Integer stock,
                                   String description, boolean open,
                                   ItemType itemType, DeliveryType deliveryType, Long createdBy,
-                                  String uploadFileName, String storeFileName) { // 💡 파라미터 추가
+                                  String uploadFileName, String storeFileName) {
 
         Item item = new Item();
         item.setName(name);

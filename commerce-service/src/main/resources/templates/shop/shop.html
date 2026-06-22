@@ -21,7 +21,6 @@
             font-weight: 700;
             letter-spacing: -0.8px;
         }
-
         .product-table {
             width: 100%;
             border-collapse: collapse;
@@ -39,7 +38,6 @@
             border-bottom: 1px solid #e5e5e7;
             font-size: 0.95rem;
         }
-
         .btn-custom {
             border-radius: 4px;
             font-size: 0.8rem;
@@ -63,6 +61,45 @@
         .btn-secondary-outline:hover {
             background-color: #f5f5f7;
             border-color: #86868b;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 40px;
+        }
+        .page-link-custom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #000000;
+            text-decoration: none;
+            background-color: #ffffff;
+            border: 1px solid #d2d2d7;
+            transition: all 0.2s;
+        }
+        .page-link-custom:hover {
+            background-color: #f5f5f7;
+            border-color: #86868b;
+            color: #000000;
+        }
+        .page-link-custom.active-page {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border-color: #1d1d1f;
+        }
+        .page-link-custom.disabled-page {
+            color: #d2d2d7;
+            border-color: #e5e5e7;
+            background-color: #ffffff;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -90,18 +127,14 @@
         </thead>
         <tbody>
         <tr th:each="item : ${items}">
-            <!-- id -->
             <td th:text="${item.id}" style="width: 10%; color: #86868b; text-align: center;">1</td>
 
-            <!-- name -->
             <td style="width: 50%; text-align: center;">
                 <a th:href="@{/shop/item/{itemId}(itemId=${item.id})}" th:text="${item.name}" class="text-dark fw-medium text-decoration-none" style="letter-spacing: -0.2px;">테스트 상품</a>
             </td>
 
-            <!-- price -->
             <td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'" style="width: 20%; color: #424245; text-align: center;">10,000원</td>
 
-            <!-- stock -->
             <td style="width: 20%; text-align: center;">
                 <span th:if="${item.stock > 0}" th:text="${item.stock} + '개'" style="color: #1d1d1f;">5개</span>
                 <span th:unless="${item.stock > 0}" style="color: #de363a; font-weight: 500;">품절</span>
@@ -109,6 +142,25 @@
         </tr>
         </tbody>
     </table>
+
+    <div th:if="${items.totalPages > 1}" class="pagination-container">
+
+        <a th:href="@{/shop(page=${items.number - 1})}"
+           class="page-link-custom"
+           th:classappend="${items.first} ? 'disabled-page' : ''">이전</a>
+
+        <th:block th:each="pageNumber : ${#numbers.sequence(0, items.totalPages - 1)}">
+            <a th:href="@{/shop(page=${pageNumber})}"
+               th:text="${pageNumber + 1}"
+               class="page-link-custom"
+               th:classappend="${pageNumber == items.number} ? 'active-page' : ''">1</a>
+        </th:block>
+
+        <a th:href="@{/shop(page=${items.number + 1})}"
+           class="page-link-custom"
+           th:classappend="${items.last} ? 'disabled-page' : ''">다음</a>
+
+    </div>
 </div>
 
 </body>

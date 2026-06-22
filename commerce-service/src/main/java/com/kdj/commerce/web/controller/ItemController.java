@@ -14,6 +14,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,8 +47,9 @@ public class ItemController {
 
     // 상점
     @GetMapping
-    public String list(Model model) {
-        List<Item> items = itemService.findItemsByDeletedFalse();
+    public String list(@PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                       Model model) {
+        Page<Item> items = itemService.findItemsByDeletedFalse(pageable);
         model.addAttribute("items", items);
 
         return "shop/shop";
