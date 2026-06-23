@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>THGTTG - ORDER</title>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <style>
+        body { background-color: #ffffff; color: #1d1d1f; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+        .main-container { max-width: 680px; margin: 60px auto; padding: 0 20px; }
+        .section-title { font-size: 1.3rem; font-weight: 600; margin-top: 40px; margin-bottom: 20px; border-bottom: 1px solid #1d1d1f; padding-bottom: 8px; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #e5e5e7; font-size: 0.95rem; }
+        .form-group-custom { margin-bottom: 15px; }
+        .form-group-custom label { font-size: 0.85rem; color: #86868b; margin-bottom: 5px; display: block; }
+        .input-custom { width: 100%; height: 44px; border: 1px solid #d2d2d7; border-radius: 8px; padding: 0 12px; font-size: 0.95rem; outline: none; background-color: #ffffff; }
+        .input-custom:focus { border-color: #0066cc; box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1); }
+        .summary-section { background-color: #f5f5f7; border-radius: 12px; padding: 24px; margin-top: 40px; }
+        .btn-pay { width: 100%; height: 48px; background-color: #1d1d1f; color: #ffffff; border: none; border-radius: 8px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: background-color 0.2s; }
+        .btn-pay:hover { background-color: #323236; }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{common/header :: mainHeader}"></div>
+
+<form th:action="@{/order/create}" method="post" class="main-container">
+
+    <input type="hidden" name="orderType" th:value="${orderType}">
+    <input type="hidden" name="itemId" th:value="${itemId}">
+    <input type="hidden" name="count" th:value="${count}">
+
+    <h2 class="fw-bold mb-4" style="font-size: 2rem; letter-spacing: -0.8px;">주문 / 결제</h2>
+
+    <div class="section-title">주문 상품 정보</div>
+    <div th:each="orderItem : ${orderItems}" class="item-row">
+        <div>
+            <span th:text="${orderItem.itemName}" class="fw-medium">상품명</span>
+            <span th:text="' x ' + ${orderItem.count} + '개'" style="color: #86868b; font-size: 0.9rem;">x 1개</span>
+        </div>
+        <div th:text="${#numbers.formatInteger(orderItem.orderPrice * orderItem.count, 0, 'COMMA')} + '원'" class="fw-semibold">0원</div>
+    </div>
+
+    <div class="section-title">배송지 정보</div>
+    <div class="form-group-custom">
+        <label for="receiverName">수령인</label>
+        <input type="text" id="receiverName" name="receiverName" class="input-custom" placeholder="이름을 입력해 주세요." required>
+    </div>
+    <div class="form-group-custom">
+        <label for="address">배송 주소</label>
+        <input type="text" id="address" name="address" class="input-custom" placeholder="상세 주소를 입력해 주세요." required>
+    </div>
+
+    <div class="summary-section">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span style="color: #86868b; font-size: 1rem;">최종 결제 금액</span>
+            <span style="font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;"
+                  th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원'">0원</span>
+        </div>
+        <button type="submit" class="btn-pay">주문하기</button>
+    </div>
+</form>
+
+</body>
+</html>

@@ -31,8 +31,6 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) // OrderItem 클래스에 있는 "order" 변수에 의해 매핑
     private List<OrderItem> orderItems = new ArrayList<>();
 
-
-
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
         orderItem.setOrder(this);
@@ -63,4 +61,5 @@ public class Order {
         }
         return totalPrice;
     }
+
 }

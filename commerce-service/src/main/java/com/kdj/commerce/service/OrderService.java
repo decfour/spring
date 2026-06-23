@@ -27,6 +27,12 @@ public class OrderService {
     private final ItemRepository itemRepository;
     private final CartService cartService;
 
+    public int getTotalPrice(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+        return order.getTotalPrice();
+    }
+
     // 단건 상품 주문
     @Transactional
     public Long order(Long memberId, Long itemId, int count) {
