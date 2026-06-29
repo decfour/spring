@@ -13,14 +13,13 @@ import java.util.List;
 @Getter
 @Setter
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY) // 지연 로딩
-    @JoinColumn(name = "member_id")   // order.member_id <-> member.id 조인
+    @ManyToOne(fetch = FetchType.LAZY)  // 지연 로딩
+    @JoinColumn(name = "member_id")     // order.member_id <-> member.id 조인
     private Member member;
 
     private LocalDateTime orderDate;
@@ -44,6 +43,7 @@ public class Order {
         }
         order.setStatus(OrderStatus.ORDER);
         order.setOrderDate(LocalDateTime.now());
+
         return order;
     }
 
@@ -59,6 +59,7 @@ public class Order {
         for (OrderItem orderItem : orderItems) {
             totalPrice += orderItem.getTotalPrice();
         }
+
         return totalPrice;
     }
 

@@ -2,8 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>THGTTS - NOTICE</title>
-    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <title>THGTTS - REVIEWS</title> <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
         body {
             background-color: #ffffff;
@@ -116,53 +115,53 @@
 <div class="main-container">
     <div class="d-flex justify-content-between align-items-end mb-4">
         <div>
-            <h2 class="section-title m-0">Notice <span class="text-muted" style="font-weight:400;">Service Announcements</span></h2>
+            <h2 class="section-title m-0">Review <span class="text-muted" style="font-weight:400;">Feedback</span></h2>
         </div>
 
-        <div th:if="${session.loginMember != null && session.loginMember.memberType.name() == 'ADMIN'}">
-            <a href="/notice/add" class="btn-apple-dark">글쓰기</a>
+        <div>
+            <a th:href="@{/shop/item/{itemId}/review/add(itemId=${itemId})}" class="btn-apple-dark">리뷰 작성</a>
         </div>
     </div>
 
     <div class="notice-table">
         <table class="w-100">
             <tbody>
-            <tr class="notice-row" th:each="notice : ${notices}">
+            <tr class="notice-row" th:each="review : ${reviews}">
                 <td>
-                    <a th:href="@{/notice/{id}(id=${notice.id})}" class="notice-link" th:text="${notice.title}">
-                        [안내] 커머스 서비스 시스템 정기 점검 안내
+                    <a th:href="@{/shop/item/{itemId}/review/{reviewId}(itemId=${itemId}, reviewId=${review.id})}" class="notice-link" th:text="${review.title}">
+                        샘플 리뷰 제목입니다.
                     </a>
                 </td>
-                <td class="notice-date" th:text="${#temporals.format(notice.createdDate, 'yyyy.MM.dd')}">
-                    2026.06.04
+                <td class="notice-date" th:text="${#temporals.format(review.createdDate, 'yyyy.MM.dd')}">
+                    2026.06.29
                 </td>
             </tr>
 
-            <tr th:if="${notices.isEmpty()}">
+            <tr th:if="${reviews.isEmpty()}">
                 <td colspan="2" class="empty-notice">
-                    공지사항이 없습니다
+                    작성된 리뷰가 없습니다.
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 
-    <div th:if="${notices.totalPages > 1}" class="pagination-container">
+    <div th:if="${reviews.totalPages > 1}" class="pagination-container">
 
-        <a th:href="@{/notice(page=${notices.number - 1})}"
+        <a th:href="@{/shop/item/{itemId}/review(itemId=${itemId}, page=${reviews.number - 1})}"
            class="page-link-custom"
-           th:classappend="${notices.first} ? 'disabled-page' : ''">이전</a>
+           th:classappend="${reviews.first} ? 'disabled-page' : ''">이전</a>
 
-        <th:block th:each="pageNumber : ${#numbers.sequence(0, notices.totalPages - 1)}">
-            <a th:href="@{/notice(page=${pageNumber})}"
+        <th:block th:each="pageNumber : ${#numbers.sequence(0, reviews.totalPages - 1)}">
+            <a th:href="@{/shop/item/{itemId}/review(itemId=${itemId}, page=${pageNumber})}"
                th:text="${pageNumber + 1}"
                class="page-link-custom"
-               th:classappend="${pageNumber == notices.number} ? 'active-page' : ''">1</a>
+               th:classappend="${pageNumber == reviews.number} ? 'active-page' : ''">1</a>
         </th:block>
 
-        <a th:href="@{/notice(page=${notices.number + 1})}"
+        <a th:href="@{/shop/item/{itemId}/review(itemId=${itemId}, page=${reviews.number + 1})}"
            class="page-link-custom"
-           th:classappend="${notices.last} ? 'disabled-page' : ''">다음</a>
+           th:classappend="${reviews.last} ? 'disabled-page' : ''">다음</a>
 
     </div>
 </div>

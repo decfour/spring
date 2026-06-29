@@ -17,13 +17,11 @@ public class MemberService {
 
     // 회원가입
     public void join(Member member) {
-        // 이메일 중복 검증
+        // 이메일, 아이디 중복 검증
         memberRepository.findByEmail(member.getEmail())
                 .ifPresent(m -> {
                     throw new IllegalStateException("사용중인 이메일입니다.");
                 });
-
-        // 아이디 중복 검증
         memberRepository.findByLoginId(member.getLoginId())
                 .ifPresent(m -> {
                     throw new IllegalStateException("사용중인 아이디입니다.");

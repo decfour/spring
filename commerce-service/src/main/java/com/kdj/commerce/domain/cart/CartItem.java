@@ -11,7 +11,6 @@ import lombok.Setter;
 @Setter
 @Table(name = "cart_item")
 public class CartItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_item_id")

@@ -8,10 +8,25 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(IllegalArgumentException.class)
     public String handleIllegalArgumentException(IllegalArgumentException ex, Model model) {
         log.error("IllegalArgumentException 발생: {}", ex.getMessage());
+        model.addAttribute("errorMessage", ex.getMessage());
+
+        return "error/4xx";
+    }
+
+    @ExceptionHandler(NotEnoughStockException.class)
+    public String handleNotEnoughStockException(NotEnoughStockException e, Model model) {
+        log.error("NotEnoughStockException 발생 : {}", e.getMessage());
+        model.addAttribute("errorMessage", e.getMessage());
+
+        return "error/4xx";
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public String handleIllegalStateException(IllegalStateException ex, Model model) {
+        log.error("IllegalStateException 발생: {}", ex.getMessage());
         model.addAttribute("errorMessage", ex.getMessage());
 
         return "error/4xx";
@@ -24,12 +39,5 @@ public class GlobalExceptionHandler {
 
         return "error/4xx";
     }
-
-    @ExceptionHandler(NotEnoughStockException.class)
-    public String handleNotEnoughStockException(NotEnoughStockException e, Model model) {
-        log.error("NotEnoughStockException 발생 : {}", e.getMessage());
-        model.addAttribute("errorMessage", e.getMessage());
-
-        return "error/4xx";
-    }
 }
+

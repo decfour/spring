@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>THGTTS - Edit Notice</title>
+    <title>THGTTS - Add Review</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
         body {
@@ -75,20 +75,6 @@
             background-color: #f5f5f7;
             border-color: #86868b;
         }
-        .btn-delete {
-            background-color: #ff3b30;
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            padding: 10px 24px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .btn-delete:hover {
-            background-color: #d7261e;
-        }
     </style>
 </head>
 <body>
@@ -96,15 +82,15 @@
 <div th:replace="~{common/header :: mainHeader}"></div>
 
 <div class="main-container">
-    <h2 class="fw-bold mb-4" style="font-size: 1.8rem; letter-spacing: -0.6px;">Edit Notice</h2>
+    <h2 class="fw-bold mb-4" style="font-size: 1.8rem; letter-spacing: -0.6px;">Add Review</h2>
 
-    <form th:action th:object="${noticeForm}" method="post">
+    <form th:action th:object="${reviewForm}" method="post">
 
         <div>
             <label for="title" class="form-label-custom">제목</label>
             <input type="text" id="title" th:field="*{title}"
                    th:classappend="${#fields.hasErrors('title')} ? 'field-error' : ''"
-                   class="form-input-text" placeholder="Notice title">
+                   class="form-input-text" placeholder="Review title">
             <div class="field-error-text" th:errors="*{title}">제목 오류 메시지</div>
         </div>
 
@@ -112,16 +98,15 @@
             <label for="content" class="form-label-custom">본문 내용</label>
             <textarea id="content" th:field="*{content}" rows="12"
                       th:classappend="${#fields.hasErrors('content')} ? 'field-error' : ''"
-                      class="form-input-text" placeholder="Write your notice here..." style="resize:none;"></textarea>
+                      class="form-input-text" placeholder="Write your Review here..." style="resize:none;"></textarea>
             <div class="field-error-text" th:errors="*{content}">본문 오류 메시지</div>
         </div>
 
         <hr class="my-4" style="border-color:#e5e5e7;">
 
         <div class="d-flex gap-2 justify-content-end align-items-center">
-            <button type="submit" class="btn-submit">수정 완료</button>
-            <button type="submit" class="btn-delete" th:formaction="@{/notice/{id}/delete(id=${id})}">삭제</button>
-            <button type="button" class="btn-cancel" th:onclick="|location.href='@{/notice}'|">취소</button>
+            <button type="submit" class="btn-submit">등록 완료</button>
+            <button type="button" class="btn-cancel" th:onclick="|location.href='@{/shop/item/{itemId}/review(itemId=${itemId})}'|">취소</button>
         </div>
 
     </form>

@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_item_id")
@@ -39,12 +38,10 @@ public class OrderItem {
     }
 
     public void cancel() {
-
         getItem().addStock(count);
     }
 
     public int getTotalPrice() {
-
         return getOrderPrice() * getCount();
     }
 }

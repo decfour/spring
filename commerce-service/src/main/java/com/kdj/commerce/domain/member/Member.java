@@ -10,7 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Member {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

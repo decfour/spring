@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>THGTTG - ITEM</title>
+    <title>THGTTS - Item</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
         body {
@@ -146,15 +146,18 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-end gap-2" style="margin-top: 40px; border-top: 1px solid #e5e5e7; padding-top: 20px;">
-        <button class="btn-action btn-outline-dark"
-                th:disabled="${session.loginMember == null or item.createdBy != session.loginMember.id}"
-                th:onclick="|location.href='@{/shop/item/{itemId}/edit(itemId=${item.id})}'|"
-                type="button">상품 수정</button>
+    <button class="btn-action btn-outline-dark"
+            th:if="${session.loginMember != null and item.createdBy == session.loginMember.id}"
+            th:onclick="|location.href='@{/shop/item/{itemId}/edit(itemId=${item.id})}'|"
+            type="button">수정</button>
         <button class="btn-action"
                 style="background-color: #f5f5f7; color: #1d1d1f; border: none;"
                 th:onclick="|location.href='@{/shop}'|"
-                type="button">목록으로</button>
+                type="button">목록</button>
+        <button class="btn-action"
+                style="background-color: #f5f5f7; color: #1d1d1f; border: none;"
+                th:onclick="|location.href='@{/shop/item/{itemId}/review(itemId=${item.id})}'|"
+                type="button">리뷰</button>
     </div>
 
 </div>

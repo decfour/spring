@@ -4,9 +4,9 @@ import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
 import com.kdj.commerce.domain.notice.Notice;
 import com.kdj.commerce.service.NoticeService;
+import com.kdj.commerce.web.argumentresolver.Login;
 import com.kdj.commerce.web.form.NoticeEditForm;
 import com.kdj.commerce.web.form.NoticeSaveForm;
-import com.kdj.commerce.web.session.SessionConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,14 +19,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Controller
 @RequestMapping("/notice")
 @RequiredArgsConstructor
 @Slf4j
 public class NoticeController {
-
     private final NoticeService noticeService;
 
     private boolean isNotAdmin(Member loginMember) {
@@ -36,7 +33,6 @@ public class NoticeController {
     @GetMapping
     public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model) {
-
         Page<Notice> notices = noticeService.findNotices(pageable);
         model.addAttribute("notices", notices);
 
@@ -45,7 +41,6 @@ public class NoticeController {
 
     @GetMapping("/{id}")
     public String detail(@PathVariable Long id, Model model) {
-
         Notice notice = noticeService.findOne(id);
         model.addAttribute("notice", notice);
 
@@ -53,24 +48,21 @@ public class NoticeController {
     }
 
     @GetMapping("/add")
-    public String addForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+    public String addForm(@Login Member loginMember,
                           Model model) {
-
         if (isNotAdmin(loginMember)) {
             log.warn("권한 없는 사용자의 공지사항 작성 폼 진입 시도 차단");
             return "redirect:/notice";
         }
-
         model.addAttribute("noticeForm", new NoticeSaveForm());
 
         return "notice/addNoticeForm";
     }
 
     @PostMapping("/add")
-    public String add(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                            @Valid @ModelAttribute("noticeForm") NoticeSaveForm form,
-                            BindingResult bindingResult) {
-
+    public String add(@Login Member loginMember,
+                      @Valid @ModelAttribute("noticeForm") NoticeSaveForm form,
+                      BindingResult bindingResult) {
         if (isNotAdmin(loginMember)) {
             log.warn("권한 없는 사용자의 공지사항 등록 시도 차단");
             return "redirect:/notice";
@@ -89,10 +81,9 @@ public class NoticeController {
     }
 
     @GetMapping("/{id}/edit")
-    public String editForm(@SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
+    public String editForm(@Login Member loginMember,
                            @PathVariable Long id,
                            Model model) {
-
         if (isNotAdmin(loginMember)) {
             log.warn("권한 없는 사용자의 공지사항 수정 폼 진입 시도 차단");
             return "redirect:/notice";
@@ -102,7 +93,6 @@ public class NoticeController {
         NoticeEditForm form = new NoticeEditForm();
         form.setTitle(notice.getTitle());
         form.setContent(notice.getContent());
-
         model.addAttribute("noticeForm", form);
 
         return "notice/editNoticeForm";
@@ -110,10 +100,9 @@ public class NoticeController {
 
     @PostMapping("/{id}/edit")
     public String edit(@PathVariable Long id,
-                             @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember,
-                             @Valid @ModelAttribute("noticeForm") NoticeEditForm form,
-                             BindingResult bindingResult) {
-
+                       @Login Member loginMember,
+                       @Valid @ModelAttribute("noticeForm") NoticeEditForm form,
+                       BindingResult bindingResult) {
         if (isNotAdmin(loginMember)) {
             log.warn("권한 없는 사용자의 공지사항 수정 시도 차단");
             return "redirect:/notice";
@@ -128,12 +117,4 @@ public class NoticeController {
 
         return "redirect:/notice/" + id;
     }
-
-    /*
-    @PostMapping("/{id}/delete")
-    public String deleteNotice(@PathVariable Long id,
-                               @SessionAttribute(name = SessionConst.LOGIN_MEMBER, required = false) Member loginMember) {
-
-    }
-    */
 }

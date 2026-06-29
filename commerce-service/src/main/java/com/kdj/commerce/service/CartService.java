@@ -21,7 +21,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CartService {
-
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final MemberRepository memberRepository;
@@ -30,7 +29,6 @@ public class CartService {
     // 카트 상품 추가
     @Transactional
     public Long addCart(Long memberId, Long itemId, int count) {
-
         // 1. 회원, 아이템 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다 id=" + memberId));
@@ -47,26 +45,25 @@ public class CartService {
         if (findCartItem.isPresent()) {
             int totalCount = findCartItem.get().getCount() + count;
             if (totalCount > item.getStock()) {
-                throw new NotEnoughStockException("담으려는 수량이 재고보다 많습니다 (현재 재고: " + item.getStock() + "개)");
+                throw new NotEnoughStockException("재고가 부족합니다 (재고: " + item.getStock() + "개)");
             }
-
             findCartItem.get().addCount(count);
+
             return findCartItem.get().getId();
         }
         else {
             if (count > item.getStock()) {
-                throw new NotEnoughStockException("재고가 부족하여 담을 수 없습니다 (현재 재고: " + item.getStock() + "개)");
+                throw new NotEnoughStockException("재고가 부족합니다 (재고: " + item.getStock() + "개)");
             }
-
             CartItem cartItem = CartItem.createCartItem(cart, item, count);
             cartItemRepository.save(cartItem);
+
             return cartItem.getId();
         }
     }
 
     // 카트 상품 조회
     public List<CartItem> findCartItem(Long memberId) {
-
         return cartRepository.findByMemberId(memberId)
                 .map(cart -> cartItemRepository.findAllByCartId(cart.getId()))
                 .orElse(Collections.emptyList());
@@ -85,7 +82,6 @@ public class CartService {
 
         if (cart.isPresent()) {
             List<CartItem> cartItems = cartItemRepository.findAllByCartId(cart.get().getId());
-
             cartItemRepository.deleteAllInBatch(cartItems);
         }
     }

@@ -5,10 +5,10 @@ import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemType;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.ItemService;
+import com.kdj.commerce.web.argumentresolver.Login;
 import com.kdj.commerce.web.file.FileStore;
 import com.kdj.commerce.web.form.item.ItemEditForm;
 import com.kdj.commerce.web.form.item.ItemSaveForm;
-import com.kdj.commerce.web.session.SessionConst;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +25,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @Controller
 @RequestMapping("/shop")
 @RequiredArgsConstructor
 public class ItemController {
-
     private final ItemService itemService;
     private final FileStore fileStore;
 
@@ -64,11 +62,10 @@ public class ItemController {
     }
 
     @PostMapping("/add")
-    public String add(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+    public String add(@Login Member loginMember,
                       @Valid @ModelAttribute ItemSaveForm form,
                       BindingResult bindingResult,
                       RedirectAttributes redirectAttributes) throws IOException {
-
         if (bindingResult.hasErrors()) {
             return "shop/addItemForm";
         }
@@ -106,9 +103,8 @@ public class ItemController {
     // 상품 수정
     @GetMapping("/item/{id}/edit")
     public String editForm(@PathVariable Long id,
-                           @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+                           @Login Member loginMember,
                            Model model) {
-
         Item item = itemService.findOne(id);
 
         if (isNotOwner(item, loginMember)) {
@@ -134,10 +130,9 @@ public class ItemController {
 
     @PostMapping("/item/{id}/edit")
     public String edit(@PathVariable Long id,
-                       @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember,
+                       @Login Member loginMember,
                        @Valid @ModelAttribute ItemEditForm form,
                        BindingResult bindingResult) throws IOException {
-
         if (bindingResult.hasErrors()) {
             return "shop/editItemForm";
         }
@@ -175,8 +170,7 @@ public class ItemController {
 
     @PostMapping("/item/{id}/delete")
     public String delete(@PathVariable Long id,
-                         @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember) {
-
+                         @Login Member loginMember) {
         Item item = itemService.findOne(id);
         if (item == null)
             return "redirect:/shop";
@@ -194,10 +188,11 @@ public class ItemController {
 
     @PostMapping("/item/{id}/restore")
     public String restore(@PathVariable Long id,
-                          @SessionAttribute(name = SessionConst.LOGIN_MEMBER) Member loginMember) {
-
+                          @Login Member loginMember) {
         Item item = itemService.findOne(id);
-        if (item == null) return "redirect:/shop";
+        if (item == null) {
+            return "redirect:/shop";
+        }
 
         if (isNotOwner(item, loginMember)) {
             log.warn("상품 복원 차단={}", id);
@@ -215,5 +210,4 @@ public class ItemController {
     public Resource downloadImage(@PathVariable String filename) {
         return new FileSystemResource(fileStore.getFullPath(filename));
     }
-
 }

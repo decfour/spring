@@ -21,7 +21,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OrderService {
-
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
@@ -30,13 +29,13 @@ public class OrderService {
     public int getTotalPrice(Long orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+
         return order.getTotalPrice();
     }
 
     // 단건 상품 주문
     @Transactional
     public Long order(Long memberId, Long itemId, int count) {
-
         log.info("=== 단건 상품 주문 사작 ===");
 
         // 1. 회원, 상품 조회
@@ -54,7 +53,7 @@ public class OrderService {
         // 4. 주문 저장
         orderRepository.save(order);
 
-        log.info("=== 단건 상품 주문 사작 ===");
+        log.info("=== 단건 상품 주문 종료 ===");
 
         // 5. 주문 ID 반환
         return order.getId();
@@ -63,13 +62,11 @@ public class OrderService {
     // 카트 상품 주문
     @Transactional
     public Long cartOrder(Long memberId, List<CartItem> cartItems) {
-
         log.info("=== 카트 상품 주문 사작 ===");
 
         // 1. 회원 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-
 
         // 2. 주문 상품 목록 생성
         List<OrderItem> orderItems = new ArrayList<>();
@@ -102,14 +99,9 @@ public class OrderService {
     // 주문 취소
     @Transactional
     public void cancelOrder(Long orderId) {
-
-        log.info("=== 주문 종료 ===");
-
-        // 1. 주문 조회
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
 
-        // 2. 주문 취소
         order.cancel();
     }
 
@@ -122,5 +114,4 @@ public class OrderService {
     public List<Order> findAllOrdersForAdmin() {
         return orderRepository.findAllWithMember();
     }
-
 }

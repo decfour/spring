@@ -65,7 +65,7 @@
 
 <div class="main-container">
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h2 class="section-title m-0">My <span class="text-muted" style="font-weight:400;">products</span></h2>
+        <h2 class="section-title m-0">My <span class="text-muted" style="font-weight:400;">reviews</span></h2>
         <button class="btn-custom btn-secondary-outline" th:onclick="|location.href='@{/member/my-page}'|" type="button">마이페이지 홈</button>
     </div>
 
@@ -74,26 +74,21 @@
         <tr>
             <th style="width: 10%; text-align: center;">ID</th>
             <th style="width: 40%; text-align: center;">Product</th>
-            <th style="width: 15%; text-align: center;">Price</th>
-            <th style="width: 15%; text-align: center;">Stock</th>
-            <th style="width: 20%; text-align: center;">Status</th>
+            <th style="width: 40%; text-align: center;">Title</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="item : ${myItems}">
-            <td th:text="${item.id}" style="width: 10%; color: #86868b; text-align: center;">1</td>
+        <tr th:each="review : ${myReviews}">
+            <td th:text="${review.id}" style="width: 10%; color: #86868b; text-align: center;">1</td>
+
             <td style="width: 40%; text-align: center;">
-                <a th:href="@{/shop/item/{itemId}(itemId=${item.id})}" th:text="${item.name}" class="text-dark fw-medium text-decoration-none" style="letter-spacing: -0.2px;">내 등록 상품</a>
+                <a th:href="@{/shop/item/{itemId}/review/{reviewId}(itemId=${review.item.id}, reviewId=${review.id})}"
+                   th:text="${review.item.name}"
+                   class="text-dark fw-medium text-decoration-none"
+                   style="letter-spacing: -0.2px;">상품명</a>
             </td>
-            <td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'" style="width: 15%; color: #424245; text-align: center;">10,000원</td>
-            <td style="width: 15%; text-align: center;">
-                <span th:if="${item.stock > 0}" th:text="${item.stock} + '개'" style="color: #1d1d1f;">5개</span>
-                <span th:unless="${item.stock > 0}" style="color: #de363a; font-weight: 500;">품절</span>
-            </td>
-            <td style="width: 20%; text-align: center;">
-                <span th:if="${item.open}" class="badge bg-light text-dark border" style="font-weight: 500; font-size: 0.8rem; padding: 5px 10px;">판매 중</span>
-                <span th:unless="${item.open}" class="badge bg-secondary" style="font-weight: 500; font-size: 0.8rem; padding: 5px 10px;">판매 중지</span>
-            </td>
+
+            <td th:text="${review.title}" style="width: 40%; text-align: center; color: #1d1d1f;">제목</td>
         </tr>
         </tbody>
     </table>

@@ -14,13 +14,13 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ItemService {
-
     private final ItemRepository itemRepository;
 
     // 상품 추가
     @Transactional
     public Long saveItem(Item item) {
         Item savedItem = itemRepository.save(item);
+
         return savedItem.getId();
     }
 
@@ -45,7 +45,6 @@ public class ItemService {
     public void deleteItem(Long itemId) {
         Item findItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
-
         findItem.delete();
     }
 
@@ -53,7 +52,6 @@ public class ItemService {
     public void restoreItem(Long itemId) {
         Item findItem = itemRepository.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
-
         findItem.restore();
     }
 
@@ -76,5 +74,4 @@ public class ItemService {
     public Page<Item> findItemsByDeletedFalse(Pageable pageable) {
         return itemRepository.findByDeletedFalse(pageable);
     }
-
 }

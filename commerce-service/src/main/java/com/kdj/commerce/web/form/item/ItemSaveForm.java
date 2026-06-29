@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class ItemSaveForm {
-
     @NotBlank(message = "상품 이름은 필수입니다.")
     private String name;
 
@@ -24,7 +23,6 @@ public class ItemSaveForm {
     private Integer stock;
 
     private String description;
-
     private boolean open;
 
     @NotNull(message = "상품 종류를 선택해주세요.")
@@ -34,5 +32,4 @@ public class ItemSaveForm {
     private DeliveryType deliveryType;
 
     private MultipartFile imageFile;
-
 }

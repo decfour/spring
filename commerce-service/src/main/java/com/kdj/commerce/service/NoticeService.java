@@ -15,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class NoticeService {
-
     private final NoticeRepository noticeRepository;
 
     public Notice findOne(Long id) {
@@ -38,7 +37,6 @@ public class NoticeService {
     public void updateNotice(Long id, String title, String content) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 ID=" + id));
-
         notice.setTitle(title);
         notice.setContent(content);
     }
@@ -47,7 +45,6 @@ public class NoticeService {
     public void deleteNotice(Long id) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 ID = " + id));
-
         noticeRepository.delete(notice);
     }
 }

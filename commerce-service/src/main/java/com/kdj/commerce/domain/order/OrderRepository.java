@@ -9,7 +9,6 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-
     // 1. 관리자 페이지 전체 페치 조인
     @Query("select o from Order o join fetch o.member")
     List<Order> findAllWithMember();

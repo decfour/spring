@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>THGTTG - My Page</title>
+    <title>THGTTS - My Page</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
         body {
@@ -102,6 +102,7 @@
 
     <div class="d-flex gap-2 justify-content-end">
         <button class="btn-custom btn-primary-dark" th:onclick="|location.href='@{/member/my-page/my-item}'|" type="button">내가 등록한 상품</button>
+        <button class="btn-custom btn-primary-dark" th:onclick="|location.href='@{/member/my-page/my-review}'|" type="button">내가 등록한 후기</button>
         <button class="btn-custom btn-secondary-outline" th:onclick="|location.href='@{/order/list}'|" type="button">주문 내역 조회</button>
     </div>
 </div>

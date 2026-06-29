@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Data
 public class ItemEditForm {
-
     private Long id;
 
     @NotBlank(message = "상품 이름은 필수입니다.")
@@ -26,9 +25,7 @@ public class ItemEditForm {
     private Integer stock;
 
     private String description;
-
     private boolean open;
-
     private boolean deleted;
 
     @NotNull(message = "상품 종류를 선택해주세요.")

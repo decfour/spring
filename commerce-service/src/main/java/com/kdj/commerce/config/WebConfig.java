@@ -1,13 +1,16 @@
 package com.kdj.commerce.config;
 
+import com.kdj.commerce.web.argumentresolver.LoginMemberArgumentResolver;
 import com.kdj.commerce.web.interceptor.LoginCheckInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
+
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-
     // 회원 확인 인터셉터
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -18,10 +21,16 @@ public class WebConfig implements WebMvcConfigurer {
                         "/",
                         "/shop",
                         "/shop/item/*",
+                        "/shop/item/*/review",
                         "/member/login",
                         "/member/logout",
                         "/member/register",
                         "/css/**", "/js/**", "/images/**", "/webjars/**", "/*.ico", "/error", "/shop/images/**"
                 );
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new LoginMemberArgumentResolver());
     }
 }
