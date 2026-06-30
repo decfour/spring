@@ -15,9 +15,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    // 회원가입
     public void join(Member member) {
-        // 이메일, 아이디 중복 검증
         memberRepository.findByEmail(member.getEmail())
                 .ifPresent(m -> {
                     throw new IllegalStateException("사용중인 이메일입니다.");
@@ -29,19 +27,16 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    // 로그인
     public Member login(String loginId, String loginPassword) {
         return memberRepository.findByLoginId(loginId)
                 .filter(m -> m.getLoginPassword().equals(loginPassword))
                 .orElse(null);
     }
 
-    // 개인 회원 조회
     public Optional<Member> findMember(long id) {
         return memberRepository.findById(id);
     }
 
-    // 전체 회원 조회
     public List<Member> findMembers() {
         return memberRepository.findAll();
     }

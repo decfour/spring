@@ -1,7 +1,6 @@
 package com.kdj.commerce.service;
 
 import com.kdj.commerce.domain.item.Item;
-import com.kdj.commerce.domain.notice.Notice;
 import com.kdj.commerce.domain.review.Review;
 import com.kdj.commerce.domain.review.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,11 +30,19 @@ public class ReviewService {
         return reviewRepository.findByMemberId(id);
     }
 
-
     @Transactional
     public Long saveReview(Review review) {
         Review savedReview = reviewRepository.save(review);
 
         return savedReview.getId();
+    }
+
+    @Transactional
+    public void updateReview(Long ReviewId, Review updateParam) {
+        Review findReview = reviewRepository.findById(ReviewId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + ReviewId));
+
+        findReview.setTitle(updateParam.getTitle());
+        findReview.setContent(updateParam.getContent());
     }
 }

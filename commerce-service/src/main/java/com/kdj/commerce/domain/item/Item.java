@@ -22,11 +22,11 @@ public class Item {
     private String name;
 
     @NotNull(message = "가격은 필수입니다.")
-    @Min(value = 100, message = "가격은 최소 100원 이상이어야 합니다.")
+    @Min(value = 100, message = "가격은 최소 100원입니다.")
     private Integer price;
 
     @NotNull(message = "수량은 필수입니다.")
-    @Max(value = 9999, message = "수량은 최대 9,999개까지만 등록 가능합니다.")
+    @Max(value = 9999, message = "수량은 최대 9,999개입니다.")
     private Integer stock;
 
     private String description;
@@ -57,7 +57,7 @@ public class Item {
         int restStock = this.stock - quantity;
 
         if (restStock < 0) {
-            throw new NotEnoughStockException("재고가 부족 (현재 : " + this.stock + "개)");
+            throw new NotEnoughStockException("재고 부족 (현재 : " + this.stock + "개)");
         }
         this.stock = restStock;
     }

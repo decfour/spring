@@ -19,7 +19,7 @@ public class Order {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)  // 지연 로딩
-    @JoinColumn(name = "member_id")     // order.member_id <-> member.id 조인
+    @JoinColumn(name = "member_id")
     private Member member;
 
     private LocalDateTime orderDate;

@@ -16,7 +16,15 @@ import java.util.List;
 public class ItemService {
     private final ItemRepository itemRepository;
 
-    // 상품 추가
+    public Item findOne(Long itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
+    }
+
+    public List<Item> findItems() {
+        return itemRepository.findAll();
+    }
+
     @Transactional
     public Long saveItem(Item item) {
         Item savedItem = itemRepository.save(item);
@@ -24,7 +32,6 @@ public class ItemService {
         return savedItem.getId();
     }
 
-    // 상품 수정
     @Transactional
     public void updateItem(Long itemId, Item updateParam) {
         Item findItem = itemRepository.findById(itemId)
@@ -55,22 +62,10 @@ public class ItemService {
         findItem.restore();
     }
 
-    public Item findOne(Long itemId) {
-        return itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
-    }
-
-    // 모든 상품 찾기
-    public List<Item> findItems() {
-        return itemRepository.findAll();
-    }
-
-    // 등록자 아이템 찾기
     public List<Item> findItemsByCreatedBy(Long id) {
         return itemRepository.findByCreatedBy(id);
     }
 
-    // 삭제되지 않은 아이템 찾기
     public Page<Item> findItemsByDeletedFalse(Pageable pageable) {
         return itemRepository.findByDeletedFalse(pageable);
     }

@@ -23,7 +23,7 @@ public class OrderItem {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    private int orderPrice;     // 할인 고려
+    private int orderPrice;
     private int count;
 
     public static OrderItem createOrderItem(Item item, int orderPrice, int count) {

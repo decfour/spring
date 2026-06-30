@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-// 장바구니 아이템(CartItem N:1 Cart)
+// CartItem N:1 Cart
 @Entity
 @Getter
 @Setter

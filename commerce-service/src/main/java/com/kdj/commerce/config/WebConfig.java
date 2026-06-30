@@ -11,7 +11,7 @@ import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    // 회원 확인 인터셉터
+    // 로그인 체크 인터셉터
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoginCheckInterceptor())
@@ -22,6 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "/shop",
                         "/shop/item/*",
                         "/shop/item/*/review",
+                        "/shop/item/*/review/[0-9]*",
                         "/member/login",
                         "/member/logout",
                         "/member/register",

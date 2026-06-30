@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>THGTTS - Add Review</title>
+    <title>THGTTS - Edit Review</title>
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <style>
         body {
@@ -80,9 +80,11 @@
 <div th:replace="~{common/header :: mainHeader}"></div>
 
 <div class="main-container">
-    <h2 class="fw-bold mb-4" style="font-size: 1.8rem; letter-spacing: -0.6px;">Add Review</h2>
+    <h2 class="fw-bold mb-4" style="font-size: 1.8rem; letter-spacing: -0.6px;">리뷰 수정하기</h2>
 
     <form th:action th:object="${reviewForm}" method="post">
+
+        <input type="hidden" th:field="*{id}">
 
         <div>
             <label for="title" class="form-label-custom">제목</label>
@@ -103,9 +105,9 @@
         <hr class="my-4" style="border-color:#e5e5e7;">
 
         <div class="d-flex gap-2 justify-content-end align-items-center">
-            <button class="btn-custom-pack btn-submit" type="submit">등록 완료</button>
+            <button class="btn-custom-pack btn-submit" type="submit">수정 완료</button>
             <button class="btn-custom-pack btn-cancel-outline"
-                    th:onclick="|location.href='@{/shop/item/{itemId}/review(itemId=${itemId})}'|"
+                    th:onclick="|location.href='@{/shop/item/{itemId}/review/{reviewId}(itemId=${itemId}, reviewId=*{id})}'|}"
                     type="button">취소</button>
         </div>
 

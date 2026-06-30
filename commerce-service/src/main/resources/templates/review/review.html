@@ -90,6 +90,10 @@
     <div class="button-group">
         <a th:href="@{/shop/item/{itemId}/review(itemId=${itemId})}" class="btn-apple-light">목록 보기</a>
 
+        <a th:if="${session.loginMember != null and session.loginMember.id == review.member.id}"
+           th:href="@{/shop/item/{itemId}/review/{reviewId}/edit(itemId=${itemId}, reviewId=${review.id})}"
+           class="btn-apple-light">수정</a>
+
         <div th:if="${session.loginMember != null}" class="d-flex gap-3 align-items-center">
         </div>
     </div>

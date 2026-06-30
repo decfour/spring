@@ -43,7 +43,6 @@ public class ItemController {
         return !item.getCreatedBy().equals(loginMember.getId());
     }
 
-    // 상점
     @GetMapping
     public String list(@PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model) {
@@ -53,7 +52,6 @@ public class ItemController {
         return "shop/shop";
     }
 
-    // 상품 추가
     @GetMapping("/add")
     public String addForm(Model model) {
         model.addAttribute("item", new ItemSaveForm());
@@ -63,10 +61,12 @@ public class ItemController {
 
     @PostMapping("/add")
     public String add(@Login Member loginMember,
-                      @Valid @ModelAttribute ItemSaveForm form,
+                      @Valid @ModelAttribute("item") ItemSaveForm form,
                       BindingResult bindingResult,
-                      RedirectAttributes redirectAttributes) throws IOException {
+                      RedirectAttributes redirectAttributes,
+                      Model model) throws IOException {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("item", form);
             return "shop/addItemForm";
         }
 
@@ -91,7 +91,6 @@ public class ItemController {
         return "redirect:/shop/item/{itemId}";
     }
 
-    // 상품 정보
     @GetMapping("/item/{id}")
     public String detail(@PathVariable Long id, Model model) {
         Item item = itemService.findOne(id);
@@ -100,7 +99,6 @@ public class ItemController {
         return "shop/item";
     }
 
-    // 상품 수정
     @GetMapping("/item/{id}/edit")
     public String editForm(@PathVariable Long id,
                            @Login Member loginMember,
@@ -131,9 +129,11 @@ public class ItemController {
     @PostMapping("/item/{id}/edit")
     public String edit(@PathVariable Long id,
                        @Login Member loginMember,
-                       @Valid @ModelAttribute ItemEditForm form,
-                       BindingResult bindingResult) throws IOException {
+                       @Valid @ModelAttribute("item") ItemEditForm form,
+                       BindingResult bindingResult,
+                       Model model) throws IOException {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("item", form);
             return "shop/editItemForm";
         }
 
@@ -158,7 +158,6 @@ public class ItemController {
             updateParam.setStoreFileName(storeFileName);
             updateParam.setUploadFileName(form.getImageFile().getOriginalFilename());
         } else {
-            // 새 사진을 안 올렸으면 기존 이미지를 고스란히 유지
             updateParam.setStoreFileName(findItem.getStoreFileName());
             updateParam.setUploadFileName(findItem.getUploadFileName());
         }

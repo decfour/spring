@@ -26,7 +26,6 @@ public class CartService {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
 
-    // 카트 상품 추가
     @Transactional
     public Long addCart(Long memberId, Long itemId, int count) {
         // 1. 회원, 아이템 조회
@@ -35,11 +34,11 @@ public class CartService {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
 
-        // 2. 카트 조회 (없으면 생성)
+        // 2. 카트 조회, 없으면 생성
         Cart cart = cartRepository.findByMemberId(memberId)
                 .orElseGet(() -> cartRepository.save(Cart.createCart(member)));
 
-        // 3. 카트 내 아이템 조회 + 담기
+        // 3. 카트 내 아이템 조회, 있으면 담기
         Optional<CartItem> findCartItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
 
         if (findCartItem.isPresent()) {
@@ -62,20 +61,17 @@ public class CartService {
         }
     }
 
-    // 카트 상품 조회
     public List<CartItem> findCartItem(Long memberId) {
         return cartRepository.findByMemberId(memberId)
                 .map(cart -> cartItemRepository.findAllByCartId(cart.getId()))
                 .orElse(Collections.emptyList());
     }
 
-    // 카트 상품 제거
     @Transactional
     public void deleteCartItem(Long cartItemId) {
         cartItemRepository.deleteById(cartItemId);
     }
 
-    // 카트 초기화
     @Transactional
     public void clearCart(Long memberId) {
         Optional<Cart> cart = cartRepository.findByMemberId(memberId);
