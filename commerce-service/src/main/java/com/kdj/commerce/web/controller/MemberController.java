@@ -35,14 +35,14 @@ public class MemberController {
 
     @GetMapping("/register")
     public String registerForm(Model model) {
-        model.addAttribute("member", new MemberSaveForm()); // 💡 폼 객체로 변경
+        model.addAttribute("member", new MemberSaveForm());
 
         return "member/registerForm";
     }
 
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute("member") MemberSaveForm form,
-                               BindingResult result) {
+                           BindingResult result) {
         if (result.hasErrors()) {
             return "member/registerForm";
         }
@@ -54,7 +54,7 @@ public class MemberController {
                     form.getLoginId(),
                     form.getLoginPassword()
             );
-            memberService.join(member);
+            memberService.signUp(member);
         } catch (IllegalStateException e) {
             result.reject("이메일 중복", e.getMessage());
             return "member/registerForm";
@@ -102,7 +102,8 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response) {
         HttpSession session = request.getSession(false);
 
         if (session != null) {
@@ -111,8 +112,8 @@ public class MemberController {
 
         // 쿠키 제거
         Cookie cookie = new Cookie("JSESSIONID", null);
-        cookie.setMaxAge(0); // 유효기간을 0초로 세팅
-        cookie.setPath("/"); // 서버 전체 경로 적용
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
         response.addCookie(cookie);
 
         return "redirect:/";
@@ -140,7 +141,7 @@ public class MemberController {
     @GetMapping("/my-page/my-review")
     public String myReviews(@Login Member loginMember,
                           Model model) {
-        List<Review> myReviews = reviewService.findItemsByMemberId(loginMember.getId());
+        List<Review> myReviews = reviewService.findByMemberId(loginMember.getId());
 
         model.addAttribute("member", loginMember);
         model.addAttribute("myReviews", myReviews);

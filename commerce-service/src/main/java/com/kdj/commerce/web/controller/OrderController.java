@@ -30,7 +30,7 @@ public class OrderController {
     @GetMapping("/list")
     public String list(@Login Member loginMember,
                        Model model) {
-        List<Order> orders = orderService.findOrdersByMember(loginMember.getId());
+        List<Order> orders = orderService.findByMemberId(loginMember.getId());
         model.addAttribute("orders", orders);
 
         return "order/orderList";
@@ -90,7 +90,7 @@ public class OrderController {
         }
         else {
             List<CartItem> cartItems = cartService.findCartItem(loginMember.getId());
-            orderService.cartOrder(loginMember.getId(), cartItems);
+            orderService.orderCart(loginMember.getId(), cartItems);
         }
 
         return "redirect:/order/list";
@@ -99,7 +99,7 @@ public class OrderController {
     @PostMapping("/{orderId}/cancel")
     public String cancel(@Login Member loginMember,
                          @PathVariable("orderId") Long orderId) {
-        orderService.cancelOrder(orderId);
+        orderService.cancel(orderId);
 
         return "redirect:/order/list";
     }

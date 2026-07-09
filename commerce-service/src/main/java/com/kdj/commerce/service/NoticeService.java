@@ -19,19 +19,19 @@ public class NoticeService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 ID=" + id));
     }
 
-    public Page<Notice> findNotices(Pageable pageable) {
+    public Page<Notice> findAll(Pageable pageable) {
         return noticeRepository.findAll(pageable);
     }
 
     @Transactional
-    public Long saveNotice(Notice notice) {
+    public Long save(Notice notice) {
         Notice savedNotice = noticeRepository.save(notice);
 
         return savedNotice.getId();
     }
 
     @Transactional
-    public void updateNotice(Long id, String title, String content) {
+    public void update(Long id, String title, String content) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 ID=" + id));
         notice.setTitle(title);
@@ -39,7 +39,7 @@ public class NoticeService {
     }
 
     @Transactional
-    public void deleteNotice(Long id) {
+    public void delete(Long id) {
         Notice notice = noticeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 ID = " + id));
         noticeRepository.delete(notice);

@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    public void join(Member member) {
+    @Transactional
+    public void signUp(Member member) {
         memberRepository.findByEmail(member.getEmail())
                 .ifPresent(m -> {
                     throw new IllegalStateException("사용중인 이메일입니다.");
@@ -33,11 +35,11 @@ public class MemberService {
                 .orElse(null);
     }
 
-    public Optional<Member> findMember(long id) {
+    public Optional<Member> findOne(long id) {
         return memberRepository.findById(id);
     }
 
-    public List<Member> findMembers() {
+    public List<Member> findAll() {
         return memberRepository.findAll();
     }
 }

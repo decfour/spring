@@ -27,38 +27,35 @@ public class CartService {
     private final ItemRepository itemRepository;
 
     @Transactional
-    public Long addCart(Long memberId, Long itemId, int count) {
-        // 1. 회원, 아이템 조회
+    public void addCart(Long memberId, Long itemId, int count) {
+        // 1. 회원, 상품 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다 id=" + memberId));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
 
-        // 2. 카트 조회, 없으면 생성
+        // 2. 카트 조회
         Cart cart = cartRepository.findByMemberId(memberId)
                 .orElseGet(() -> cartRepository.save(Cart.createCart(member)));
 
-        // 3. 카트 내 아이템 조회, 있으면 담기
-        Optional<CartItem> findCartItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
+        // 3. 카트 내 존재 여부 확인
+        Optional<CartItem> existingItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
 
-        if (findCartItem.isPresent()) {
-            int totalCount = findCartItem.get().getCount() + count;
+        if (existingItem.isPresent()) {
+            CartItem cartItem = existingItem.get();
+            int totalCount = cartItem.getCount() + count;
             if (totalCount > item.getStock()) {
                 throw new NotEnoughStockException("재고가 부족합니다 (재고: " + item.getStock() + "개)");
             }
-            findCartItem.get().addCount(count);
-
-            return findCartItem.get().getId();
+            cartItem.addCount(count);
+            return;
         }
-        else {
-            if (count > item.getStock()) {
-                throw new NotEnoughStockException("재고가 부족합니다 (재고: " + item.getStock() + "개)");
-            }
-            CartItem cartItem = CartItem.createCartItem(cart, item, count);
-            cartItemRepository.save(cartItem);
 
-            return cartItem.getId();
+        if (count > item.getStock()) {
+            throw new NotEnoughStockException("재고가 부족합니다 (재고: " + item.getStock() + "개)");
         }
+        CartItem cartItem = CartItem.createCartItem(cart, item, count);
+        cartItemRepository.save(cartItem);
     }
 
     public List<CartItem> findCartItem(Long memberId) {
@@ -68,17 +65,15 @@ public class CartService {
     }
 
     @Transactional
-    public void deleteCartItem(Long cartItemId) {
-        cartItemRepository.deleteById(cartItemId);
+    public void deleteCartItem(Long memberId, Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findByIdAndMemberId(cartItemId, memberId)
+                .orElseThrow(() -> new IllegalArgumentException("장바구니 항목을 찾을 수 없거나 삭제 권한이 없습니다."));
+        cartItemRepository.delete(cartItem);
     }
 
     @Transactional
     public void clearCart(Long memberId) {
-        Optional<Cart> cart = cartRepository.findByMemberId(memberId);
-
-        if (cart.isPresent()) {
-            List<CartItem> cartItems = cartItemRepository.findAllByCartId(cart.get().getId());
-            cartItemRepository.deleteAllInBatch(cartItems);
-        }
+        cartRepository.findByMemberId(memberId)
+                .ifPresent(cart -> cartItemRepository.deleteByCartId(cart.getId()));
     }
 }

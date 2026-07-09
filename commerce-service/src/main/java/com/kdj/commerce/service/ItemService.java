@@ -16,26 +16,26 @@ import java.util.List;
 public class ItemService {
     private final ItemRepository itemRepository;
 
-    public Item findOne(Long itemId) {
-        return itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
+    public Item findOne(Long id) {
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
     }
 
-    public List<Item> findItems() {
+    public List<Item> findAll() {
         return itemRepository.findAll();
     }
 
     @Transactional
-    public Long saveItem(Item item) {
+    public Long save(Item item) {
         Item savedItem = itemRepository.save(item);
 
         return savedItem.getId();
     }
 
     @Transactional
-    public void updateItem(Long itemId, Item updateParam) {
-        Item findItem = itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
+    public void update(Long id, Item updateParam) {
+        Item findItem = itemRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
 
         findItem.setName(updateParam.getName());
         findItem.setPrice(updateParam.getPrice());
@@ -49,16 +49,16 @@ public class ItemService {
     }
 
     @Transactional
-    public void deleteItem(Long itemId) {
-        Item findItem = itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
+    public void delete(Long id) {
+        Item findItem = itemRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
         findItem.delete();
     }
 
     @Transactional
-    public void restoreItem(Long itemId) {
-        Item findItem = itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
+    public void restore(Long id) {
+        Item findItem = itemRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
         findItem.restore();
     }
 
@@ -66,7 +66,7 @@ public class ItemService {
         return itemRepository.findByCreatedBy(id);
     }
 
-    public Page<Item> findItemsByDeletedFalse(Pageable pageable) {
+    public Page<Item> findActiveItems(Pageable pageable) {
         return itemRepository.findByDeletedFalse(pageable);
     }
 }

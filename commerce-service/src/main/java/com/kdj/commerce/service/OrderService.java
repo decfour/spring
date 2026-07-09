@@ -45,7 +45,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Long cartOrder(Long memberId, List<CartItem> cartItems) {
+    public Long orderCart(Long memberId, List<CartItem> cartItems) {
         log.info("START OrderService/cartOrder");
 
         Member member = memberRepository.findById(memberId)
@@ -56,8 +56,8 @@ public class OrderService {
             Item lockItem = itemRepository.findByIdWithLock(cartItem.getItem().getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않거나 품절된 상품입니다."));
             OrderItem orderItem = OrderItem.createOrderItem(
-                    cartItem.getItem(),
-                    cartItem.getItem().getPrice(),
+                    lockItem,
+                    lockItem.getPrice(),
                     cartItem.getCount()
             );
             orderItems.add(orderItem);
@@ -68,32 +68,31 @@ public class OrderService {
         cartService.clearCart(memberId);
 
         log.info("END   OrderService/cartOrder");
-
         return order.getId();
     }
 
     @Transactional
-    public void cancelOrder(Long orderId) {
-        Order order = orderRepository.findById(orderId)
+    public void cancel(Long id) {
+        Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
 
         order.cancel();
     }
 
-    public int getTotalPrice(Long orderId) {
-        Order order = orderRepository.findById(orderId)
+    public int getTotalPrice(Long id) {
+        Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
 
         return order.getTotalPrice();
     }
 
     // 사용자 : 개인 주문 내역 조회 (Fetch)
-    public List<Order> findOrdersByMember(Long memberId) {
-        return orderRepository.findByMemberIdWithMember(memberId);
+    public List<Order> findByMemberId(Long id) {
+        return orderRepository.findByMemberIdWithMember(id);
     }
 
     // 관리자 : 전체 주문 내역 조회 (Fetch)
-    public List<Order> findAllOrdersForAdmin() {
+    public List<Order> findAll() {
         return orderRepository.findAllWithMember();
     }
 }

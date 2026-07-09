@@ -40,7 +40,7 @@ public class ReviewController {
     public String list(@PathVariable Long itemId,
                        @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model) {
-        Page<Review> reviews = reviewService.findReviewsByItemId(itemId, pageable);
+        Page<Review> reviews = reviewService.findByItemId(itemId, pageable);
 
         model.addAttribute("reviews", reviews);
         model.addAttribute("itemId", itemId);
@@ -87,7 +87,8 @@ public class ReviewController {
         review.setMember(loginMember);
         Item item = itemService.findOne(itemId);
         review.setItem(item);
-        reviewService.saveReview(review);
+
+        reviewService.save(review);
 
         return "redirect:/shop/item/" + itemId + "/review";
     }
@@ -133,7 +134,7 @@ public class ReviewController {
         updateParam.setTitle(reviewEditForm.getTitle());
         updateParam.setContent(reviewEditForm.getContent());
 
-        reviewService.updateReview(reviewId, updateParam);
+        reviewService.update(reviewId, updateParam);
 
         return "redirect:/shop/item/" + itemId + "/review/" + reviewId;
     }

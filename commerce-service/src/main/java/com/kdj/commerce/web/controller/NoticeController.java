@@ -33,7 +33,7 @@ public class NoticeController {
     @GetMapping
     public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model) {
-        Page<Notice> notices = noticeService.findNotices(pageable);
+        Page<Notice> notices = noticeService.findAll(pageable);
         model.addAttribute("notices", notices);
 
         return "notice/noticeList";
@@ -75,7 +75,7 @@ public class NoticeController {
         Notice notice = new Notice();
         notice.setTitle(form.getTitle());
         notice.setContent(form.getContent());
-        noticeService.saveNotice(notice);
+        noticeService.save(notice);
 
         return "redirect:/notice";
     }
@@ -113,8 +113,21 @@ public class NoticeController {
             return "notice/editNoticeForm";
         }
 
-        noticeService.updateNotice(id, form.getTitle(), form.getContent());
+        noticeService.update(id, form.getTitle(), form.getContent());
 
         return "redirect:/notice/" + id;
+    }
+
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id,
+                         @Login Member loginMember) {
+        if (isNotAdmin(loginMember)) {
+            log.warn("권한 없는 사용자의 공지사항 삭제 시도 차단");
+            return "redirect:/notice";
+        }
+
+        noticeService.delete(id);
+
+        return "redirect:/notice/";
     }
 }

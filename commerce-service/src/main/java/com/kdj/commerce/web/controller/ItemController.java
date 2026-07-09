@@ -46,7 +46,7 @@ public class ItemController {
     @GetMapping
     public String list(@PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model) {
-        Page<Item> items = itemService.findItemsByDeletedFalse(pageable);
+        Page<Item> items = itemService.findActiveItems(pageable);
         model.addAttribute("items", items);
 
         return "shop/shop";
@@ -85,7 +85,7 @@ public class ItemController {
         item.setStoreFileName(storeFileName);
         item.setUploadFileName(uploadFileName);
 
-        Long savedItemId = itemService.saveItem(item);
+        Long savedItemId = itemService.save(item);
         redirectAttributes.addAttribute("itemId", savedItemId);
 
         return "redirect:/shop/item/{itemId}";
@@ -162,7 +162,7 @@ public class ItemController {
             updateParam.setUploadFileName(findItem.getUploadFileName());
         }
 
-        itemService.updateItem(id, updateParam);
+        itemService.update(id, updateParam);
 
         return "redirect:/shop/item/{id}";
     }
@@ -179,7 +179,7 @@ public class ItemController {
             return "redirect:/shop/item/" + id;
         }
 
-        itemService.deleteItem(id);
+        itemService.delete(id);
         log.info("상품 삭제 완료={}", id);
 
         return "redirect:/shop";
@@ -198,7 +198,7 @@ public class ItemController {
             return "redirect:/shop/item/" + id;
         }
 
-        itemService.restoreItem(id);
+        itemService.restore(id);
         log.info("상품 복원 완료={}", id);
 
         return "redirect:/shop/item/" + id;
