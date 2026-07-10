@@ -42,4 +42,9 @@ public class MemberService {
     public List<Member> findAll() {
         return memberRepository.findAll();
     }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("해당 이메일의 회원이 존재하지 않습니다."));
+    }
 }

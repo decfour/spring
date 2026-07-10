@@ -119,7 +119,7 @@
             <h2 class="section-title m-0">Notice <span class="text-muted" style="font-weight:400;">Service Announcements</span></h2>
         </div>
 
-        <div th:if="${session.loginMember != null && session.loginMember.memberType.name() == 'ADMIN'}">
+        <div th:if="${member != null && member.memberType.name() == 'ADMIN'}">
             <a href="/notice/add" class="btn-apple-dark">글쓰기</a>
         </div>
     </div>

@@ -146,8 +146,8 @@
         </div>
     </div>
 
-    <button class="btn-action btn-outline-dark"
-            th:if="${session.loginMember != null and item.createdBy == session.loginMember.id}"
+        <button class="btn-action btn-outline-dark"
+            th:if="${member != null and item.createdBy == member.id}"
             th:onclick="|location.href='@{/shop/item/{itemId}/edit(itemId=${item.id})}'|"
             type="button">수정</button>
         <button class="btn-action"

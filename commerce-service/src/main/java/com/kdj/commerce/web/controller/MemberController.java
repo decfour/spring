@@ -9,6 +9,7 @@ import com.kdj.commerce.web.form.member.LoginForm;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
 import com.kdj.commerce.web.form.member.MemberSaveForm;
+import com.kdj.commerce.web.security.JwtTokenProvider;
 import com.kdj.commerce.web.session.SessionConst;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,6 +33,7 @@ public class MemberController {
     private final ReviewService reviewService;
     private final MemberService memberService;
     private final ItemService itemService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/register")
     public String registerForm(Model model) {
@@ -65,13 +67,18 @@ public class MemberController {
 
     @GetMapping("/login")
     public String loginForm(@RequestParam(defaultValue = "/") String redirectURL,
-                        Model model) {
+                            Model model) {
+        if (redirectURL.contains(",")) {
+            redirectURL = redirectURL.split(",")[0];
+        }
+
         model.addAttribute("loginForm", new LoginForm());
         model.addAttribute("redirectURL", redirectURL);
 
         return "member/loginForm";
     }
 
+    /*
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute LoginForm form,
                             BindingResult result,
@@ -100,7 +107,47 @@ public class MemberController {
 
         return "redirect:" + redirectURL;
     }
+    */
 
+    @PostMapping("/login")
+    public String login(@Valid @ModelAttribute LoginForm form,
+                        BindingResult result,
+                        @RequestParam(defaultValue = "/") String redirectURL,
+                        HttpServletResponse response) {
+        if (result.hasErrors()) {
+            return "member/loginForm";
+        }
+
+        if (redirectURL.contains(",")) {
+            redirectURL = redirectURL.split(",")[0];
+        }
+
+        if (!redirectURL.startsWith("/")) {
+            redirectURL = "/" + redirectURL;
+        }
+
+        Member loginMember = memberService.login(form.getLoginId(), form.getLoginPassword());
+
+        // 로그인 실패
+        if (loginMember == null) {
+            result.reject("loginError", "아이디 또는 비밀번호가 맞지 않습니다.");
+            return "member/loginForm";
+        }
+
+        // 로그인 성공 -> JWT 토큰 생성
+        String token = jwtTokenProvider.createToken(loginMember.getEmail());
+        log.info("JWT 토큰 발급 : {}", token);
+
+        Cookie jwtCookie = new Cookie("Authorization", token);
+        jwtCookie.setHttpOnly(true);        // 자바스크립트로 해킹 못 하게 보안 설정
+        jwtCookie.setPath("/");             // 모든 경로에서 이 쿠키를 들고 오도록 설정
+        jwtCookie.setMaxAge(1800);          // 유효시간 30분
+        response.addCookie(jwtCookie);
+
+        return "redirect:" + redirectURL;
+    }
+
+    /*
     @PostMapping("/logout")
     public String logout(HttpServletRequest request,
                          HttpServletResponse response) {
@@ -112,6 +159,18 @@ public class MemberController {
 
         // 쿠키 제거
         Cookie cookie = new Cookie("JSESSIONID", null);
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+
+        return "redirect:/";
+    }
+    */
+
+    @PostMapping("/logout")
+    public String logout(HttpServletResponse response) {
+        // Authorization 쿠키를 만료
+        Cookie cookie = new Cookie("Authorization", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);

@@ -31,18 +31,26 @@ public class NoticeController {
     }
 
     @GetMapping
-    public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    public String list(@Login Member loginMember,
+                       @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model) {
         Page<Notice> notices = noticeService.findAll(pageable);
         model.addAttribute("notices", notices);
+
+        if (loginMember != null) {
+            model.addAttribute("member", loginMember);
+        }
 
         return "notice/noticeList";
     }
 
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id,
+                         @Login Member loginMember,
+                         Model model) {
         Notice notice = noticeService.findOne(id);
         model.addAttribute("notice", notice);
+        model.addAttribute("member", loginMember);
 
         return "notice/notice";
     }
@@ -128,6 +136,6 @@ public class NoticeController {
 
         noticeService.delete(id);
 
-        return "redirect:/notice/";
+        return "redirect:/notice";
     }
 }

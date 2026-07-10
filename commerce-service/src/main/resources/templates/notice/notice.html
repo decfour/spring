@@ -114,7 +114,7 @@
     <div class="button-group">
         <a href="/notice" class="btn-apple-light">목록 보기</a>
 
-        <div th:if="${session.loginMember != null && session.loginMember.memberType.name() == 'ADMIN'}" class="d-flex gap-3 align-items-center">
+        <div th:if="${member != null && member.memberType.name() == 'ADMIN'}" class="d-flex gap-3 align-items-center">
             <a th:href="@{/notice/{id}/edit(id=${notice.id})}" class="btn-apple-link">수정</a>
         </div>
     </div>

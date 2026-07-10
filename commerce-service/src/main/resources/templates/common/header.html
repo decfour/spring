@@ -1,6 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
+<html xmlns:th="http://www.thymeleaf.org"> <head>
     <meta charset="UTF-8">
     <title>Header Fragment</title>
 </head>
@@ -9,69 +8,17 @@
 <div th:fragment="mainHeader" class="global-nav">
 
     <style>
-        .global-nav {
-            background-color: #1a1a1c;
-            padding: 12px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            -webkit-font-smoothing: antialiased;
-            box-sizing: border-box;
-            width: 100%;
-        }
-        .global-nav-logo {
-            color: #f5f5f7;
-            font-weight: 500;
-            font-size: 0.85rem;
-            text-decoration: none;
-            letter-spacing: -0.2px;
-            opacity: 0.9;
-            transition: opacity 0.2s;
-        }
-        .global-nav-logo:hover {
-            opacity: 1;
-        }
-        .global-nav-menu-set {
-            font-size: 0.8rem;
-            letter-spacing: -0.1px;
-        }
-        .global-nav-link-group {
-            display: flex;
-            gap: 24px;
-            align-items: center;
-        }
-        .global-nav-link {
-            color: #f5f5f7;
-            text-decoration: none;
-            opacity: 0.65;
-            transition: opacity 0.2s;
-        }
-        .global-nav-link:hover {
-            opacity: 1;
-        }
-        .global-nav-user-link {
-            color: #86868b;
-            font-weight: 500;
-            text-decoration: none;
-            transition: opacity 0.2s, color 0.2s;
-        }
-        .global-nav-user-link:hover {
-            color: #f5f5f7;
-        }
-        .btn-nav-logout-link {
-            background: none;
-            border: none;
-            padding: 0;
-            color: #f5f5f7;
-            opacity: 0.45;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            font-size: 0.8rem;
-        }
-        .btn-nav-logout-link:hover {
-            opacity: 0.8;
-        }
+        .global-nav { background-color: #1a1a1c; padding: 12px 40px; display: flex; justify-content: space-between; align-items: center; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; box-sizing: border-box; width: 100%; }
+        .global-nav-logo { color: #f5f5f7; font-weight: 500; font-size: 0.85rem; text-decoration: none; letter-spacing: -0.2px; opacity: 0.9; transition: opacity 0.2s; }
+        .global-nav-logo:hover { opacity: 1; }
+        .global-nav-menu-set { font-size: 0.8rem; letter-spacing: -0.1px; }
+        .global-nav-link-group { display: flex; gap: 24px; align-items: center; }
+        .global-nav-link { color: #f5f5f7; text-decoration: none; opacity: 0.65; transition: opacity 0.2s; }
+        .global-nav-link:hover { opacity: 1; }
+        .global-nav-user-link { color: #86868b; font-weight: 500; text-decoration: none; transition: opacity 0.2s, color 0.2s; }
+        .global-nav-user-link:hover { color: #f5f5f7; }
+        .btn-nav-logout-link { background: none; border: none; padding: 0; color: #f5f5f7; opacity: 0.45; cursor: pointer; transition: opacity 0.2s; font-size: 0.8rem; }
+        .btn-nav-logout-link:hover { opacity: 0.8; }
     </style>
 
     <div>
@@ -80,13 +27,15 @@
 
     <div class="global-nav-menu-set">
 
-        <span th:if="${session.loginMember == null}" class="global-nav-link-group">
+        <span th:if="${#authentication == null or #authentication.principal == 'anonymousUser'}" class="global-nav-link-group">
             <a href="/member/login" class="global-nav-link">Login</a>
             <a href="/member/register" class="global-nav-link">Register</a>
         </span>
 
-        <span th:if="${session.loginMember != null}" class="global-nav-link-group">
-            <a th:href="@{/member/my-page}" th:text="${session.loginMember.username}" class="global-nav-user-link">User Name</a>
+        <span th:if="${#authentication != null and #authentication.principal != 'anonymousUser'}" class="global-nav-link-group">
+            <a th:href="@{/member/my-page}"
+               th:text="${#authentication.name}"
+               class="global-nav-user-link">User Email</a>
 
             <a href="/cart" class="global-nav-link">Cart</a>
 
