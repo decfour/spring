@@ -42,10 +42,6 @@ dependencies {
     // Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    // Test
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
     // MySQL
     runtimeOnly 'com.mysql:mysql-connector-j'
 
@@ -54,14 +50,16 @@ dependencies {
 
     // Spring Security + JWT
     implementation 'org.springframework.boot:spring-boot-starter-security'
-
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JSON 파싱용
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+
+    // Test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-// 작업 설정 : Gradle 특정 작업을 수행 시 옵션 지정
 tasks.named('test') {
     useJUnitPlatform() // 테스트 시, JUnit 플랫폼을 기반으로 테스트
 }

@@ -16,7 +16,7 @@ public class Notice {
 
     private String title;
 
-    @Lob // 대용량 문자열
+    @Lob
     private String content;
 
     private LocalDateTime createdDate = LocalDateTime.now();

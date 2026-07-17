@@ -28,34 +28,30 @@ public class CartService {
 
     @Transactional
     public void addCart(Long memberId, Long itemId, int count) {
-        // 1. 회원, 상품 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다 id=" + memberId));
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + itemId));
-
-        // 2. 카트 조회
         Cart cart = cartRepository.findByMemberId(memberId)
                 .orElseGet(() -> cartRepository.save(Cart.createCart(member)));
 
-        // 3. 카트 내 존재 여부 확인
-        Optional<CartItem> existingItem = cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
+        Optional<CartItem> existingItem =
+                cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
 
-        if (existingItem.isPresent()) {
-            CartItem cartItem = existingItem.get();
-            int totalCount = cartItem.getCount() + count;
-            if (totalCount > item.getStock()) {
-                throw new NotEnoughStockException("재고가 부족합니다 (재고: " + item.getStock() + "개)");
-            }
+        CartItem cartItem = existingItem.orElse(null);
+        int requestedCount = (cartItem == null)
+                ? count
+                : cartItem.getCount() + count;
+
+        if (requestedCount > item.getStock()) {
+            throw new NotEnoughStockException("재고가 부족합니다. (재고: " + item.getStock() + "개)");
+        }
+
+        if (cartItem != null) {
             cartItem.addCount(count);
-            return;
+        } else {
+            cartItemRepository.save(CartItem.createCartItem(cart, item, count));
         }
-
-        if (count > item.getStock()) {
-            throw new NotEnoughStockException("재고가 부족합니다 (재고: " + item.getStock() + "개)");
-        }
-        CartItem cartItem = CartItem.createCartItem(cart, item, count);
-        cartItemRepository.save(cartItem);
     }
 
     public List<CartItem> findCartItem(Long memberId) {

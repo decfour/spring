@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    // 동시성 제어 (비관적 Lock)
+    // 동시 주문 시 재고 정합성 보장
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "3000")})
     @Query("select i from Item i where i.id = :id")

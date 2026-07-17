@@ -34,11 +34,9 @@ public class ItemController {
     private final ItemService itemService;
     private final FileStore fileStore;
 
-    // 공통 모델 바인딩
     @ModelAttribute("itemTypes") public ItemType[] itemTypes() {return ItemType.values();}
     @ModelAttribute("deliveryTypes") public DeliveryType[] deliveryTypes() {return DeliveryType.values();}
 
-    // 검증 메서드
     private boolean isNotOwner(Item item, Member loginMember) {
         return !item.getCreatedBy().equals(loginMember.getId());
     }
@@ -46,7 +44,7 @@ public class ItemController {
     @GetMapping
     public String list(@PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model) {
-        Page<Item> items = itemService.findActiveItems(pageable);
+        Page<Item> items = itemService.findActive(pageable);
         model.addAttribute("items", items);
 
         return "shop/shop";
@@ -92,9 +90,12 @@ public class ItemController {
     }
 
     @GetMapping("/item/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id,
+                         @Login Member loginMember,
+                         Model model) {
         Item item = itemService.findOne(id);
         model.addAttribute("item", item);
+        model.addAttribute("member", loginMember);
 
         return "shop/item";
     }

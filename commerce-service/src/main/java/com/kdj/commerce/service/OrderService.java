@@ -28,7 +28,7 @@ public class OrderService {
 
     @Transactional
     public Long order(Long memberId, Long itemId, int count) {
-        log.info("START OrderService/order");
+        log.info("OrderService/order START");
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
@@ -39,14 +39,14 @@ public class OrderService {
         Order order = Order.createOrder(member, orderItem);
         orderRepository.save(order);
 
-        log.info("END   OrderService/order");
+        log.info("OrderService/order END");
 
         return order.getId();
     }
 
     @Transactional
     public Long orderCart(Long memberId, List<CartItem> cartItems) {
-        log.info("START OrderService/cartOrder");
+        log.info("OrderService/orderCart START");
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
@@ -67,16 +67,18 @@ public class OrderService {
         orderRepository.save(order);
         cartService.clearCart(memberId);
 
-        log.info("END   OrderService/cartOrder");
+        log.info("OrderService/orderCart END");
         return order.getId();
     }
 
     @Transactional
     public void cancel(Long id) {
+        log.info("OrderService/cancel START");
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
 
         order.cancel();
+        log.info("OrderService/cancel END");
     }
 
     public int getTotalPrice(Long id) {

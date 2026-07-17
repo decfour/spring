@@ -10,11 +10,8 @@ import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
 import com.kdj.commerce.web.form.member.MemberSaveForm;
 import com.kdj.commerce.web.security.JwtTokenProvider;
-import com.kdj.commerce.web.session.SessionConst;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -121,7 +118,6 @@ public class MemberController {
         if (redirectURL.contains(",")) {
             redirectURL = redirectURL.split(",")[0];
         }
-
         if (!redirectURL.startsWith("/")) {
             redirectURL = "/" + redirectURL;
         }
@@ -169,7 +165,6 @@ public class MemberController {
 
     @PostMapping("/logout")
     public String logout(HttpServletResponse response) {
-        // Authorization 쿠키를 만료
         Cookie cookie = new Cookie("Authorization", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
@@ -189,7 +184,7 @@ public class MemberController {
     @GetMapping("/my-page/my-item")
     public String myItems(@Login Member loginMember,
                           Model model) {
-        List<Item> myItems = itemService.findItemsByCreatedBy(loginMember.getId());
+        List<Item> myItems = itemService.findByCreatedBy(loginMember.getId());
 
         model.addAttribute("member", loginMember);
         model.addAttribute("myItems", myItems);

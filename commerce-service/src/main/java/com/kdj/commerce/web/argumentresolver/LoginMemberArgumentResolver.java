@@ -2,9 +2,6 @@ package com.kdj.commerce.web.argumentresolver;
 
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
-import com.kdj.commerce.web.session.SessionConst;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;

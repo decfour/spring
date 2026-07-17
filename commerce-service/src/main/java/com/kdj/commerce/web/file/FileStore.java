@@ -14,7 +14,7 @@ public class FileStore {
     private String fileDir;
 
     public String getFullPath(String filename) {
-        return fileDir + filename;
+        return new File(fileDir, filename).getPath();
     }
 
     public String storeFile(MultipartFile multipartFile) throws IOException {
