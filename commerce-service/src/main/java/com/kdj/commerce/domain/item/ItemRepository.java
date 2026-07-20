@@ -18,7 +18,7 @@ import java.util.Optional;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     // 동시 주문 시 재고 정합성 보장
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value = "3000")})
+    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value = "3000")})
     @Query("select i from Item i where i.id = :id")
     Optional<Item> findByIdWithLock(@Param("id") Long id);
 
