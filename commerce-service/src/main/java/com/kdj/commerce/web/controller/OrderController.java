@@ -99,7 +99,7 @@ public class OrderController {
     @PostMapping("/{orderId}/cancel")
     public String cancel(@Login Member loginMember,
                          @PathVariable("orderId") Long orderId) {
-        orderService.cancel(orderId);
+        orderService.cancel(loginMember.getId(), orderId);
 
         return "redirect:/order/list";
     }

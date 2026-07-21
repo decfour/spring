@@ -28,10 +28,9 @@ public class OrderService {
 
     @Transactional
     public Long order(Long memberId, Long itemId, int count) {
-        log.info("OrderService/order START");
-
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        // 동시 주문 시 재고 정합성을 위해 비관적 락
         Item item = itemRepository.findByIdWithLock(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
@@ -39,20 +38,20 @@ public class OrderService {
         Order order = Order.createOrder(member, orderItem);
         orderRepository.save(order);
 
-        log.info("OrderService/order END");
+        log.info("주문 생성 orderId={}, memberId={}, itemId={}, quantity={}",
+                order.getId(), memberId, itemId, count);
 
         return order.getId();
     }
 
     @Transactional
     public Long orderCart(Long memberId, List<CartItem> cartItems) {
-        log.info("OrderService/orderCart START");
-
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem : cartItems) {
+            // 동시 주문 시 재고 정합성을 위해 비관적 락
             Item lockItem = itemRepository.findByIdWithLock(cartItem.getItem().getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않거나 품절된 상품입니다."));
             OrderItem orderItem = OrderItem.createOrderItem(
@@ -67,18 +66,20 @@ public class OrderService {
         orderRepository.save(order);
         cartService.clearCart(memberId);
 
-        log.info("OrderService/orderCart END");
+        log.info("주문 생성(장바구니) orderId={}, memberId={}, itemCount={}",
+                order.getId(), memberId, orderItems.size());
+
         return order.getId();
     }
 
     @Transactional
-    public void cancel(Long id) {
-        log.info("OrderService/cancel START");
-        Order order = orderRepository.findById(id)
+    public void cancel(Long memberId, Long orderId) {
+        Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
 
         order.cancel();
-        log.info("OrderService/cancel END");
+
+        log.info("주문 취소 orderId={}, memberId={}", orderId, memberId);
     }
 
     public int getTotalPrice(Long id) {
@@ -88,13 +89,14 @@ public class OrderService {
         return order.getTotalPrice();
     }
 
-    // 사용자 : 개인 주문 내역 조회 (Fetch)
+    public List<Order> findAll() {return orderRepository.findAll();}
+
+    // Fetch Join으로 회원 정보를 함께 조회하여 N+1 방지
     public List<Order> findByMemberId(Long id) {
         return orderRepository.findByMemberIdWithMember(id);
     }
 
-    // 관리자 : 전체 주문 내역 조회 (Fetch)
-    public List<Order> findAll() {
+    public List<Order> findAllFetch() {
         return orderRepository.findAllWithMember();
     }
 }

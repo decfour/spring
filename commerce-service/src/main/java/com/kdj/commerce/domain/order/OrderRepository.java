@@ -9,6 +9,8 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
+    List<Order> findAll();
+
     @Query("select o from Order o join fetch o.member")
     List<Order> findAllWithMember();
 
