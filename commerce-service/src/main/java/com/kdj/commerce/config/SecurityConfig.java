@@ -54,7 +54,6 @@ public class SecurityConfig {
 
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
-                            // 로그 한번 이쁘게 찍어주고
                             System.out.println("비로그인 제한 : " + request.getRequestURI());
 
                             response.sendRedirect("/member/login");

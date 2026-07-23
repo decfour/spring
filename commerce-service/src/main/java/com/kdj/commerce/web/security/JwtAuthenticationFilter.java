@@ -46,7 +46,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // SecurityContext에 인증 도장 넣기
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("인증된 사용자 : {}", email);
         }
 
         // 3. 다음 필터로 요청 넘김

@@ -5,6 +5,7 @@ import com.kdj.commerce.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,8 +22,6 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        log.info("supportsParameter 실행");
-
         boolean hasLoginAnnotation = parameter.hasParameterAnnotation(Login.class);
         boolean hasMemberType = Member.class.isAssignableFrom(parameter.getParameterType());
 
@@ -30,21 +29,28 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter,
-                                  ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest,
-                                  WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(
+            MethodParameter parameter,
+            ModelAndViewContainer mavContainer,
+            NativeWebRequest webRequest,
+            WebDataBinderFactory binderFactory) throws Exception {
         // 1. SecurityContext에 넣어둔 인증 도장 꺼내기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 2. 인증 정보가 없거나, 로그인하지 않은 익명 사용자(anonymousUser)라면 null 반환
-        if (authentication == null || "anonymousUser".equals(authentication.getPrincipal())) {
-            log.info("인증 정보가 없음");
+        if (authentication == null ||
+            !authentication.isAuthenticated() ||
+            authentication instanceof AnonymousAuthenticationToken) {
             return null;
         }
 
         // 3. 인증 도장에서 사용자의 이메일 꺼내기
         String email = (String) authentication.getPrincipal();
+        Member member = memberService.findByEmail(email);
+
+        if (member == null) {
+            log.warn("인증된 이메일에 해당하는 회원을 찾을 수 없습니다. email={}", email);
+        }
 
         return memberService.findByEmail(email);
     }
