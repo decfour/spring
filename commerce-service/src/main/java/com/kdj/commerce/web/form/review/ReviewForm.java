@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class ReviewEditForm {
+public class ReviewForm {
     private Long id;
 
     @NotBlank(message = "제목은 필수입니다.")

@@ -1,0 +1,175 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>THGTTS - Community</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #1d1d1f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .main-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+        }
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .product-table th {
+            padding: 14px 0;
+            font-weight: 500;
+            color: #86868b;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #d2d2d7;
+        }
+        .product-table td {
+            padding: 18px 0;
+            border-bottom: 1px solid #e5e5e7;
+            font-size: 0.95rem;
+        }
+        .btn-custom {
+            border-radius: 4px;
+            font-size: 0.8rem;
+            padding: 5px 12px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        .btn-primary-dark {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: none;
+        }
+        .btn-primary-dark:hover {
+            background-color: #323236;
+        }
+        .btn-secondary-outline {
+            background: none;
+            border: 1px solid #d2d2d7;
+            color: #1d1d1f;
+        }
+        .btn-secondary-outline:hover {
+            background-color: #f5f5f7;
+            border-color: #86868b;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-top: 40px;
+        }
+        .page-link-custom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #000000;
+            text-decoration: none;
+            background-color: #ffffff;
+            border: 1px solid #d2d2d7;
+            transition: all 0.2s;
+        }
+        .page-link-custom:hover {
+            background-color: #f5f5f7;
+            border-color: #86868b;
+            color: #000000;
+        }
+        .page-link-custom.active-page {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border-color: #1d1d1f;
+        }
+        .page-link-custom.disabled-page {
+            color: #d2d2d7;
+            border-color: #e5e5e7;
+            background-color: #ffffff;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{common/header :: mainHeader}"></div>
+
+<div class="main-container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="section-title m-0">Community <span class="text-muted" style="font-weight:400;">Hit</span></h2>
+
+        <!-- 버튼 영역: Hit / 글쓰기 / 뒤로 -->
+        <div class="d-flex gap-2">
+            <button class="btn-custom btn-primary-dark" th:onclick="|location.href='@{/community}'|" type="button">일반</button>
+            <button class="btn-custom btn-primary-dark" th:onclick="|location.href='@{/community/add}'|" type="button">글쓰기</button>
+            <button class="btn-custom btn-secondary-outline" th:onclick="|location.href='@{/}'|" type="button">뒤로</button>
+        </div>
+    </div>
+
+    <table class="product-table">
+        <thead>
+        <tr>
+            <th style="width: 50%; text-align: left; padding-left: 10px;">제목</th>
+            <th style="width: 15%; text-align: center;">작성자</th>
+            <th style="width: 15%; text-align: center;">추천</th>
+            <th style="width: 20%; text-align: center;">작성일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="post : ${communityPosts}">
+
+            <!-- 제목 -->
+            <td style="width: 50%; text-align: left; padding-left: 10px;">
+                <a th:href="@{/community/{id}(id=${post.id})}"
+                   th:text="${post.title}"
+                   class="text-dark fw-medium text-decoration-none"
+                   style="letter-spacing: -0.2px;">게시글 제목입니다.</a>
+            </td>
+
+            <!-- 작성자 -->
+            <td th:text="${post.writer != null ? post.writer.username : '익명'}" style="width: 15%; color: #424245; text-align: center;">작성자</td>
+
+            <!-- 추천수 -->
+            <td th:text="${post.likeCount}" style="width: 15%; color: #1d1d1f; text-align: center;">0</td>
+
+            <!-- 작성일 -->
+            <td th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd')}" style="width: 20%; color: #86868b; text-align: center;">2026-07-24</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${communityPosts.totalPages > 1}" class="pagination-container">
+
+        <a th:href="@{/community(page=${communityPosts.number - 1})}"
+           class="page-link-custom"
+           th:classappend="${communityPosts.first} ? 'disabled-page' : ''">이전</a>
+
+        <th:block th:each="pageNumber : ${#numbers.sequence(0, communityPosts.totalPages - 1)}">
+            <a th:href="@{/community(page=${pageNumber})}"
+               th:text="${pageNumber + 1}"
+               class="page-link-custom"
+               th:classappend="${pageNumber == communityPosts.number} ? 'active-page' : ''">1</a>
+        </th:block>
+
+        <a th:href="@{/community(page=${communityPosts.number + 1})}"
+           class="page-link-custom"
+           th:classappend="${communityPosts.last} ? 'disabled-page' : ''">다음</a>
+
+    </div>
+</div>
+
+</body>
+</html>

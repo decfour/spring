@@ -1,10 +1,10 @@
-package com.kdj.commerce.web.form.review;
+package com.kdj.commerce.web.form.notice;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class ReviewSaveForm {
+public class NoticeForm {
     @NotBlank(message = "제목은 필수입니다.")
     private String title;
 

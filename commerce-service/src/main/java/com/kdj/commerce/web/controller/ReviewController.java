@@ -6,8 +6,7 @@ import com.kdj.commerce.domain.review.Review;
 import com.kdj.commerce.service.ItemService;
 import com.kdj.commerce.service.ReviewService;
 import com.kdj.commerce.web.argumentresolver.Login;
-import com.kdj.commerce.web.form.review.ReviewEditForm;
-import com.kdj.commerce.web.form.review.ReviewSaveForm;
+import com.kdj.commerce.web.form.review.ReviewForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,39 +44,42 @@ public class ReviewController {
         model.addAttribute("reviews", reviews);
         model.addAttribute("itemId", itemId);
 
-        return "review/reviewList";
+        return "review/list";
     }
 
     @GetMapping("/{reviewId}")
     public String detail(@PathVariable Long itemId,
                          @PathVariable Long reviewId,
+                         @Login Member loginMember,
                          Model model) {
         Review review = reviewService.findOne(reviewId);
         model.addAttribute("review", review);
         model.addAttribute("itemId", itemId);
+        model.addAttribute("member", loginMember);
 
-        return "review/review";
+        return "review/detail";
     }
 
     @GetMapping("/add")
     public String addForm(@PathVariable Long itemId,
                           @Login Member loginMember,
                           Model model) {
-        model.addAttribute("reviewForm", new ReviewSaveForm());
+        model.addAttribute("reviewForm", new ReviewForm());
         model.addAttribute("itemId", itemId);
+        model.addAttribute("isEdit", false);
 
-        return "review/addReviewForm";
+        return "review/form";
     }
 
     @PostMapping("/add")
     public String add(@PathVariable Long itemId,
-                      @Valid @ModelAttribute("reviewForm") ReviewSaveForm form,
+                      @Valid @ModelAttribute("reviewForm") ReviewForm form,
                       BindingResult bindingResult,
                       @Login Member loginMember,
                       Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("itemId", itemId);
-            return "review/addReviewForm";
+            return "review/form";
         }
 
         Review review = new Review();
@@ -101,43 +103,49 @@ public class ReviewController {
         Review review = reviewService.findOne(reviewId);
 
         if (isNotOwner(review, loginMember)) {
+            log.warn("수정 시도 차단 ID={}, 리뷰={}",
+                    loginMember == null ? null : loginMember.getId(), review.getId());
             return "redirect:/shop/item/" + itemId + "/review/" + reviewId;
         }
 
-        ReviewEditForm reviewEditForm = new ReviewEditForm();
-        reviewEditForm.setId(review.getId());
-        reviewEditForm.setTitle(review.getTitle());
-        reviewEditForm.setContent(review.getContent());
+        ReviewForm reviewForm = new ReviewForm();
+        reviewForm.setId(review.getId());
+        reviewForm.setTitle(review.getTitle());
+        reviewForm.setContent(review.getContent());
 
-        model.addAttribute("reviewForm", reviewEditForm);
+        model.addAttribute("reviewForm", reviewForm);
         model.addAttribute("itemId", itemId);
+        model.addAttribute("isEdit", true);
 
-        return "review/editReviewForm";
+        return "review/form";
     }
 
     @PostMapping("/{reviewId}/edit")
     public String edit(@PathVariable Long itemId,
                        @PathVariable Long reviewId,
                        @Login Member loginMember,
-                       @Valid @ModelAttribute ReviewEditForm reviewEditForm,
+                       @Valid @ModelAttribute ReviewForm form,
                        BindingResult bindingResult,
                        Model model) throws IOException {
         if (bindingResult.hasErrors()) {
             model.addAttribute("itemId", itemId);
-            return "review/editReviewForm";
+            return "review/form";
         }
 
         Review findReview = reviewService.findOne(reviewId);
+        if (isNotOwner(findReview, loginMember)) {
+            log.warn("수정 시도 차단 ID={}, 리뷰={}",
+                    loginMember == null ? null : loginMember.getId(), findReview.getId());
+            return "redirect:/shop/item/" + itemId + "/review/" + reviewId;
+        }
 
         Review updateParam = new Review();
-        updateParam.setId(reviewEditForm.getId());
-        updateParam.setTitle(reviewEditForm.getTitle());
-        updateParam.setContent(reviewEditForm.getContent());
+        updateParam.setId(form.getId());
+        updateParam.setTitle(form.getTitle());
+        updateParam.setContent(form.getContent());
 
         reviewService.update(reviewId, updateParam);
 
         return "redirect:/shop/item/" + itemId + "/review/" + reviewId;
     }
-
-
 }

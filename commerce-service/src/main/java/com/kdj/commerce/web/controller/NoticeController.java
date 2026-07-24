@@ -5,8 +5,7 @@ import com.kdj.commerce.domain.member.MemberType;
 import com.kdj.commerce.domain.notice.Notice;
 import com.kdj.commerce.service.NoticeService;
 import com.kdj.commerce.web.argumentresolver.Login;
-import com.kdj.commerce.web.form.notice.NoticeEditForm;
-import com.kdj.commerce.web.form.notice.NoticeSaveForm;
+import com.kdj.commerce.web.form.notice.NoticeForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,7 @@ public class NoticeController {
             model.addAttribute("member", loginMember);
         }
 
-        return "notice/noticeList";
+        return "notice/list";
     }
 
     @GetMapping("/{id}")
@@ -52,7 +51,7 @@ public class NoticeController {
         model.addAttribute("notice", notice);
         model.addAttribute("member", loginMember);
 
-        return "notice/notice";
+        return "notice/detail";
     }
 
     @GetMapping("/add")
@@ -62,14 +61,14 @@ public class NoticeController {
             log.warn("권한 없는 사용자의 공지사항 작성 폼 진입 시도 차단");
             return "redirect:/notice";
         }
-        model.addAttribute("noticeForm", new NoticeSaveForm());
+        model.addAttribute("noticeForm", new NoticeForm());
 
         return "notice/addNoticeForm";
     }
 
     @PostMapping("/add")
     public String add(@Login Member loginMember,
-                      @Valid @ModelAttribute("noticeForm") NoticeSaveForm form,
+                      @Valid @ModelAttribute("noticeForm") NoticeForm form,
                       BindingResult bindingResult) {
         if (isNotAdmin(loginMember)) {
             log.warn("권한 없는 사용자의 공지사항 등록 시도 차단");
@@ -98,7 +97,7 @@ public class NoticeController {
         }
 
         Notice notice = noticeService.findOne(id);
-        NoticeEditForm form = new NoticeEditForm();
+        NoticeForm form = new NoticeForm();
         form.setTitle(notice.getTitle());
         form.setContent(notice.getContent());
         model.addAttribute("noticeForm", form);
@@ -109,7 +108,7 @@ public class NoticeController {
     @PostMapping("/{id}/edit")
     public String edit(@PathVariable Long id,
                        @Login Member loginMember,
-                       @Valid @ModelAttribute("noticeForm") NoticeEditForm form,
+                       @Valid @ModelAttribute("noticeForm") NoticeForm form,
                        BindingResult bindingResult) {
         if (isNotAdmin(loginMember)) {
             log.warn("권한 없는 사용자의 공지사항 수정 시도 차단");

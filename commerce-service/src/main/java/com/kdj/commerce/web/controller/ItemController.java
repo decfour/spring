@@ -7,8 +7,7 @@ import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.ItemService;
 import com.kdj.commerce.web.argumentresolver.Login;
 import com.kdj.commerce.web.file.FileStore;
-import com.kdj.commerce.web.form.item.ItemEditForm;
-import com.kdj.commerce.web.form.item.ItemSaveForm;
+import com.kdj.commerce.web.form.item.ItemForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,25 +46,25 @@ public class ItemController {
         Page<Item> items = itemService.findActive(pageable);
         model.addAttribute("items", items);
 
-        return "shop/shop";
+        return "shop/list";
     }
 
     @GetMapping("/add")
     public String addForm(Model model) {
-        model.addAttribute("item", new ItemSaveForm());
+        model.addAttribute("item", new ItemForm());
 
-        return "shop/addItemForm";
+        return "shop/form";
     }
 
     @PostMapping("/add")
     public String add(@Login Member loginMember,
-                      @Valid @ModelAttribute("item") ItemSaveForm form,
+                      @Valid @ModelAttribute("item") ItemForm form,
                       BindingResult bindingResult,
                       RedirectAttributes redirectAttributes,
                       Model model) throws IOException {
         if (bindingResult.hasErrors()) {
             model.addAttribute("item", form);
-            return "shop/addItemForm";
+            return "shop/form";
         }
 
         String storeFileName = fileStore.storeFile(form.getImageFile());
@@ -97,7 +96,7 @@ public class ItemController {
         model.addAttribute("item", item);
         model.addAttribute("member", loginMember);
 
-        return "shop/item";
+        return "shop/detail";
     }
 
     @GetMapping("/item/{id}/edit")
@@ -111,7 +110,7 @@ public class ItemController {
             return "redirect:/shop/item/" + id;
         }
 
-        ItemEditForm form = new ItemEditForm();
+        ItemForm form = new ItemForm();
         form.setId(item.getId());
         form.setName(item.getName());
         form.setPrice(item.getPrice());
@@ -123,19 +122,20 @@ public class ItemController {
         form.setDeleted(item.isDeleted());
 
         model.addAttribute("item", form);
+        model.addAttribute("isEdit", true);
 
-        return "shop/editItemForm";
+        return "shop/form";
     }
 
     @PostMapping("/item/{id}/edit")
     public String edit(@PathVariable Long id,
                        @Login Member loginMember,
-                       @Valid @ModelAttribute("item") ItemEditForm form,
+                       @Valid @ModelAttribute("item") ItemForm form,
                        BindingResult bindingResult,
                        Model model) throws IOException {
         if (bindingResult.hasErrors()) {
             model.addAttribute("item", form);
-            return "shop/editItemForm";
+            return "shop/form";
         }
 
         Item findItem = itemService.findOne(id);
