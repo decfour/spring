@@ -1,0 +1,103 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>THGTE - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #1d1d1f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .auth-container {
+            max-width: 400px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+        .form-label-custom {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #86868b;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .form-input-text {
+            width: 100%;
+            border: 1px solid #d2d2d7;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-input-text:focus {
+            border-color: #86868b;
+        }
+        .btn-auth-submit {
+            width: 100%;
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-auth-submit:hover {
+            background-color: #323236;
+        }
+        .auth-link-box {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.85rem;
+        }
+        .auth-link {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .auth-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{common/header :: mainHeader}"></div>
+
+<div class="auth-container">
+    <h2 class="fw-bold mb-4 text-center" style="font-size: 1.8rem; letter-spacing: -0.6px;">Sign In</h2>
+
+    <form th:action="@{/member/login}" th:object="${loginForm}" method="post">
+        <input type="hidden" name="redirectURL" th:value="${redirectURL}" />
+
+        <div th:if="${#fields.hasGlobalErrors()}" class="mb-3">
+            <p class="text-danger small m-0" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
+        </div>
+
+        <div>
+            <label for="loginId" class="form-label-custom">아이디</label>
+            <input type="text" id="loginId" th:field="*{loginId}" class="form-input-text" th:errorclass="is-invalid" placeholder="Enter your ID" autofocus>
+            <div class="invalid-feedback mb-2" th:errors="*{loginId}">아이디를 입력하세요</div>
+        </div>
+        <div>
+            <label for="password" class="form-label-custom">비밀번호</label>
+            <input type="password" id="password" th:field="*{loginPassword}" class="form-input-text" th:errorclass="is-invalid" placeholder="Enter your password">
+            <div class="invalid-feedback mb-2" th:errors="*{loginPassword}">비밀번호를 입력하세요</div>
+        </div>
+
+        <button class="btn-auth-submit" type="submit">로그인</button>
+    </form>
+
+    <div class="auth-link-box">
+        <span class="text-muted">계정이 없으신가요?</span>
+        <a href="/member/register" class="auth-link">회원가입</a>
+    </div>
+</div>
+
+</body>
+</html>

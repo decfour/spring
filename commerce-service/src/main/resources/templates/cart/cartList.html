@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>THGTE - Cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #1d1d1f;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .main-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+        }
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .cart-table th {
+            padding: 14px 0;
+            font-weight: 500;
+            color: #86868b;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #d2d2d7;
+        }
+        .cart-table td {
+            padding: 18px 0;
+            border-bottom: 1px solid #e5e5e7;
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+        .text-end-align {
+            text-align: right;
+        }
+        .btn-custom {
+            border-radius: 6px;
+            font-size: 0.85rem;
+            padding: 10px 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+        }
+        .btn-secondary-outline {
+            background: none;
+            border: 1px solid #d2d2d7;
+            color: #1d1d1f;
+        }
+        .btn-secondary-outline:hover {
+            background-color: #f5f5f7;
+            border-color: #86868b;
+        }
+        .btn-action-danger {
+            background: none;
+            border: 1px solid #d2d2d7;
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: #de363a;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-action-danger:hover {
+            background-color: #fffbfa;
+            border-color: #de363a;
+        }
+
+        .summary-section {
+            border-top: 1px solid #1d1d1f;
+            padding-top: 24px;
+            margin-top: 40px;
+        }
+        .btn-cart-order {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 32px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-cart-order:hover {
+            background-color: #323236;
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{common/header :: mainHeader}"></div>
+
+<div class="main-container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="section-title m-0">Cart <span class="text-muted" style="font-weight:400;">Items</span></h2>
+        <button class="btn-custom btn-secondary-outline" th:onclick="|location.href='@{/shop}'|" type="button">상점</button>
+    </div>
+
+    <!-- 상품이 없는 경우 -->
+    <div th:if="${#lists.isEmpty(cartItems)}" class="text-center py-5" style="border-top: 1px solid #d2d2d7;">
+        <p class="text-muted">장바구니가 비어 있습니다</p>
+    </div>
+
+    <!-- 상품이 있는 경우 -->
+    <div th:if="${not #lists.isEmpty(cartItems)}">
+        <table class="cart-table">
+            <thead>
+            <tr>
+                <th style="width: 40%; text-align: left; padding-left: 10px;">Product</th>
+                <th style="width: 20%; text-align: center;">Price</th>
+                <th style="width: 15%; text-align: center;">Quantity</th>
+                <th style="width: 15%; text-align: right;">Total</th>
+                <th style="width: 10%; text-align: right; padding-right: 10px;"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cartItem : ${cartItems}">
+                <td style="text-align: left; padding-left: 10px;">
+                    <a th:href="@{/shop/item/{itemId}(itemId=${cartItem.item.id})}"
+                       th:text="${cartItem.item.name}"
+                       class="text-dark fw-medium text-decoration-none" style="letter-spacing: -0.2px;">상품명</a>
+                </td>
+                <td th:text="${#numbers.formatInteger(cartItem.item.price, 0, 'COMMA')} + '원'" style="text-align: center; color: #424245;">0원</td>
+                <td th:text="${cartItem.count} + '개'" style="text-align: center; color: #1d1d1f;">1개</td>
+                <td th:text="${#numbers.formatInteger(cartItem.item.price * cartItem.count, 0, 'COMMA')} + '원'" class="fw-medium text-end-align">0원</td>
+                <td style="text-align: right; padding-right: 10px;">
+                    <form th:action="@{/cart/item/{id}/delete(id=${cartItem.id})}" method="post" class="m-0">
+                        <button type="submit" class="btn-action-danger">X</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="summary-section d-flex justify-content-between align-items-center">
+            <div>
+                <span style="color: #86868b; font-size: 0.95rem; margin-right: 15px;">총 결제 금액</span>
+                <span style="font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px;" th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원'">0원</span>
+            </div>
+            <form th:action="@{/order/cart}" method="post" class="m-0">
+                <button type="submit" class="btn-cart-order">전체 주문</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

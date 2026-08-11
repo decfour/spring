@@ -1,0 +1,64 @@
+package com.kdj.commerce.web.file;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
+@Component
+public class FileStore {
+    private static final List<String> ALLOWED = List.of("jpg", "jpeg", "png", "gif", "webp");
+
+    @Value("${file.dir}")
+    private String fileDir;
+
+    public String getFullPath(String filename) {
+        return new File(fileDir, filename).getPath();
+    }
+
+    public String storeFile(MultipartFile multipartFile) throws IOException {
+
+        if (multipartFile == null || multipartFile.isEmpty()) {
+            return null;
+        }
+
+        // 1. 회원이 올린 원래 파일명 꺼내기 (예: "nike.png")
+        String originalFilename = multipartFile.getOriginalFilename();
+
+        // 2. 서버 저장 고유 파일명 생성 (예: "uuid-1234.png")
+        String storeFileName = createStoreFileName(originalFilename);
+
+        // 3. 실제 하드디스크 경로에 파일 객체 생성 후 저장 처리
+        multipartFile.transferTo(new File(getFullPath(storeFileName)));
+
+        // DB에 저장할 수 있도록 '서버용 고유 파일명'을 반환
+        return storeFileName;
+    }
+
+    // UUID + 확장자
+    private String createStoreFileName(String originalFilename) {
+        String ext = extractExt(originalFilename);
+        String uuid = UUID.randomUUID().toString();
+
+        if (!ALLOWED.contains(ext.toLowerCase())) {
+            throw new IllegalArgumentException("지원하지 않는 파일입니다.");
+        }
+
+        return uuid + "." + ext.toLowerCase();
+    }
+
+    // 파일명에서 확장자 추출
+    private String extractExt(String originalFilename) {
+        int pos = originalFilename.lastIndexOf(".");
+
+        if (pos == -1) {
+            throw new IllegalArgumentException("확장자가 없습니다.");
+        }
+
+        return originalFilename.substring(pos + 1);
+    }
+}

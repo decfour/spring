@@ -1,0 +1,222 @@
+# 📊 Performance Test (k6)
+
+## Test Environment
+
+| Item | Value |
+|------|-------|
+| Tool | k6 |
+| Server | AWS EC2 (Ubuntu) |
+| Backend | Spring Boot 3.2.5 |
+| Language | Java 17 |
+| Database | MySQL 8 |
+| WAS | Embedded Tomcat |
+
+---
+
+## Scenario 1. Home (/)
+
+### Test Conditions
+
+- Virtual Users: 10
+- Duration: 10s
+
+### Result
+
+| Metric | Value |
+|------|------:|
+| Average Response Time | 8.98 ms |
+| P95 Response Time | 13.24 ms |
+| Max Response Time | 34.58 ms |
+| Throughput | 1090 req/s |
+| Total Requests | 10,918 |
+| Failed Requests | 0% |
+
+### Summary
+
+- Home 화면 반복 조회 테스트
+- 모든 요청 정상 처리 (HTTP Failure 0%)
+- 평균 응답 시간 8.98ms 유지
+
+---
+
+## Scenario 2. Product List (/shop)
+
+### Test Conditions
+
+- Virtual Users: 100
+- Duration: 30s
+
+### Result
+
+| Metric | Value |
+|------|------:|
+| Average Response Time | 218.15 ms |
+| P95 Response Time | 586.45 ms |
+| Max Response Time | 1.38 s |
+| Throughput | 456 req/s |
+| Total Requests | 13,749 |
+| Failed Requests | 0% |
+
+### Server Monitoring
+
+| Process | Observation |
+|---------|-------------|
+| Spring Boot (Java) | CPU 약 179% |
+| MySQL | CPU 약 20% |
+| Memory | 약 360MB |
+
+### Summary
+
+- 상품 목록 반복 조회 테스트
+- 100명의 동시 사용자 환경에서도 요청 실패 없음
+- Spring Boot 애플리케이션이 주요 CPU를 사용
+- MySQL은 비교적 여유 있는 상태 확인
+
+---
+
+## Scenario 3. Product List → Product Detail
+
+### Test Flow
+
+```text
+GET /shop
+      ↓
+sleep(1)
+      ↓
+GET /shop/item/{id}
+      ↓
+sleep(1)
+```
+
+### Test Conditions
+
+- Virtual Users: 100
+- Duration: 30s
+
+### Result
+
+| Metric | Value |
+|------|------:|
+| Average Response Time | 27.35 ms |
+| P95 Response Time | 77.03 ms |
+| Max Response Time | 341.13 ms |
+| Throughput | 95.94 req/s |
+| Total Requests | 3,000 |
+| Failed Requests | 0% |
+
+### Server Monitoring
+
+| Process | Observation |
+|---------|-------------|
+| Spring Boot (Java) | CPU 약 72% |
+| MySQL | CPU 약 6% |
+| Memory | 약 380MB |
+
+### Summary
+
+- 실제 사용자의 상품 탐색 흐름을 가정한 테스트
+- 페이지 체류 시간을 고려하여 `sleep()`을 적용
+- 모든 요청 정상 처리 (HTTP Failure 0%)
+- 평균 응답 시간 27.35ms 유지
+
+---
+
+## Scenario 4. Login → Product → Cart
+
+### Test Flow
+
+```text
+POST /member/login
+        ↓
+GET /shop
+        ↓
+GET /shop/item/{id}
+        ↓
+POST /cart/add
+```
+
+### Test Conditions
+
+- Virtual Users: 100
+- Duration: 30s
+
+### Result
+
+| Metric | Value |
+|------|------:|
+| Average Response Time | 45.68 ms |
+| P95 Response Time | 187.71 ms |
+| HTTP Failure Rate | 0% |
+
+### Verification
+
+| Item | Result |
+|------|--------|
+| Login | Success |
+| JWT Cookie | Automatically maintained |
+| Cart | Items successfully added |
+
+### Summary
+
+- 로그인 후 JWT Cookie 기반 인증 상태 유지 확인
+- 상품 조회 후 장바구니 추가까지 정상 수행
+- 장바구니 데이터 정상 생성 확인
+- 모든 요청 정상 처리 (HTTP Failure 0%)
+
+---
+
+## Scenario 5. Login → Product → Order
+
+### Test Flow
+
+```text
+POST /member/login
+        ↓
+GET /shop
+        ↓
+GET /shop/item/{id}
+        ↓
+POST /order/create
+```
+
+### Test Conditions
+
+- Virtual Users: 100
+- Duration: 30s
+
+### Result
+
+| Metric | Value |
+|------|------:|
+| Average Response Time | 1.37 s |
+| P95 Response Time | 3.42 s |
+| Max Response Time | 7.38 s |
+| Throughput | 56 req/s |
+| Total Requests | 2,064 |
+| Failed Requests | 0% |
+
+### Server Monitoring
+
+| Process | Observation |
+|---------|-------------|
+| Spring Boot (Java) | CPU 약 170% |
+| MySQL | CPU 약 15% |
+| Memory | 약 410MB |
+| Swap | 약 758MB 사용 |
+
+### Verification
+
+| Item | Result |
+|------|--------|
+| Login | Success |
+| JWT Cookie | Automatically maintained |
+| Order | Successfully created |
+| Inventory | Successfully updated |
+
+### Summary
+
+- 로그인부터 주문 생성까지 실제 사용자 구매 시나리오를 가정한 테스트
+- 주문 생성 및 재고 차감이 정상적으로 수행됨을 확인
+- 모든 요청 정상 처리 (HTTP Failure 0%)
+- 조회 테스트 대비 쓰기 트랜잭션으로 인해 응답 시간이 증가했지만 안정적으로 처리
+- Spring Boot 애플리케이션이 주요 CPU를 사용하였으며 MySQL은 상대적으로 여유 있는 상태를 유지
