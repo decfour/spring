@@ -10,7 +10,6 @@ import org.springframework.security.core.parameters.P;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
         uniqueConstraints = @UniqueConstraint(

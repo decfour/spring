@@ -1,14 +1,22 @@
 package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.member.Member;
+import com.kdj.commerce.domain.walk.WalkCourse;
 import com.kdj.commerce.service.WalkCourseService;
 import com.kdj.commerce.web.argumentresolver.Login;
 import com.kdj.commerce.web.dto.walk.WalkCourseForm;
+import com.kdj.commerce.web.dto.walk.WalkCourseResponse;
 import com.kdj.commerce.web.dto.walk.WalkRouteRequest;
 import com.kdj.commerce.web.dto.walk.WalkRouteResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -64,6 +72,20 @@ public class WalkController {
                 request.getStartLng(),
                 request.getEndLat(),
                 request.getEndLng()
+        );
+    }
+
+    @GetMapping("/courses/nearby")
+    @ResponseBody
+    public Page<WalkCourseResponse> nearbyCourses(
+            @PageableDefault(size = 5) Pageable pageable,
+            @RequestParam Double lat,
+            @RequestParam Double lng
+    ) {
+        return walkCourseService.findNearbyCourses(
+                pageable,
+                lat,
+                lng
         );
     }
 }

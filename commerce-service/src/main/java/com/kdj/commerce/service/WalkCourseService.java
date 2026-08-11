@@ -3,10 +3,15 @@ package com.kdj.commerce.service;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.walk.WalkCourse;
 import com.kdj.commerce.domain.walk.WalkCourseRepository;
+import com.kdj.commerce.web.dto.walk.WalkCourseResponse;
 import com.kdj.commerce.web.dto.walk.WalkRouteResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +49,22 @@ public class WalkCourseService {
         walkCourseRepository.save(walkCourse);
 
         return walkCourse.getId();
+    }
+
+    public WalkCourse findOne(long id) {
+        WalkCourse walkCourse = walkCourseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("찾을 수 없습니다"));
+        return walkCourse;
+    }
+
+    public Page<WalkCourseResponse> findNearbyCourses(
+            Pageable pageable,
+            Double latitude,
+            Double longitude
+    ) {
+        return walkCourseRepository
+                .findNearbyCourses(latitude, longitude, pageable)
+                .map(WalkCourseResponse::from);
     }
 
     public WalkRouteResult findRoute(

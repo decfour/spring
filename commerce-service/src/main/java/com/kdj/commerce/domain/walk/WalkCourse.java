@@ -34,8 +34,9 @@ public class WalkCourse {
     private String routeData;
 
     private Integer distance;
-
     private Integer duration;
+
+    private int likeCount;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -63,6 +64,7 @@ public class WalkCourse {
         course.routeData = routeData;
         course.distance = distance;
         course.duration = duration;
+        course.likeCount = 0;
 
         return course;
     }

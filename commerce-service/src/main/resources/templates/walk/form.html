@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>THGTE - Add Walk</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Kakao Map API -->
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <script type="text/javascript"
+            src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
 
     <style>
         body {
@@ -16,32 +17,35 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
+
         .main-container {
             max-width: 800px;
             margin: 60px auto;
             padding: 0 20px;
         }
+
         .section-title {
             font-size: 2rem;
             font-weight: 700;
             letter-spacing: -0.8px;
         }
 
-        /* 지도 컨테이너 및 플로팅 배지 */
         .map-wrapper {
             position: relative;
             width: 100%;
-            height: 340px; /* 기존 450px -> 3/4 수정 */
+            height: 340px;
             border-radius: 18px;
             overflow: hidden;
             border: 1px solid #d2d2d7;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             margin-bottom: 24px;
         }
+
         .map-card {
             width: 100%;
             height: 100%;
         }
+
         .map-status-badge {
             position: absolute;
             top: 16px;
@@ -57,11 +61,9 @@
             font-weight: 500;
             border: 1px solid rgba(0, 0, 0, 0.08);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            pointer-events: none; /* 지도 클릭 이벤트 방해 금지 */
-            transition: all 0.2s ease;
+            pointer-events: none;
         }
 
-        /* 폼 요소 스타일 */
         .form-label-custom {
             font-size: 0.9rem;
             font-weight: 600;
@@ -69,6 +71,7 @@
             margin-bottom: 6px;
             display: block;
         }
+
         .form-control-apple {
             width: 100%;
             border: 1px solid #d2d2d7;
@@ -77,19 +80,20 @@
             font-size: 0.95rem;
             color: #1d1d1f;
             background-color: #ffffff;
-            transition: all 0.2s ease-in-out;
             outline: none;
         }
+
         .form-control-apple:focus {
             border-color: #0066cc;
             box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
         }
+
         .form-control-apple::placeholder {
             color: #86868b;
         }
 
-        /* 버튼 크기 및 스타일 완벽 통일 */
-        .btn-apple-dark, .btn-apple-outline {
+        .btn-apple-dark,
+        .btn-apple-outline {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -104,27 +108,32 @@
             line-height: 1;
             cursor: pointer;
         }
+
         .btn-apple-dark {
             background-color: #1d1d1f;
             color: #ffffff;
             border: 1px solid #1d1d1f;
         }
+
         .btn-apple-dark:hover {
             background-color: #434344;
             border-color: #434344;
             color: #ffffff;
         }
+
         .btn-apple-dark:disabled {
             background-color: #e5e5e7;
             border-color: #e5e5e7;
             color: #86868b;
             cursor: not-allowed;
         }
+
         .btn-apple-outline {
             background-color: transparent;
             color: #1d1d1f;
             border: 1px solid #d2d2d7;
         }
+
         .btn-apple-outline:hover {
             background-color: #f5f5f7;
             border-color: #86868b;
@@ -138,25 +147,28 @@
 <div th:replace="~{common/header :: mainHeader}"></div>
 
 <div class="main-container">
-    <!-- 헤더 영역 -->
+
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h2 class="section-title m-0">Add <span class="text-muted" style="font-weight:400;">Course</span></h2>
-        <a th:href="@{/walk}" class="btn-apple-outline">취소</a>
+        <h2 class="section-title m-0">
+            Add <span class="text-muted" style="font-weight:400;">Course</span>
+        </h2>
+
+        <a th:href="@{/walk}" class="btn-apple-outline">
+            뒤로
+        </a>
     </div>
 
-    <!-- 지도 및 지도 내부 알림 배지 -->
     <div class="map-wrapper">
         <div class="map-status-badge" id="status">
             📍 출발지를 선택하세요
         </div>
+
         <div id="map" class="map-card"></div>
     </div>
 
-    <!-- 등록 폼 -->
     <form th:action="@{/walk}" method="post">
 
         <div class="mb-4">
-            <label for="name" class="form-label-custom">이름</label>
             <input type="text"
                    id="name"
                    name="name"
@@ -166,7 +178,6 @@
         </div>
 
         <div class="mb-4">
-            <label for="review" class="form-label-custom">설명</label>
             <textarea id="review"
                       name="review"
                       class="form-control-apple"
@@ -175,42 +186,50 @@
                       required></textarea>
         </div>
 
-        <!-- 출발지 Hidden Input -->
         <input type="hidden" id="startLat" name="startLat">
         <input type="hidden" id="startLng" name="startLng">
-
-        <!-- 목적지 Hidden Input -->
         <input type="hidden" id="endLat" name="endLat">
         <input type="hidden" id="endLng" name="endLng">
-
-        <!-- 경로 API 결과 Hidden Input -->
         <input type="hidden" id="routeData" name="routeData">
         <input type="hidden" id="distance" name="distance">
         <input type="hidden" id="duration" name="duration">
 
-        <!-- 하단 제출 버튼 -->
         <div class="d-flex justify-content-end gap-2 mt-4">
-            <a th:href="@{/walk}" class="btn-apple-outline">취소</a>
-            <button type="submit" id="submitButton" class="btn-apple-dark" disabled>등록</button>
+
+            <button type="button"
+                    id="resetButton"
+                    class="btn-apple-outline">
+                초기화
+            </button>
+
+            <button type="submit"
+                    id="submitButton"
+                    class="btn-apple-dark"
+                    disabled>
+                등록
+            </button>
+
         </div>
 
     </form>
 </div>
 
 <script>
-    const container = document.getElementById('map');
-    const options = {
-        center: new kakao.maps.LatLng(37.5665, 126.9780),
-        level: 4
-    };
-
-    const map = new kakao.maps.Map(container, options);
+    const map = new kakao.maps.Map(
+        document.getElementById('map'),
+        {
+            center: new kakao.maps.LatLng(37.5665, 126.9780),
+            level: 4
+        }
+    );
 
     const status = document.getElementById('status');
     const submitButton = document.getElementById('submitButton');
+    const resetButton = document.getElementById('resetButton');
 
     let startMarker = null;
     let endMarker = null;
+    let routePolyline = null;
 
     let startLat = null;
     let startLng = null;
@@ -218,45 +237,85 @@
     let endLng = null;
 
     kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+
         const latlng = mouseEvent.latLng;
 
-        // 첫 번째 클릭 → 출발지
         if (startLat === null) {
+
             startLat = latlng.getLat();
             startLng = latlng.getLng();
 
             startMarker = new kakao.maps.Marker({
-                position: latlng
+                position: latlng,
+                map: map
             });
-            startMarker.setMap(map);
 
             document.getElementById('startLat').value = startLat;
             document.getElementById('startLng').value = startLng;
 
             status.textContent = '📍 목적지를 선택하세요';
+
             return;
         }
 
-        // 두 번째 클릭 → 목적지
         if (endLat === null) {
+
             endLat = latlng.getLat();
             endLng = latlng.getLng();
 
             endMarker = new kakao.maps.Marker({
-                position: latlng
+                position: latlng,
+                map: map
             });
-            endMarker.setMap(map);
 
             document.getElementById('endLat').value = endLat;
             document.getElementById('endLng').value = endLng;
 
-            status.textContent = '⏳ 경로를 찾는 중..';
+            status.textContent = '⏳ 경로를 찾는 중...';
+
             findRoute();
         }
     });
 
-    // 카카오 도보 경로 조회
+    resetButton.addEventListener('click', resetCourse);
+
+    function resetCourse() {
+
+        if (startMarker) {
+            startMarker.setMap(null);
+        }
+
+        if (endMarker) {
+            endMarker.setMap(null);
+        }
+
+        if (routePolyline) {
+            routePolyline.setMap(null);
+        }
+
+        startMarker = null;
+        endMarker = null;
+        routePolyline = null;
+
+        startLat = null;
+        startLng = null;
+        endLat = null;
+        endLng = null;
+
+        document.getElementById('startLat').value = '';
+        document.getElementById('startLng').value = '';
+        document.getElementById('endLat').value = '';
+        document.getElementById('endLng').value = '';
+        document.getElementById('routeData').value = '';
+        document.getElementById('distance').value = '';
+        document.getElementById('duration').value = '';
+
+        submitButton.disabled = true;
+        status.textContent = '📍 출발지를 선택하세요';
+    }
+
     function findRoute() {
+
         fetch('/walk/route', {
             method: 'POST',
             headers: {
@@ -270,26 +329,26 @@
             })
         })
         .then(response => {
+
             if (!response.ok) {
                 throw new Error('경로 조회 실패');
             }
+
             return response.json();
         })
         .then(data => {
-            console.log('경로 조회 결과:', data);
 
             document.getElementById('routeData').value = data.routeData;
             document.getElementById('distance').value = data.distance;
             document.getElementById('duration').value = data.duration;
 
-            // 경로 좌표를 지도 좌표로 변환
             const points = JSON.parse(data.routeData);
+
             const path = points.map(point =>
                 new kakao.maps.LatLng(point[1], point[0])
             );
 
-            // 실제 산책 경로 그리기
-            const polyline = new kakao.maps.Polyline({
+            routePolyline = new kakao.maps.Polyline({
                 path: path,
                 strokeWeight: 5,
                 strokeColor: '#0066cc',
@@ -297,17 +356,23 @@
                 strokeStyle: 'solid'
             });
 
-            polyline.setMap(map);
+            routePolyline.setMap(map);
 
-            status.textContent = `✅ 경로 조회 완료 (${data.distance}m / ${Math.round(data.duration / 60)}분)`;
+            status.textContent =
+                `✅ 경로 조회 완료 (${data.distance}m / ${Math.round(data.duration / 60)}분)`;
+
             submitButton.disabled = false;
         })
         .catch(error => {
+
             console.error(error);
+
             status.textContent = '❌ 경로 조회 실패';
+            submitButton.disabled = true;
         });
     }
 </script>
 
 </body>
 </html>
+```
