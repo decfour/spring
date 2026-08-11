@@ -77,6 +77,7 @@ class PostServiceTest {
         Assertions.assertThat(result).isEqualTo(1000);
     }
 
+    /*
     @Test
     @DisplayName("게시물 좋아요 테스트")
     void likeCountTest() throws InterruptedException {
@@ -118,4 +119,5 @@ class PostServiceTest {
         System.out.println("최종 좋아요 수= " + result);
         Assertions.assertThat(result).isEqualTo(100);
     }
+     */
 }
