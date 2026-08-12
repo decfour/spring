@@ -41,13 +41,13 @@ public class Post {
         this.likeCount++;
     }
 
-    public static Post create(String title, String content, Member member, int viewCount, int likeCount) {
+    public static Post create(String title, String content, Member member) {
         Post post = new Post();
         post.title = title;
         post.content = content;
         post.writer = member;
-        post.viewCount = viewCount;
-        post.likeCount = likeCount;
+        post.viewCount = 0;
+        post.likeCount = 0;
 
         return post;
     }

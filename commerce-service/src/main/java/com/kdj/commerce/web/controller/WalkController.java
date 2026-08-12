@@ -29,7 +29,7 @@ public class WalkController {
         return "walk/main";
     }
 
-    @GetMapping("/add")
+    @GetMapping("/course/add")
     public String addForm() {
         return "walk/form";
     }
@@ -37,16 +37,6 @@ public class WalkController {
     @PostMapping
     public String add(@Login Member loginMember,
                       WalkCourseForm form) {
-        System.out.println("name = " + form.getName());
-        System.out.println("review = " + form.getReview());
-        System.out.println("startLat = " + form.getStartLat());
-        System.out.println("startLng = " + form.getStartLng());
-        System.out.println("endLat = " + form.getEndLat());
-        System.out.println("endLng = " + form.getEndLng());
-        System.out.println("routeData = " + form.getRouteData());
-        System.out.println("distance = " + form.getDistance());
-        System.out.println("duration = " + form.getDuration());
-
         Long courseId = walkCourseService.save(
                 loginMember,
                 form.getName(),
@@ -63,10 +53,9 @@ public class WalkController {
         return "redirect:/walk";
     }
 
-    @PostMapping("/route")
+    @PostMapping("/course/route")
     @ResponseBody
     public WalkRouteResult route(@RequestBody WalkRouteRequest request) {
-
         return walkCourseService.findRoute(
                 request.getStartLat(),
                 request.getStartLng(),
@@ -75,17 +64,19 @@ public class WalkController {
         );
     }
 
-    @GetMapping("/courses/nearby")
+    @GetMapping("/course/nearby")
     @ResponseBody
     public Page<WalkCourseResponse> nearbyCourses(
             @PageableDefault(size = 5) Pageable pageable,
             @RequestParam Double lat,
-            @RequestParam Double lng
-    ) {
-        return walkCourseService.findNearbyCourses(
-                pageable,
-                lat,
-                lng
-        );
+            @RequestParam Double lng) {
+        return walkCourseService.findNearbyCourses(pageable, lat, lng);
+    }
+
+    @PostMapping("/course/{id}/like")
+    @ResponseBody
+    public int like(@PathVariable Long id,
+                       @Login Member loginMember) {
+        return walkCourseService.like(id, loginMember);
     }
 }

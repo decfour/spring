@@ -3,10 +3,9 @@ package com.kdj.commerce.domain.walk;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
 
 public interface WalkCourseRepository extends JpaRepository<WalkCourse, Long> {
     @Query(value = """
@@ -20,10 +19,13 @@ public interface WalkCourseRepository extends JpaRepository<WalkCourse, Long> {
                         POINT(start_lng, start_lat),
                         POINT(:longitude, :latitude)
                     )
-                    """, nativeQuery = true)
-    Page<WalkCourse> findNearbyCourses(
-            @Param("latitude") Double latitude,
-            @Param("longitude") Double longitude,
-            Pageable pageable
-    );
+                    """,
+                    nativeQuery = true)
+    Page<WalkCourse> findNearbyCourses(@Param("latitude") Double latitude,
+                                       @Param("longitude") Double longitude,
+                                       Pageable pageable);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE WalkCourse w SET w.likeCount = w.likeCount + 1 WHERE w.id = :id")
+    int increaseLikeCount(@Param("id") Long id);
 }

@@ -28,17 +28,6 @@ public class PostController {
     private final PostService postService;
     private final CommentService commentService;
 
-    private boolean isOwner(Post post, Member loginMember) {
-        if (post == null || post.getWriter() == null || loginMember == null) {
-            return false;
-        }
-        return post.getWriter().getId().equals(loginMember.getId());
-    }
-
-    private boolean isAdmin(Member loginMember) {
-        return loginMember != null && loginMember.getMemberType() == MemberType.ADMIN;
-    }
-
     @GetMapping
     public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model) {
@@ -74,14 +63,6 @@ public class PostController {
         return "community/detail";
     }
 
-    @PostMapping("/post/{id}/like")
-    public String like(@PathVariable Long id,
-                       @Login Member loginMember) {
-        postService.like(id, loginMember);
-
-        return "redirect:/community/post/" + id;
-    }
-
     @GetMapping("/add")
     public String addForm(@Login Member loginMember,
                           Model model) {
@@ -98,8 +79,7 @@ public class PostController {
             return "community/form";
         }
 
-        Post post = Post.create(form.getTitle(), form.getContent(), loginMember, 0, 0);
-        postService.save(post);
+        postService.save(form.getTitle(), form.getContent(), loginMember);
 
         return "redirect:/community";
     }
@@ -159,5 +139,24 @@ public class PostController {
         postService.delete(id);
 
         return "redirect:/community";
+    }
+
+    @PostMapping("/post/{id}/like")
+    public String like(@PathVariable Long id,
+                       @Login Member loginMember) {
+        postService.like(id, loginMember);
+
+        return "redirect:/community/post/" + id;
+    }
+
+    private boolean isOwner(Post post, Member loginMember) {
+        if (post == null || post.getWriter() == null || loginMember == null) {
+            return false;
+        }
+        return post.getWriter().getId().equals(loginMember.getId());
+    }
+
+    private boolean isAdmin(Member loginMember) {
+        return loginMember != null && loginMember.getMemberType() == MemberType.ADMIN;
     }
 }

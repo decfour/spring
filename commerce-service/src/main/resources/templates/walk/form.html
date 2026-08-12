@@ -167,7 +167,6 @@
     </div>
 
     <form th:action="@{/walk}" method="post">
-
         <div class="mb-4">
             <input type="text"
                    id="name"
@@ -195,7 +194,6 @@
         <input type="hidden" id="duration" name="duration">
 
         <div class="d-flex justify-content-end gap-2 mt-4">
-
             <button type="button"
                     id="resetButton"
                     class="btn-apple-outline">
@@ -208,13 +206,13 @@
                     disabled>
                 등록
             </button>
-
         </div>
-
     </form>
+
 </div>
 
 <script>
+    // 지도 객체 생성
     const map = new kakao.maps.Map(
         document.getElementById('map'),
         {
@@ -236,12 +234,11 @@
     let endLat = null;
     let endLng = null;
 
+    // 출발지/도착지 지도 클릭 이벤트
     kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-
         const latlng = mouseEvent.latLng;
 
         if (startLat === null) {
-
             startLat = latlng.getLat();
             startLng = latlng.getLng();
 
@@ -259,7 +256,6 @@
         }
 
         if (endLat === null) {
-
             endLat = latlng.getLat();
             endLng = latlng.getLng();
 
@@ -277,10 +273,10 @@
         }
     });
 
+    // 초기화 버튼 이벤트
     resetButton.addEventListener('click', resetCourse);
 
     function resetCourse() {
-
         if (startMarker) {
             startMarker.setMap(null);
         }
@@ -315,8 +311,7 @@
     }
 
     function findRoute() {
-
-        fetch('/walk/route', {
+        fetch('/walk/course/route', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -329,7 +324,6 @@
             })
         })
         .then(response => {
-
             if (!response.ok) {
                 throw new Error('경로 조회 실패');
             }
@@ -337,7 +331,6 @@
             return response.json();
         })
         .then(data => {
-
             document.getElementById('routeData').value = data.routeData;
             document.getElementById('distance').value = data.distance;
             document.getElementById('duration').value = data.duration;
@@ -375,4 +368,3 @@
 
 </body>
 </html>
-```

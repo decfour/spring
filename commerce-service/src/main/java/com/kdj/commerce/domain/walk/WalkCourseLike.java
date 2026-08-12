@@ -9,14 +9,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(
-        uniqueConstraints = {
+@Table(uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_member_walk_course",
-                        columnNames = {"member_id", "walk_course_id"}
-                )
-        }
-)
+                        columnNames = {"member_id", "walk_course_id"})})
 public class WalkCourseLike {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

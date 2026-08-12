@@ -53,7 +53,6 @@ public class WalkCourse {
             Integer duration
     ) {
         WalkCourse course = new WalkCourse();
-
         course.member = member;
         course.name = name;
         course.review = review;

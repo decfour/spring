@@ -20,18 +20,19 @@ public class KakaoRouteService {
 
     private final ObjectMapper objectMapper;
 
+    // 공통 URL
     private final RestClient restClient = RestClient.builder()
             .baseUrl("https://dapi.kakao.com")
             .build();
 
+    // API 요청
     public WalkRouteResult findWalkRoute(
             Double startLat,
             Double startLng,
             Double endLat,
-            Double endLng
-    ) {
-
-        String response = restClient.get()
+            Double endLng) {
+        String response =
+                restClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/v2/routing/walk")
                         .queryParam("start_x", startLng)
@@ -46,8 +47,8 @@ public class KakaoRouteService {
         return parseRoute(response);
     }
 
+    // JSON 해석
     private WalkRouteResult parseRoute(String response) {
-
         try {
             JsonNode root = objectMapper.readTree(response);
 
@@ -71,13 +72,11 @@ public class KakaoRouteService {
             JsonNode steps = leg.path("steps");
 
             for (JsonNode step : steps) {
-
                 JsonNode stepPoints = step
                         .path("path")
                         .path("points");
 
                 for (JsonNode point : stepPoints) {
-
                     List<Double> coordinate = new ArrayList<>();
 
                     coordinate.add(point.get(0).asDouble());
@@ -89,12 +88,7 @@ public class KakaoRouteService {
 
             String routeData = objectMapper.writeValueAsString(points);
 
-            return new WalkRouteResult(
-                    routeData,
-                    distance,
-                    duration
-            );
-
+            return new WalkRouteResult(routeData, distance, duration);
         } catch (Exception e) {
             throw new IllegalStateException("카카오 도보 경로 응답 처리 실패", e);
         }

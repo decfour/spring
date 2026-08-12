@@ -32,7 +32,8 @@ public class PostService {
     }
 
     @Transactional
-    public Long save(Post post) {
+    public Long save(String title, String content, Member member) {
+        Post post = Post.create(title, content, member);
         return postRepository.save(post).getId();
     }
 
