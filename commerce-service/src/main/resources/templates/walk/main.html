@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <title>THGTE - Walk</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-
-    <script type="text/javascript"
-            src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
 
     <style>
         body {
@@ -136,18 +133,10 @@
             margin-top: 36px;
         }
 
-        .course-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
-
         .course-empty {
             padding: 40px 20px;
             text-align: center;
             color: #86868b;
-            border: 1px dashed #d2d2d7;
-            border-radius: 16px;
             font-size: 0.95rem;
             line-height: 1.5;
         }
@@ -179,11 +168,13 @@
             margin-bottom: 6px;
         }
 
-        .course-review {
-            color: #6e6e73;
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            line-height: 1.4;
+        .course-detail-link {
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .course-detail-link:hover {
+            color: #0066cc;
         }
 
         .course-info {
@@ -199,6 +190,15 @@
             margin-left: auto;
             color: #1d1d1f;
             font-weight: 600;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .like-count:hover {
+            color: #0066cc;
         }
 
         .loading {
@@ -250,20 +250,6 @@
             color: #d2d2d7;
             cursor: not-allowed;
         }
-
-        .like-count {
-            margin-left: auto;
-            color: #1d1d1f;
-            font-weight: 600;
-            background: none;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-        }
-
-        .like-count:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 
@@ -288,31 +274,17 @@
         <div class="map-status-badge" id="status">
             📍 지도를 클릭하거나 현재 위치를 확인하세요
         </div>
-
         <div id="map" class="map-card"></div>
-
-        <button type="button"
-                id="locationBtn"
-                class="location-btn">
+        <button type="button" id="locationBtn" class="location-btn">
             📍 현재 위치
         </button>
     </div>
 
     <div class="course-section">
-
-        <div id="courseEmpty" class="course-empty">
-            주변 코스
-        </div>
-
-        <div id="courseLoading" class="loading" style="display: none;">
-            주변 코스를 찾는 중...
-        </div>
-
-        <div id="courseList" class="course-list">
-        </div>
-
+        <div id="courseEmpty" class="course-empty" style="display: none;"></div>
+        <div id="courseLoading" class="loading" style="display: none;">주변 코스를 찾는 중...</div>
+        <div id="courseList" class="course-list"></div>
         <div id="pagination" class="pagination-container"></div>
-
     </div>
 
 </div>
@@ -330,17 +302,15 @@
     const locationBtn = document.getElementById('locationBtn');
     const status = document.getElementById('status');
 
-    // 현재 마커 저장 변수
+    // 현재 마커, 현재 선택 코스
     let currentMarker = null;
-
-    // 현재 표시 중인 코스 경로
     let currentRoute = null;
 
-    // 선택 좌표 저장 변수
+    // 현재 위치
     let currentLat = null;
     let currentLng = null;
 
-    // 위치 설정 + 주변 코스 조회 함수
+    // 현재 위치 설정 + 근처 코스 탐색
     function setLocationAndFindCourses(lat, lng, statusText) {
         currentLat = lat;
         currentLng = lng;
@@ -350,20 +320,19 @@
         if (currentMarker) {
             currentMarker.setMap(null);
         }
+
         currentMarker = new kakao.maps.Marker({
             position: position,
             map: map
         });
 
         status.textContent = statusText;
-
         findNearbyCourses(lat, lng, 0);
     }
 
     // 지도 클릭 이벤트
     kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
         const position = mouseEvent.latLng;
-
         setLocationAndFindCourses(
             position.getLat(),
             position.getLng(),
@@ -371,7 +340,7 @@
         );
     });
 
-    // 현재 위치 버튼 이벤트
+    // 현재 위치 클릭 이벤트
     locationBtn.addEventListener('click', function() {
         if (!navigator.geolocation) {
             alert('이 브라우저에서는 위치 정보를 사용할 수 없습니다.');
@@ -386,32 +355,18 @@
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
 
-                map.setCenter(
-                    new kakao.maps.LatLng(lat, lng)
-                );
-
-                setLocationAndFindCourses(
-                    lat,
-                    lng,
-                    '📍 내 현재 위치 기준'
-                );
+                map.setCenter(new kakao.maps.LatLng(lat, lng));
+                setLocationAndFindCourses(lat, lng, '📍 내 현재 위치 기준');
 
                 locationBtn.disabled = false;
                 locationBtn.innerText = '📍 현재 위치';
             },
-
             function(error) {
                 console.error(error);
-
-                alert(
-                    '현재 위치를 가져오지 못했습니다.\n' +
-                    '위치 권한을 확인해주세요.'
-                );
-
+                alert('현재 위치를 가져오지 못했습니다.\n위치 권한을 확인해주세요.');
                 locationBtn.disabled = false;
                 locationBtn.innerText = '📍 현재 위치';
             },
-
             {
                 enableHighAccuracy: true,
                 timeout: 10000,
@@ -420,7 +375,7 @@
         );
     });
 
-    // 주변 코스 조회
+    // 근처 코스 탐색
     function findNearbyCourses(lat, lng, page) {
         const empty = document.getElementById('courseEmpty');
         const loading = document.getElementById('courseLoading');
@@ -429,37 +384,29 @@
 
         empty.style.display = 'none';
         loading.style.display = 'block';
+
         courseList.innerHTML = '';
         pagination.innerHTML = '';
 
-        fetch(
-            `/walk/course/nearby?lat=${lat}&lng=${lng}&page=${page}&size=5`
-        )
+        fetch(`/walk/course/nearby?lat=${lat}&lng=${lng}&page=${page}&size=5`)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('산책 코스 조회 실패');
-                }
-
+                if (!response.ok) throw new Error('산책 코스 조회 실패');
                 return response.json();
             })
             .then(data => {
                 loading.style.display = 'none';
-
                 renderCourses(data.content);
                 renderPagination(data);
             })
             .catch(error => {
                 console.error(error);
-
                 loading.style.display = 'none';
                 empty.style.display = 'block';
-
-                empty.innerText =
-                    '주변 산책 코스를 불러오지 못했습니다.';
+                empty.innerText = '주변 산책 코스를 불러오지 못했습니다.';
             });
     }
 
-    // 주변 코스 표시
+    // 근처 코스 표시
     function renderCourses(courses) {
         const courseList = document.getElementById('courseList');
         const empty = document.getElementById('courseEmpty');
@@ -468,10 +415,7 @@
 
         if (!courses || courses.length === 0) {
             empty.style.display = 'block';
-
-            empty.innerText =
-                '선택한 위치 주변에 등록된 산책 코스가 없습니다.';
-
+            empty.innerText = '선택한 위치 주변에 산책 코스가 없습니다';
             return;
         }
 
@@ -479,40 +423,35 @@
 
         courses.forEach(course => {
             const card = document.createElement('div');
-
             card.className = 'course-card';
 
             card.innerHTML = `
-                <div class="course-name">
+                <div class="course-name course-detail-link">
                     ${escapeHtml(course.name)}
                 </div>
-
                 <div class="course-info">
-                    <span>
-                        ${formatDistance(course.distance)}
-                    </span>
-
+                    <span>${formatDistance(course.distance)}</span>
                     <span>•</span>
-
-                    <span>
-                        ${formatDuration(course.duration)}
-                    </span>
-
+                    <span>${formatDuration(course.duration)}</span>
                     <button type="button" class="like-count">
                         추천 ${course.likeCount ?? 0}
                     </button>
                 </div>
             `;
 
+            const courseName = card.querySelector('.course-detail-link');
+            courseName.addEventListener('click', function(event) {
+                event.stopPropagation();
+                location.href = `/walk/course/${course.id}`;
+            });
+
             card.addEventListener('click', function() {
                 showCourseOnMap(course);
             });
 
             const likeButton = card.querySelector('.like-count');
-
             likeButton.addEventListener('click', function(event) {
                 event.stopPropagation();
-
                 likeCourse(course.id, likeButton);
             });
 
@@ -520,14 +459,10 @@
         });
     }
 
-    // 주변 코스 경로 표시
+    // 선택 코스 표시
     function showCourseOnMap(course) {
         const routeData = JSON.parse(course.routeData);
-
-        const startPosition = new kakao.maps.LatLng(
-            course.startLat,
-            course.startLng
-        );
+        const startPosition = new kakao.maps.LatLng(course.startLat, course.startLng);
 
         map.setCenter(startPosition);
 
@@ -535,14 +470,8 @@
             currentRoute.setMap(null);
         }
 
-        const path = routeData.map(point =>
-            new kakao.maps.LatLng(
-                point[1],
-                point[0]
-            )
-        );
+        const path = routeData.map(point => new kakao.maps.LatLng(point[1], point[0]));
 
-        // 경로 생성
         currentRoute = new kakao.maps.Polyline({
             path: path,
             strokeWeight: 5,
@@ -554,39 +483,33 @@
         currentRoute.setMap(map);
     }
 
+    // 선택 코스 추천
     function likeCourse(courseId, likeButton) {
-        fetch(`/walk/course/${courseId}/like`, {
-                method: 'POST'
-        })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('추천 요청 실패');
-                    }
-
-                    return response.json();
-                })
-                .then(likeCount => {
-                    likeButton.innerText = `추천 ${likeCount}`;
-                })
-                .catch(error => {
-                    console.error(error);
-                    alert('추천 처리에 실패했습니다.');
-                });
+        fetch(`/walk/course/${courseId}/like`, { method: 'POST' })
+            .then(response => {
+                if (!response.ok) throw new Error('추천 요청 실패');
+                return response.json();
+            })
+            .then(likeCount => {
+                likeButton.innerText = `추천 ${likeCount}`;
+            })
+            .catch(error => {
+                console.error(error);
+                alert('추천 처리에 실패했습니다.');
+            });
     }
 
-    // Page<T> 객체로 페이지네이션 버튼 생성
+    // 페이징
     function renderPagination(pageData) {
         const pagination = document.getElementById('pagination');
         pagination.innerHTML = '';
 
-        if (!pageData.content || pageData.totalPages <= 1) {
-            return;
-        }
+        if (!pageData.content || pageData.totalPages <= 1) return;
 
         const currentPage = pageData.number;
         const totalPages = pageData.totalPages;
-
         const maxButtons = 5;
+
         let startPage = Math.max(0, currentPage - Math.floor(maxButtons / 2));
         let endPage = startPage + maxButtons - 1;
 
@@ -595,69 +518,49 @@
             startPage = Math.max(0, endPage - maxButtons + 1);
         }
 
-        // 1. [이전] 버튼
         const prevBtn = document.createElement('button');
         prevBtn.className = 'page-btn';
         prevBtn.innerText = '‹';
         prevBtn.disabled = pageData.first;
         prevBtn.addEventListener('click', () => {
-            if (!pageData.first) {
-                findNearbyCourses(currentLat, currentLng, currentPage - 1);
-            }
+            if (!pageData.first) findNearbyCourses(currentLat, currentLng, currentPage - 1);
         });
         pagination.appendChild(prevBtn);
 
-        // 2. [숫자] 페이지 버튼
         for (let i = startPage; i <= endPage; i++) {
             const pageBtn = document.createElement('button');
             pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-            pageBtn.innerText = (i + 1).toString(); // 사용자에겐 1부터 표현
+            pageBtn.innerText = (i + 1).toString();
             pageBtn.addEventListener('click', () => {
-                if (i !== currentPage) {
-                    findNearbyCourses(currentLat, currentLng, i);
-                }
+                if (i !== currentPage) findNearbyCourses(currentLat, currentLng, i);
             });
             pagination.appendChild(pageBtn);
         }
 
-        // 3. [다음] 버튼
         const nextBtn = document.createElement('button');
         nextBtn.className = 'page-btn';
         nextBtn.innerText = '›';
         nextBtn.disabled = pageData.last;
         nextBtn.addEventListener('click', () => {
-            if (!pageData.last) {
-                findNearbyCourses(currentLat, currentLng, currentPage + 1);
-            }
+            if (!pageData.last) findNearbyCourses(currentLat, currentLng, currentPage + 1);
         });
         pagination.appendChild(nextBtn);
     }
 
     // 거리 변환
     function formatDistance(distance) {
-        if (distance == null) {
-            return '';
-        }
-
-        return distance >= 1000
-            ? (distance / 1000).toFixed(1) + ' km'
-            : distance + ' m';
+        if (distance == null) return '';
+        return distance >= 1000 ? (distance / 1000).toFixed(1) + ' km' : distance + ' m';
     }
 
     // 시간 변환
     function formatDuration(duration) {
-        if (duration == null) {
-            return '';
-        }
-
+        if (duration == null) return '';
         return Math.round(duration / 60) + '분';
     }
 
     function escapeHtml(value) {
-        if (value == null) {
-            return '';
-        }
-
+        if (value == null) return '';
         return String(value)
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
@@ -665,6 +568,7 @@
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;');
     }
+
 </script>
 
 </body>

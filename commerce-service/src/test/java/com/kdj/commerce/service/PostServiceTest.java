@@ -53,8 +53,8 @@ class PostServiceTest {
                 MemberType.USER);
         memberRepository.save(member);
 
-        Post post = Post.create("Test", "Test", member, 0, 0);
-        Long postId = postService.save(post);
+        Post post = Post.create("Test", "Test", member);
+        Long postId = postService.save(post.getTitle(), post.getContent(), member);
 
         int threadCount = 1000;
         ExecutorService executorService = Executors.newFixedThreadPool(32);

@@ -8,12 +8,15 @@ import com.kdj.commerce.web.dto.walk.WalkCourseForm;
 import com.kdj.commerce.web.dto.walk.WalkCourseResponse;
 import com.kdj.commerce.web.dto.walk.WalkRouteRequest;
 import com.kdj.commerce.web.dto.walk.WalkRouteResult;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +32,14 @@ public class WalkController {
         return "walk/main";
     }
 
+    @GetMapping("/course/{id}")
+    public String detail(@PathVariable Long id, Model model) {
+        WalkCourse walkCourse = walkCourseService.findOne(id);
+        model.addAttribute("course", walkCourse);
+
+        return "walk/detail";
+    }
+
     @GetMapping("/course/add")
     public String addForm() {
         return "walk/form";
@@ -36,7 +47,12 @@ public class WalkController {
 
     @PostMapping
     public String add(@Login Member loginMember,
-                      WalkCourseForm form) {
+                      @Valid @ModelAttribute WalkCourseForm form,
+                      BindingResult result) {
+        if (result.hasErrors()) {
+            return "walk/form";
+        }
+
         Long courseId = walkCourseService.save(
                 loginMember,
                 form.getName(),

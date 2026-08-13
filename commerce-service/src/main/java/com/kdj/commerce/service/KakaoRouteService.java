@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class KakaoRouteService {
-
+    // Kakao Map REST API Key
     @Value("${kakao.rest-api-key}")
     private String restApiKey;
 
