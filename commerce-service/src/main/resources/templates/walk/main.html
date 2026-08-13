@@ -148,9 +148,9 @@
         }
 
         .course-card {
-            padding: 20px;
+            padding: 12px 16px;
             border: 1px solid #d2d2d7;
-            border-radius: 16px;
+            border-radius: 14px;
             background-color: #ffffff;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
             transition: all 0.2s ease;
@@ -158,17 +158,21 @@
         }
 
         .course-card:hover {
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-            transform: translateY(-2px);
+            border-color: #0066cc;
+            box-shadow: 0 4px 16px rgba(0, 102, 204, 0.12);
         }
 
         .course-name {
-            font-size: 1.05rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
+        font-size: 0.98rem;
+        font-weight: 600;
+        margin-bottom: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
         .course-detail-link {
+            display: inline-block;
             cursor: pointer;
             transition: color 0.2s ease;
         }
@@ -194,7 +198,10 @@
             border: none;
             padding: 0;
             cursor: pointer;
-            transition: color 0.2s ease;
+            transition: transform 0.1s ease, color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
         }
 
         .like-count:hover {
@@ -261,7 +268,7 @@
 
     <div class="d-flex justify-content-between align-items-end mb-4">
         <h2 class="section-title m-0">
-            Walking <span class="text-muted" style="font-weight:400;">Course</span>
+            Walking
         </h2>
 
         <div class="d-flex gap-2">
@@ -388,7 +395,7 @@
         courseList.innerHTML = '';
         pagination.innerHTML = '';
 
-        fetch(`/walk/course/nearby?lat=${lat}&lng=${lng}&page=${page}&size=5`)
+        fetch(`/walk/course/nearby?lat=${lat}&lng=${lng}&page=${page}&size=3`)
             .then(response => {
                 if (!response.ok) throw new Error('산책 코스 조회 실패');
                 return response.json();
@@ -426,15 +433,15 @@
             card.className = 'course-card';
 
             card.innerHTML = `
-                <div class="course-name course-detail-link">
-                    ${escapeHtml(course.name)}
+                <div class="course-name">
+                    <span class="course-detail-link">${escapeHtml(course.name)}</span>
                 </div>
                 <div class="course-info">
                     <span>${formatDistance(course.distance)}</span>
                     <span>•</span>
                     <span>${formatDuration(course.duration)}</span>
                     <button type="button" class="like-count">
-                        추천 ${course.likeCount ?? 0}
+                        ❤️ ${course.likeCount ?? 0}
                     </button>
                 </div>
             `;
@@ -491,7 +498,7 @@
                 return response.json();
             })
             .then(likeCount => {
-                likeButton.innerText = `추천 ${likeCount}`;
+                likeButton.innerText = `❤️ ${likeCount}`;
             })
             .catch(error => {
                 console.error(error);

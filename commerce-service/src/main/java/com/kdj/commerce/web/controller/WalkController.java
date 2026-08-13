@@ -1,6 +1,7 @@
 package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.member.Member;
+import com.kdj.commerce.domain.member.MemberType;
 import com.kdj.commerce.domain.walk.WalkCourse;
 import com.kdj.commerce.service.WalkCourseService;
 import com.kdj.commerce.web.argumentresolver.Login;
@@ -12,14 +13,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -69,6 +67,19 @@ public class WalkController {
         return "redirect:/walk";
     }
 
+    @PostMapping("/course/{id}/delete")
+    public String delete(@Login Member loginMember,
+                         @PathVariable Long id) {
+        WalkCourse walkCourse = walkCourseService.findOne(id);
+        if (!isOwner(walkCourse, loginMember) && !isAdmin(loginMember)) {
+            return "redirect:/walk/course/" + id;
+        }
+
+        walkCourseService.delete(id);
+
+        return "redirect:/walk";
+    }
+
     @PostMapping("/course/route")
     @ResponseBody
     public WalkRouteResult route(@RequestBody WalkRouteRequest request) {
@@ -83,7 +94,7 @@ public class WalkController {
     @GetMapping("/course/nearby")
     @ResponseBody
     public Page<WalkCourseResponse> nearbyCourses(
-            @PageableDefault(size = 5) Pageable pageable,
+            @PageableDefault(size = 3) Pageable pageable,
             @RequestParam Double lat,
             @RequestParam Double lng) {
         return walkCourseService.findNearbyCourses(pageable, lat, lng);
@@ -94,5 +105,16 @@ public class WalkController {
     public int like(@PathVariable Long id,
                        @Login Member loginMember) {
         return walkCourseService.like(id, loginMember);
+    }
+
+    private boolean isOwner(WalkCourse walkCourse, Member loginMember) {
+        if (walkCourse == null || walkCourse.getMember() == null || loginMember == null) {
+            return false;
+        }
+        return walkCourse.getMember().getId().equals(loginMember.getId());
+    }
+
+    private boolean isAdmin(Member loginMember) {
+        return loginMember != null && loginMember.getMemberType() == MemberType.ADMIN;
     }
 }

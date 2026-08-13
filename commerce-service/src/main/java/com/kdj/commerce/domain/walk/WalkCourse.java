@@ -67,4 +67,9 @@ public class WalkCourse {
 
         return course;
     }
+
+    public void update (String name, String review) {
+        this.name = name;
+        this.review = review;
+    }
 }
