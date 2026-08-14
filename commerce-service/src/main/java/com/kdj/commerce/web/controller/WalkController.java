@@ -3,27 +3,31 @@ package com.kdj.commerce.web.controller;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
 import com.kdj.commerce.domain.walk.WalkCourse;
+import com.kdj.commerce.domain.walk.WalkTag;
 import com.kdj.commerce.service.WalkCourseService;
+import com.kdj.commerce.service.WalkCourseTagService;
 import com.kdj.commerce.web.argumentresolver.Login;
-import com.kdj.commerce.web.dto.walk.WalkCourseForm;
-import com.kdj.commerce.web.dto.walk.WalkCourseResponse;
-import com.kdj.commerce.web.dto.walk.WalkRouteRequest;
-import com.kdj.commerce.web.dto.walk.WalkRouteResult;
+import com.kdj.commerce.web.dto.walk.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/walk")
 public class WalkController {
     private final WalkCourseService walkCourseService;
+    private final WalkCourseTagService walkCourseTagService;
 
     @GetMapping
     public String map() {
@@ -31,11 +35,36 @@ public class WalkController {
     }
 
     @GetMapping("/course/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(@Login Member loginMember,
+                         @PathVariable Long id,
+                         Model model) {
         WalkCourse walkCourse = walkCourseService.findOne(id);
+
+        List<WalkCourseTagForm> tags = walkCourseTagService.findTagsByCourseId(id).stream()
+                .map(courseTag -> new WalkCourseTagForm(courseTag.getTag()))
+                .toList();
+
+        model.addAttribute("loginMember", loginMember);
         model.addAttribute("course", walkCourse);
+        model.addAttribute("tags", tags);
 
         return "walk/detail";
+    }
+
+    @PostMapping("/course/{id}/tag")
+    @ResponseBody
+    public ResponseEntity<?> addTag(@PathVariable Long id,
+                                    @RequestBody Map<String, String> request) {
+        try {
+            String tagCode = request.get("tag");
+            WalkTag tag = WalkTag.valueOf(tagCode);
+
+            walkCourseTagService.addTagToCourse(id, tag);
+
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/course/add")

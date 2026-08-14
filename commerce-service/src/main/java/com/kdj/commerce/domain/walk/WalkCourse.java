@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,6 +41,13 @@ public class WalkCourse {
     private int likeCount;
 
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @OneToMany(
+            mappedBy = "walkCourse",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<WalkCourseTag> tags = new ArrayList<>();
 
     public static WalkCourse create(
             Member member,
