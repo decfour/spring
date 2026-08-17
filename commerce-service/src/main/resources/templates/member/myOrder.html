@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>THGTE - My Item</title>
+    <title>THGTE - My Order</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -51,11 +51,11 @@
             color: #1d1d1f;
         }
 
-        .product-section {
+        .order-section {
             margin-top: 36px;
         }
 
-        .product-empty {
+        .order-empty {
             padding: 40px 20px;
             text-align: center;
             color: #86868b;
@@ -65,13 +65,13 @@
             border-radius: 14px;
         }
 
-        .product-list {
+        .order-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
 
-        .product-card {
+        .order-card {
             padding: 14px 18px;
             border: 1px solid #d2d2d7;
             border-radius: 14px;
@@ -81,23 +81,21 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            text-decoration: none;
-            color: inherit;
         }
 
-        .product-card:hover {
+        .order-card:hover {
             border-color: #0066cc;
             box-shadow: 0 4px 16px rgba(0, 102, 204, 0.12);
         }
 
-        .product-info {
+        .order-info {
             display: flex;
             flex-direction: column;
             gap: 4px;
             overflow: hidden;
         }
 
-        .product-name {
+        .order-title {
             font-size: 0.98rem;
             font-weight: 600;
             color: #1d1d1f;
@@ -106,7 +104,13 @@
             text-overflow: ellipsis;
         }
 
-        .product-meta {
+        .order-count {
+            color: #86868b;
+            font-weight: 400;
+            font-size: 0.9rem;
+        }
+
+        .order-meta {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -115,24 +119,14 @@
             font-weight: 500;
         }
 
-        .product-right {
+        .order-right {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             flex-shrink: 0;
         }
 
-        .soldout-badge {
-            color: #de363a;
-            font-weight: 500;
-            font-size: 0.8rem;
-            background-color: #fdf2f2;
-            padding: 3px 10px;
-            border-radius: 980px;
-            border: 1px solid #f8d7da;
-        }
-
-        .status-badge-open {
+        .status-badge-order {
             color: #1d1d1f;
             font-weight: 500;
             font-size: 0.8rem;
@@ -142,7 +136,7 @@
             border: 1px solid #d2d2d7;
         }
 
-        .status-badge-closed {
+        .status-badge-cancel {
             color: #86868b;
             font-weight: 500;
             font-size: 0.8rem;
@@ -150,6 +144,24 @@
             padding: 3px 10px;
             border-radius: 980px;
             border: 1px solid #e5e5e7;
+        }
+
+        .btn-cancel-action {
+            background: none;
+            border: 1px solid #de363a;
+            color: #de363a;
+            border-radius: 980px;
+            font-size: 0.8rem;
+            padding: 3px 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            line-height: 1.2;
+        }
+
+        .btn-cancel-action:hover {
+            background-color: #de363a;
+            color: #ffffff;
         }
     </style>
 </head>
@@ -162,7 +174,7 @@
 
     <div class="d-flex justify-content-between align-items-end mb-4">
         <h2 class="section-title m-0">
-            My <span class="text-muted" style="font-weight:400;">Product</span>
+            My <span class="text-muted" style="font-weight:400;">Order</span>
         </h2>
 
         <div class="d-flex gap-2">
@@ -170,33 +182,43 @@
         </div>
     </div>
 
-    <div class="product-section">
-        <div th:if="${myItems == null or myItems.isEmpty()}" class="product-empty">
-            등록된 상품이 없습니다
+    <div class="order-section">
+        <div th:if="${#lists.isEmpty(orders)}" class="order-empty">
+            주문 내역이 없습니다
         </div>
 
-        <div th:if="${myItems != null and !myItems.isEmpty()}" class="product-list">
-            <a th:each="item : ${myItems}"
-               th:href="@{/shop/item/{itemId}(itemId=${item.id})}"
-               class="product-card">
+        <div th:if="${not #lists.isEmpty(orders)}" class="order-list">
+            <div th:each="order : ${orders}" class="order-card">
 
-                <div class="product-info">
-                    <div class="product-name" th:text="${item.name}">내 등록 상품</div>
-                    <div class="product-meta">
-                        <span>ID: <span th:text="${item.id}">1</span></span>
+                <div class="order-info">
+                    <div class="order-title">
+                        <span th:text="${order.orderItems[0].item.name}">상품명</span>
+                        <span th:if="${order.orderItems.size() > 1}"
+                              th:text="' 외 ' + ${order.orderItems.size() - 1} + '건'"
+                              class="order-count"> 외 1건</span>
+                    </div>
+                    <div class="order-meta">
+                        <span>주문번호: <span th:text="${order.id}">1</span></span>
                         <span>•</span>
-                        <span th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">10,000원</span>
+                        <span th:text="${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')} + '원'">10,000원</span>
                         <span>•</span>
-                        <span th:if="${item.stock > 0}" th:text="${item.stock} + '개'">5개</span>
-                        <span th:unless="${item.stock > 0}" class="soldout-badge">품절</span>
+                        <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2026-05-24 14:00</span>
                     </div>
                 </div>
 
-                <div class="product-right">
-                    <span th:if="${item.open}" class="status-badge-open">판매 중</span>
-                    <span th:unless="${item.open}" class="status-badge-closed">판매 중지</span>
+                <div class="order-right">
+                    <span th:if="${order.status.name() == 'ORDER'}" class="status-badge-order">주문 완료</span>
+                    <span th:unless="${order.status.name() == 'ORDER'}" class="status-badge-cancel">주문 취소</span>
+
+                    <form th:if="${order.status.name() == 'ORDER'}"
+                          th:action="@{/order/{id}/cancel (id=${order.id})}"
+                          method="post"
+                          class="m-0 d-inline-block">
+                        <button type="submit" class="btn-cancel-action" onclick="return confirm('정말 취소하시겠습니까?');">취소</button>
+                    </form>
                 </div>
-            </a>
+
+            </div>
         </div>
     </div>
 

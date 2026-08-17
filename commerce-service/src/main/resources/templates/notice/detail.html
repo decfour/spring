@@ -2,11 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>THGTE - Notice</title>
+    <title th:text="'THGTE - ' + ${notice.title}">THGTE - Notice Detail</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
-        /* Base Styles */
         body {
             background-color: #ffffff;
             color: #1d1d1f;
@@ -14,139 +15,154 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Layout Container */
-        .detail-container {
-            max-width: 680px;
+        .main-container {
+            max-width: 800px;
             margin: 60px auto;
             padding: 0 20px;
         }
 
-        /* Detail Header */
-        .detail-header {
-            margin-bottom: 24px;
-        }
-        .notice-meta {
-            font-size: 0.85rem;
-            color: #86868b;
-            margin-bottom: 12px;
-        }
-        .notice-title {
-            font-size: 2.2rem;
+        .section-title {
+            font-size: 2rem;
             font-weight: 700;
-            letter-spacing: -1px;
-            line-height: 1.3;
-            margin-bottom: 16px;
-        }
-        .notice-author-bar {
+            letter-spacing: -0.8px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.95rem;
-            padding-bottom: 24px;
-            min-height: 38px;
-        }
-        .notice-author-bar .author-name {
-            color: #1d1d1f;
-            font-weight: 600;
+            align-items: baseline;
+            gap: 8px;
+            overflow: hidden;
         }
 
-        /* Content Body */
-        .notice-body {
-            border-top: 1px solid #1d1d1f;
-            border-bottom: 1px solid #e5e5e7;
-            padding: 40px 10px;
-            font-size: 1.05rem;
-            line-height: 1.6;
-            color: #333336;
-            white-space: pre-wrap;
-            min-height: 240px;
+        .post-title-sub {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #86868b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 450px;
         }
 
-        /* Action Buttons Area */
-        .action-bar {
-            display: flex;
-            align-items: center;
-            margin: 32px 0;
-        }
-        .action-left { flex: 1; display: flex; justify-content: flex-start; }
-
-        /* Unified Minimal Buttons */
-        .btn-minimal {
+        .btn-apple-outline {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             height: 38px;
-            padding: 0 20px;
+            padding: 0 18px;
             font-size: 0.9rem;
             font-weight: 500;
             border-radius: 980px;
             text-decoration: none;
-            transition: all 0.2s ease;
             box-sizing: border-box;
+            transition: all 0.2s ease;
+            line-height: 1;
             cursor: pointer;
-        }
-        /* 목록 버튼 (Light Gray Standard) */
-        .btn-minimal-light {
-            background-color: #f5f5f7;
+            background-color: transparent;
             color: #1d1d1f;
-            border: none;
+            border: 1px solid #d2d2d7;
         }
-        .btn-minimal-light:hover {
-            background-color: #e8e8ed;
+
+        .btn-apple-outline:hover {
+            background-color: #f5f5f7;
+            border-color: #86868b;
             color: #1d1d1f;
         }
 
-        /* Dropdown Icon Menu */
         .dropdown-toggle-icon {
             background: none;
             border: none;
             color: #86868b;
             font-size: 1.1rem;
-            padding: 2px 8px;
-            border-radius: 6px;
+            padding: 2px 10px;
+            height: 38px;
+            border-radius: 980px;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
         }
+
         .dropdown-toggle-icon:hover {
             background-color: #f5f5f7;
             color: #1d1d1f;
         }
+
         .dropdown-menu-apple {
             border-radius: 12px;
             border: 1px solid #e5e5e7;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
             padding: 6px;
-            min-width: 100px;
+            min-width: 130px;
+            z-index: 1050;
         }
+
         .dropdown-menu-apple .dropdown-item {
             font-size: 0.85rem;
             border-radius: 6px;
             padding: 6px 12px;
             font-weight: 500;
+            color: #1d1d1f;
         }
+
         .dropdown-menu-apple .dropdown-item.text-danger:hover {
             background-color: #fff2f2;
         }
+
+        .dropdown-menu-apple .dropdown-item:hover {
+            color: #0066cc;
+            background-color: #f5f5f7;
+        }
+
+        .post-info-flat {
+            padding: 0 4px 16px 4px;
+            margin-bottom: 8px;
+        }
+
+        .post-info-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .post-user-meta {
+            color: #86868b;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .meta-divider {
+            color: #d2d2d7;
+            margin: 0 6px;
+            font-size: 0.75rem;
+        }
+
+        .post-card {
+            padding: 20px;
+            border: 1px solid #d2d2d7;
+            border-radius: 16px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            color: #1d1d1f;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            min-height: 180px;
+            margin-bottom: 32px;
+        }
     </style>
 </head>
+
 <body>
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div class="detail-container">
+<div class="main-container">
 
-    <!-- Header Area -->
-    <div class="detail-header">
-        <div class="notice-meta">
-            <span>공지사항</span> •
-            <span th:text="${#temporals.format(notice.createdDate, 'yyyy년 MM월 dd일 HH:mm')}">2026년 06월 04일 09:20</span>
-        </div>
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="section-title m-0">
+            <span>Notice</span>
+            <span class="post-title-sub" th:text="${notice.title}">제목</span>
+        </h2>
 
-        <h1 class="notice-title" th:text="${notice.title}">제목</h1>
-
-        <div class="notice-author-bar">
-            <span class="author-name">관리자</span>
-
-            <!-- 관리자 전용 더보기 옵션 드롭다운 -->
+        <div class="d-flex gap-2 align-items-center">
             <div class="dropdown" th:if="${member != null and member.memberType?.name() == 'ADMIN'}">
                 <button class="dropdown-toggle-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     •••
@@ -162,19 +178,23 @@
                     </li>
                 </ul>
             </div>
+
+            <a th:href="@{/notice}" class="btn-apple-outline">뒤로</a>
         </div>
     </div>
 
-    <!-- Content Body -->
-    <div class="notice-body" th:text="${notice.content}">
+    <div class="post-info-flat">
+        <div class="post-info-row">
+            <span class="post-user-meta">
+                작성자 <span class="text-dark font-weight-bold">관리자</span>
+                <span class="meta-divider">•</span>
+                <span th:text="${#temporals.format(notice.createdDate, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
+            </span>
+        </div>
+    </div>
+
+    <div class="post-card" th:text="${notice.content}">
         내용
-    </div>
-
-    <!-- Action Bar -->
-    <div class="action-bar">
-        <div class="action-left">
-            <a th:href="@{/notice}" class="btn-minimal btn-minimal-light">목록</a>
-        </div>
     </div>
 
 </div>

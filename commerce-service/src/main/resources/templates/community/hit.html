@@ -11,123 +11,175 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
+
         .main-container {
             max-width: 800px;
             margin: 60px auto;
             padding: 0 20px;
         }
+
         .section-title {
             font-size: 2rem;
             font-weight: 700;
             letter-spacing: -0.8px;
         }
-        .product-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .product-table th {
-            padding: 14px 0;
-            font-weight: 500;
-            color: #86868b;
-            font-size: 0.85rem;
-            border-bottom: 1px solid #d2d2d7;
-        }
-        .product-table td {
-            padding: 18px 0;
-            border-bottom: 1px solid #e5e5e7;
-            font-size: 0.95rem;
-        }
-        .product-link {
-            color: #1d1d1f;
-            font-weight: 500;
-            text-decoration: none;
-            letter-spacing: -0.2px;
-            transition: color 0.2s;
-        }
-        .product-link:hover {
-            color: #0066cc;
-        }
-        .btn-apple-dark {
-            background-color: #1d1d1f;
-            color: #ffffff;
-            border: none;
-            padding: 8px 16px;
+
+        .btn-apple-dark,
+        .btn-apple-outline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 38px;
+            padding: 0 18px;
             font-size: 0.9rem;
             font-weight: 500;
             border-radius: 980px;
             text-decoration: none;
-            transition: background-color 0.2s;
-            display: inline-block;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+            line-height: 1;
+            cursor: pointer;
         }
+
+        .btn-apple-dark {
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: 1px solid #1d1d1f;
+        }
+
         .btn-apple-dark:hover {
             background-color: #434344;
+            border-color: #434344;
             color: #ffffff;
         }
+
         .btn-apple-outline {
             background-color: transparent;
             color: #1d1d1f;
             border: 1px solid #d2d2d7;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 980px;
-            text-decoration: none;
-            transition: all 0.2s;
-            display: inline-block;
         }
+
         .btn-apple-outline:hover {
             background-color: #f5f5f7;
             border-color: #86868b;
             color: #1d1d1f;
         }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        .product-table th {
+            padding: 12px 16px;
+            font-weight: 500;
+            color: #86868b;
+            font-size: 0.85rem;
+            border-bottom: 1px solid #d2d2d7;
+        }
+
+        .product-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e5e7;
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+
+        .post-row {
+            transition: background-color 0.2s ease;
+        }
+
+        .product-table tbody tr.post-row:hover {
+            background-color: #f5f5f7;
+        }
+
+        .product-link {
+            display: block;
+            color: #1d1d1f;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: -0.2px;
+            transition: color 0.2s ease;
+        }
+
+        .product-link:hover {
+            color: #0066cc;
+        }
+
+        .post-writer {
+            color: #424245;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .post-likes {
+            color: #1d1d1f;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .post-date {
+            color: #86868b;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .empty-products {
+            padding: 40px 20px;
+            text-align: center;
+            color: #86868b;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            border: 1px solid #d2d2d7;
+            border-radius: 14px;
+            margin-top: 12px;
+        }
+
         .pagination-container {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 6px;
-            margin-top: 40px;
+            margin-top: 28px;
         }
-        .page-link-custom {
+
+        .page-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            min-width: 32px;
-            height: 32px;
+            min-width: 34px;
+            height: 34px;
             padding: 0 8px;
-            border-radius: 6px;
             font-size: 0.85rem;
             font-weight: 500;
-            color: #000000;
+            color: #1d1d1f;
+            background-color: transparent;
+            border: 1px solid transparent;
+            border-radius: 8px;
             text-decoration: none;
-            background-color: #ffffff;
-            border: 1px solid #d2d2d7;
-            transition: all 0.2s;
+            transition: all 0.15s ease;
+            -webkit-user-select: none;
+            user-select: none;
         }
-        .page-link-custom:hover {
+
+        .page-btn:hover:not(.active):not(.disabled) {
             background-color: #f5f5f7;
-            border-color: #86868b;
-            color: #000000;
+            border-color: #d2d2d7;
+            color: #1d1d1f;
         }
-        .page-link-custom.active-page {
+
+        .page-btn.active {
             background-color: #1d1d1f;
             color: #ffffff;
-            border-color: #1d1d1f;
+            font-weight: 600;
         }
-        .page-link-custom.disabled-page {
+
+        .page-btn.disabled {
             color: #d2d2d7;
-            border-color: #e5e5e7;
-            background-color: #ffffff;
+            cursor: not-allowed;
             pointer-events: none;
-        }
-        .empty-products {
-            text-align: center;
-            padding: 60px 0;
-            color: #86868b;
-            font-size: 0.95rem;
-            border-top: 1px solid #d2d2d7;
-            border-bottom: 1px solid #e5e5e7;
-            margin-top: 20px;
         }
     </style>
 </head>
@@ -137,7 +189,7 @@
 
 <div class="main-container">
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h2 class="section-title m-0">Community <span class="text-muted" style="font-weight:400;">Hit</span></h2>
+        <h2 class="section-title m-0">Hit</h2>
 
         <div class="d-flex gap-2">
             <a th:href="@{/community}" class="btn-apple-dark">일반</a>
@@ -149,7 +201,7 @@
     <table th:if="${posts != null and !posts.isEmpty()}" class="product-table">
         <thead>
         <tr>
-            <th style="width: 50%; text-align: left; padding-left: 10px;">제목</th>
+            <th style="width: 50%; text-align: left;">제목</th>
             <th style="width: 15%; text-align: center;">작성자</th>
             <th style="width: 15%; text-align: center;">추천</th>
             <th style="width: 20%; text-align: center;">작성일</th>
@@ -157,18 +209,18 @@
         </thead>
 
         <tbody>
-        <tr th:each="post : ${posts}">
-            <td style="width: 50%; text-align: left; padding-left: 10px;">
+        <tr class="post-row" th:each="post : ${posts}">
+            <td>
                 <a th:href="@{/community/post/{id}(id=${post.id})}"
                    th:text="${post.title}"
                    class="product-link">제목</a>
             </td>
 
-            <td th:text="${post.writer != null ? post.writer.username : '익명'}" style="width: 15%; color: #424245; text-align: center;">작성자</td>
+            <td th:text="${post.writer != null ? post.writer.username : '익명'}" class="post-writer">작성자</td>
 
-            <td th:text="${post.likeCount}" style="width: 15%; color: #1d1d1f; text-align: center;">0</td>
+            <td th:text="${post.likeCount}" class="post-likes">0</td>
 
-            <td th:text="${#temporals.format(post.createdDate, 'yyyy.MM.dd')}" style="width: 20%; color: #86868b; text-align: center;">2026.07.24</td>
+            <td th:text="${#temporals.format(post.createdDate, 'yyyy.MM.dd')}" class="post-date">2026.07.24</td>
         </tr>
         </tbody>
     </table>
@@ -178,23 +230,21 @@
     </div>
 
     <div th:if="${posts != null and posts.totalPages > 1}" class="pagination-container">
-
         <a th:href="@{/community/hits(page=${posts.number - 1})}"
-           class="page-link-custom"
-           th:classappend="${posts.first} ? 'disabled-page' : ''">이전</a>
+           class="page-btn"
+           th:classappend="${posts.first} ? 'disabled' : ''">‹</a>
 
         <th:block th:if="${posts.totalPages > 0}"
                   th:each="pageNumber : ${#numbers.sequence(0, posts.totalPages - 1)}">
             <a th:href="@{/community/hits(page=${pageNumber})}"
                th:text="${pageNumber + 1}"
-               class="page-link-custom"
-               th:classappend="${pageNumber == posts.number} ? 'active-page' : ''">1</a>
+               class="page-btn"
+               th:classappend="${pageNumber == posts.number} ? 'active' : ''">1</a>
         </th:block>
 
         <a th:href="@{/community/hits(page=${posts.number + 1})}"
-           class="page-link-custom"
-           th:classappend="${posts.last} ? 'disabled-page' : ''">다음</a>
-
+           class="page-btn"
+           th:classappend="${posts.last} ? 'disabled' : ''">›</a>
     </div>
 </div>
 

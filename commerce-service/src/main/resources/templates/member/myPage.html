@@ -1,9 +1,11 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>THGTE - My Page</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
             background-color: #ffffff;
@@ -65,6 +67,10 @@
             color: #1d1d1f;
         }
 
+        .mypage-section {
+            margin-top: 36px;
+        }
+
         .profile-card {
             border: 1px solid #d2d2d7;
             border-radius: 18px;
@@ -101,42 +107,104 @@
             color: #1d1d1f;
             font-weight: 600;
         }
+
+        .type-badge {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 980px;
+            color: #1d1d1f;
+            background-color: #f5f5f7;
+            border: 1px solid #d2d2d7;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .action-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 16px;
+            border: 1px solid #d2d2d7;
+            border-radius: 14px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            text-decoration: none;
+            color: #1d1d1f;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .action-card:hover {
+            border-color: #0066cc;
+            color: #0066cc;
+            box-shadow: 0 4px 16px rgba(0, 102, 204, 0.12);
+        }
+
+        @media (max-width: 576px) {
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
+
 <body>
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
 <div class="main-container">
+
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h2 class="section-title m-0">Profile</h2>
-        <a th:href="@{/}" class="btn-apple-outline">뒤로</a>
-    </div>
+        <h2 class="section-title m-0">
+            My <span class="text-muted" style="font-weight:400;">Page</span>
+        </h2>
 
-    <div class="profile-card">
-        <div class="profile-row">
-            <span class="profile-label">이름</span>
-            <span class="profile-value" th:text="${member.username}">Name</span>
-        </div>
-        <div class="profile-row">
-            <span class="profile-label">등급</span>
-            <span class="profile-value" th:text="${member.memberType}">USER</span>
-        </div>
-        <div class="profile-row">
-            <span class="profile-label">ID</span>
-            <span class="profile-value" th:text="${member.loginId}">ID</span>
-        </div>
-        <div class="profile-row">
-            <span class="profile-label">Email</span>
-            <span class="profile-value" th:text="${member.email}">Email</span>
+        <div class="d-flex gap-2">
+            <a th:href="@{/}" class="btn-apple-outline">뒤로</a>
         </div>
     </div>
 
-    <div class="d-flex gap-2 justify-content-end">
-        <button class="btn-apple-dark" th:onclick="|location.href='@{/member/my-page/my-item}'|" type="button">내 상품</button>
-        <button class="btn-apple-dark" th:onclick="|location.href='@{/member/my-page/my-review}'|" type="button">내 후기</button>
-        <button class="btn-apple-outline" th:onclick="|location.href='@{/order/list}'|" type="button">주문 내역</button>
+    <div class="mypage-section">
+        <div class="profile-card">
+            <div class="profile-row">
+                <span class="profile-label">이름</span>
+                <span class="profile-value" th:text="${member.username}">홍길동</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-label">등급</span>
+                <span class="type-badge" th:text="${member.memberType}">USER</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-label">ID</span>
+                <span class="profile-value" th:text="${member.loginId}">memberid</span>
+            </div>
+            <div class="profile-row">
+                <span class="profile-label">Email</span>
+                <span class="profile-value" th:text="${member.email}">user@example.com</span>
+            </div>
+        </div>
+
+        <div class="action-grid">
+            <a th:href="@{/member/my-page/my-item}" class="action-card">
+                내 상품
+            </a>
+            <a th:href="@{/member/my-page/my-review}" class="action-card">
+                내 후기
+            </a>
+            <a th:href="@{/order/list}" class="action-card">
+                주문 내역
+            </a>
+        </div>
     </div>
+
 </div>
 
 </body>

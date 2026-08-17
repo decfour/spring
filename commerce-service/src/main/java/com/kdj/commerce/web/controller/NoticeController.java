@@ -62,8 +62,9 @@ public class NoticeController {
             return "redirect:/notice";
         }
         model.addAttribute("noticeForm", new NoticeForm());
+        model.addAttribute("isEdit", false);
 
-        return "notice/addNoticeForm";
+        return "notice/form";
     }
 
     @PostMapping("/add")
@@ -76,7 +77,7 @@ public class NoticeController {
         }
 
         if (bindingResult.hasErrors()) {
-            return "notice/addNoticeForm";
+            return "notice/form";
         }
 
         Long noticeId = noticeService.save(form.getTitle(), form.getContent());
@@ -95,11 +96,15 @@ public class NoticeController {
 
         Notice notice = noticeService.findOne(id);
         NoticeForm form = new NoticeForm();
+
+        form.setId(notice.getId());
         form.setTitle(notice.getTitle());
         form.setContent(notice.getContent());
-        model.addAttribute("noticeForm", form);
 
-        return "notice/editNoticeForm";
+        model.addAttribute("noticeForm", form);
+        model.addAttribute("isEdit", true);
+
+        return "notice/form";
     }
 
     @PostMapping("/{id}/edit")
@@ -114,7 +119,7 @@ public class NoticeController {
 
         if (bindingResult.hasErrors()) {
             log.info("errors={}", bindingResult);
-            return "notice/editNoticeForm";
+            return "notice/form";
         }
 
         noticeService.update(id, form.getTitle(), form.getContent());

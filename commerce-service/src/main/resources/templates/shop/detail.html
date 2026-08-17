@@ -2,9 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <title>THGTE - Item</title>
+    <title th:text="'THGTE - ' + ${item.name}">THGTE - Item</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
         body {
             background-color: #ffffff;
@@ -13,37 +15,148 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Layout Container */
-        .detail-container {
-            max-width: 680px;
+        .main-container {
+            max-width: 800px;
             margin: 60px auto;
             padding: 0 20px;
         }
 
-        .item-header {
-            margin-bottom: 32px;
-        }
-        .item-meta {
-            font-size: 0.85rem;
-            color: #86868b;
-            margin-bottom: 8px;
-        }
-        .item-title {
-            font-size: 2.2rem;
+        .section-title {
+            font-size: 2rem;
             font-weight: 700;
-            letter-spacing: -1px;
-            line-height: 1.3;
+            letter-spacing: -0.8px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            overflow: hidden;
         }
 
-        .product-overview {
+        .item-title-sub {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #86868b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 450px;
+        }
+
+        .btn-apple-outline {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 38px;
+            padding: 0 18px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 980px;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+            line-height: 1;
+            cursor: pointer;
+            background-color: transparent;
+            color: #1d1d1f;
+            border: 1px solid #d2d2d7;
+        }
+
+        .btn-apple-outline:hover {
+            background-color: #f5f5f7;
+            border-color: #86868b;
+            color: #1d1d1f;
+        }
+
+        .btn-apple-dark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 38px;
+            padding: 0 18px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 980px;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+            line-height: 1;
+            cursor: pointer;
+            background-color: #1d1d1f;
+            color: #ffffff;
+            border: 1px solid #1d1d1f;
+        }
+
+        .btn-apple-dark:hover {
+            background-color: #434344;
+            border-color: #434344;
+            color: #ffffff;
+        }
+
+        .dropdown-toggle-icon {
+            background: none;
+            border: none;
+            color: #86868b;
+            font-size: 1.1rem;
+            padding: 2px 10px;
+            height: 38px;
+            border-radius: 980px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-toggle-icon:hover {
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+        }
+
+        .dropdown-menu-apple {
+            border-radius: 12px;
+            border: 1px solid #e5e5e7;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            padding: 6px;
+            min-width: 130px;
+            z-index: 1050;
+        }
+
+        .dropdown-menu-apple .dropdown-item {
+            font-size: 0.85rem;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-weight: 500;
+            color: #1d1d1f;
+            background: none;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .dropdown-menu-apple .dropdown-item:hover {
+            color: #0066cc;
+            background-color: #f5f5f7;
+        }
+
+        .dropdown-menu-apple .dropdown-item.text-danger:hover {
+            color: #ff3b30 !important;
+            background-color: #fff2f2;
+        }
+
+        .product-overview-card {
             display: grid;
             grid-template-columns: 280px 1fr;
-            gap: 32px;
-            padding-bottom: 32px;
-            border-bottom: 1px solid #e5e5e7;
+            gap: 28px;
+            padding: 20px;
+            border: 1px solid #d2d2d7;
+            border-radius: 18px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 12px;
         }
+
         @media (max-width: 576px) {
-            .product-overview {
+            .product-overview-card {
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
@@ -53,12 +166,14 @@
             aspect-ratio: 1 / 1;
             width: 100%;
             background-color: #f5f5f7;
-            border-radius: 16px;
+            border-radius: 14px;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid #e5e5e7;
         }
+
         .img-square-wrapper img {
             width: 100%;
             height: 100%;
@@ -72,198 +187,184 @@
             border-bottom: 1px solid #f5f5f7;
             font-size: 0.95rem;
         }
+
         .detail-row:last-child {
             border-bottom: none;
         }
+
         .detail-label {
             width: 90px;
             color: #86868b;
             font-size: 0.9rem;
+            font-weight: 500;
         }
+
         .detail-value {
             flex: 1;
             color: #1d1d1f;
         }
 
-        .description-box {
-            padding: 32px 0;
-            border-bottom: 1px solid #1d1d1f;
-            font-size: 1rem;
-            line-height: 1.6;
-            color: #333336;
-            white-space: pre-wrap;
+        .status-badge {
+            display: inline-block;
+            font-weight: 600;
         }
 
-        .order-box {
-            background-color: #f5f5f7;
+        .item-card {
+            padding: 20px;
+            border: 1px solid #d2d2d7;
             border-radius: 16px;
-            padding: 24px;
-            margin: 32px 0;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            color: #1d1d1f;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            min-height: 140px;
+            margin-bottom: 12px;
         }
+
+        .order-card {
+            padding: 20px;
+            border: 1px solid #d2d2d7;
+            border-radius: 16px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            margin-bottom: 12px;
+        }
+
         .order-row {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 16px;
         }
+
         .form-label-fixed {
             font-size: 0.9rem;
             font-weight: 600;
             width: 80px;
             color: #1d1d1f;
         }
+
         .input-quantity {
-            width: 72px;
+            width: 80px;
             height: 38px;
             border: 1px solid #d2d2d7;
-            border-radius: 8px;
+            border-radius: 10px;
             padding: 0 8px;
             font-size: 0.95rem;
             text-align: center;
             outline: none;
             background-color: #ffffff;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
+
         .input-quantity:focus {
             border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
         }
-
-        .btn-minimal {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            height: 38px;
-            padding: 0 20px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 980px;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .btn-minimal-light {
-            background-color: #f5f5f7;
-            color: #1d1d1f;
-            border: none;
-        }
-        .btn-minimal-light:hover {
-            background-color: #e8e8ed;
-            color: #1d1d1f;
-        }
-        .btn-minimal-outline {
-            background-color: #ffffff;
-            color: #1d1d1f;
-            border: 1px solid #d2d2d7;
-        }
-        .btn-minimal-outline:hover {
-            background-color: #f5f5f7;
-            border-color: #86868b;
-        }
-        .btn-minimal-dark {
-            background-color: #1d1d1f;
-            color: #ffffff;
-            border: none;
-        }
-        .btn-minimal-dark:hover {
-            background-color: #333336;
-            color: #ffffff;
-        }
-
-        .action-bar {
-            display: flex;
-            align-items: center;
-            margin-top: 32px;
-        }
-        .action-left { flex: 1; display: flex; justify-content: flex-start; gap: 8px; }
-        .action-center { display: flex; justify-content: center; }
-        .action-right { flex: 1; display: flex; justify-content: flex-end; }
     </style>
 </head>
+
 <body>
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div class="detail-container">
+<div class="main-container">
 
-    <!-- Header Area -->
-    <div class="item-header">
-        <div class="item-meta">
-            <span th:text="${item.itemType.description}">종류</span> •
-            <span th:text="${item.open} ? '판매 중' : '판매 중지'" th:style="${item.open} ? 'color:#0066cc;' : 'color:#86868b;'">상태</span>
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="section-title m-0">
+            <span>Shop</span>
+            <span class="item-title-sub" th:text="${item.name}">상품명</span>
+        </h2>
+
+        <div class="d-flex gap-2 align-items-center">
+            <div class="dropdown"
+                 th:if="${member != null and (
+                     item.createdBy == member.id or
+                     (member.memberType != null and member.memberType.name() == 'ADMIN')
+                 )}">
+                <button class="dropdown-toggle-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    •••
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-apple">
+                    <li>
+                        <a class="dropdown-item" th:href="@{/shop/item/{itemId}/edit(itemId=${item.id})}">수정</a>
+                    </li>
+                    <li th:if="${!item.deleted}">
+                        <form th:action="@{/shop/item/{id}/delete(id=${item.id})}"
+                              method="post"
+                              onsubmit="return confirm('삭제하시겠습니까?');">
+                            <button type="submit" class="dropdown-item text-danger">삭제</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+
+            <a th:href="@{/shop/item/{itemId}/review(itemId=${item.id})}" class="btn-apple-outline">리뷰</a>
+            <a th:href="@{/shop}" class="btn-apple-outline">뒤로</a>
         </div>
-        <h1 class="item-title" th:text="${item.name}">상품명</h1>
     </div>
 
-    <!-- Product Overview (Image + Specs) -->
-    <div class="product-overview">
-        <!-- Image Box -->
+    <div class="product-overview-card">
         <div class="img-square-wrapper">
             <img th:if="${item.storeFileName != null}" th:src="@{/images/{filename}(filename=${item.storeFileName})}" alt="상품 이미지" />
             <span th:unless="${item.storeFileName != null}" class="text-muted" style="font-size: 0.85rem;">이미지 없음</span>
         </div>
 
-        <!-- Spec Table -->
         <div class="d-flex flex-column justify-content-center">
+            <div class="detail-row">
+                <div class="detail-label">종류</div>
+                <div class="detail-value fw-medium" th:text="${item.itemType.description}">종류</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">상태</div>
+                <div class="detail-value">
+                    <span class="status-badge" th:text="${item.open} ? '판매 중' : '판매 중지'" th:style="${item.open} ? 'color:#0066cc;' : 'color:#86868b;'">상태</span>
+                </div>
+            </div>
             <div class="detail-row">
                 <div class="detail-label">가격</div>
                 <div class="detail-value fw-bold fs-5" th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">0원</div>
             </div>
             <div class="detail-row">
                 <div class="detail-label">재고</div>
-                <div class="detail-value" th:text="${item.stock} + '개'">0개</div>
+                <div class="detail-value fw-medium" th:text="${item.stock} + '개'">0개</div>
             </div>
             <div class="detail-row">
                 <div class="detail-label">배송</div>
-                <div class="detail-value" th:text="${item.deliveryType.description}">일반배송</div>
+                <div class="detail-value fw-medium" th:text="${item.deliveryType.description}">일반배송</div>
             </div>
         </div>
     </div>
 
-    <!-- Description -->
-    <div class="description-box" th:text="${item.description}">
+    <div class="item-card" th:text="${item.description}">
         상품 설명
     </div>
 
-    <!-- Order & Cart Options -->
-    <div th:if="${item.open}" class="order-box">
+    <div th:if="${item.open}" class="order-card">
         <div th:if="${item.stock > 0}" class="d-flex flex-column gap-3">
-            <!-- 바로 결제 Form -->
             <form th:action="@{/order/one}" method="post" class="order-row">
                 <input type="hidden" name="itemId" th:value="${item.id}" />
                 <span class="form-label-fixed">즉시 결제</span>
-                <input type="number" name="count" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
-                <button type="submit" class="btn-minimal btn-minimal-dark">결제하기</button>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="number" name="count" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
+                    <button type="submit" class="btn-apple-dark">결제</button>
+                </div>
             </form>
 
-            <!-- 장바구니 담기 Form -->
             <form th:action="@{/cart/add}" method="post" class="order-row">
                 <input type="hidden" name="itemId" th:value="${item.id}" />
                 <span class="form-label-fixed">장바구니</span>
-                <input type="number" name="count" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
-                <button type="submit" class="btn-minimal btn-minimal-outline">담기</button>
+                <div class="d-flex align-items-center gap-2">
+                    <input type="number" name="count" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
+                    <button type="submit" class="btn-apple-outline">담기</button>
+                </div>
             </form>
         </div>
 
-        <!-- 품절 표시 -->
-        <div th:unless="${item.stock > 0}" class="text-center py-2" style="color: #ff3b30; font-weight: 600; font-size: 0.95rem;">
+        <div th:unless="${item.stock > 0}" class="text-center py-2 fw-semibold" style="color: #ff3b30; font-size: 0.92rem;">
             현재 품절된 상품입니다.
-        </div>
-    </div>
-
-    <!-- Bottom Actions -->
-    <div class="action-bar">
-        <div class="action-left">
-            <a th:href="@{/shop}" class="btn-minimal btn-minimal-light">목록</a>
-            <a th:href="@{/shop/item/{itemId}/review(itemId=${item.id})}" class="btn-minimal btn-minimal-light">리뷰</a>
-        </div>
-
-        <div class="action-center"></div>
-
-        <div class="action-right">
-            <a th:if="${member != null and (item.createdBy == member.id or member.memberType.name() == 'ADMIN')}"
-               th:href="@{/shop/item/{itemId}/edit(itemId=${item.id})}"
-               class="btn-minimal btn-minimal-outline">수정</a>
         </div>
     </div>
 

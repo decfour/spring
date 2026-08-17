@@ -2,11 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>THGTE - Detail</title>
+    <title th:text="'THGTE - ' + ${post.title}">THGTE - Post Detail</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <style>
-        /* Base Styles */
         body {
             background-color: #ffffff;
             color: #1d1d1f;
@@ -14,217 +15,296 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Layout Container */
-        .detail-container {
-            max-width: 680px;
+        .main-container {
+            max-width: 800px;
             margin: 60px auto;
             padding: 0 20px;
         }
 
-        /* Detail Header */
-        .detail-header {
-            margin-bottom: 24px;
-        }
-        .item-meta {
-            font-size: 0.85rem;
-            color: #86868b;
-            margin-bottom: 12px;
-        }
-        .item-title {
-            font-size: 2.2rem;
+        .section-title {
+            font-size: 2rem;
             font-weight: 700;
-            letter-spacing: -1px;
-            line-height: 1.3;
-            margin-bottom: 16px;
-        }
-        .item-author-bar {
+            letter-spacing: -0.8px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.95rem;
-            padding-bottom: 24px;
-            min-height: 38px;
-        }
-        .item-author-bar .author-name {
-            color: #1d1d1f;
-            font-weight: 600;
+            align-items: baseline;
+            gap: 8px;
+            overflow: hidden;
         }
 
-        /* Content Body */
-        .item-body {
-            border-top: 1px solid #1d1d1f;
-            border-bottom: 1px solid #e5e5e7;
-            padding: 40px 10px;
-            font-size: 1.05rem;
-            line-height: 1.6;
-            color: #333336;
-            white-space: pre-wrap;
-            min-height: 200px;
+        .post-title-sub {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: #86868b;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 450px;
         }
 
-        /* Action Buttons Area */
-        .action-bar {
-            display: flex;
-            align-items: center;
-            margin: 32px 0;
-        }
-        .action-left { flex: 1; display: flex; justify-content: flex-start; }
-        .action-center { display: flex; justify-content: center; }
-        .action-right { flex: 1; }
-
-        /* Unified Minimal Buttons */
-        .btn-minimal {
+        .btn-apple-outline {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
             height: 38px;
-            padding: 0 20px;
+            padding: 0 18px;
             font-size: 0.9rem;
             font-weight: 500;
             border-radius: 980px;
             text-decoration: none;
-            transition: all 0.2s ease;
             box-sizing: border-box;
+            transition: all 0.2s ease;
+            line-height: 1;
             cursor: pointer;
-        }
-        /* 목록 버튼 (Light Gray Standard) */
-        .btn-minimal-light {
-            background-color: #f5f5f7;
-            color: #1d1d1f;
-            border: none;
-        }
-        .btn-minimal-light:hover {
-            background-color: #e8e8ed;
-            color: #1d1d1f;
-        }
-        /* 추천 버튼 (Outlined Accent) */
-        .btn-minimal-like {
-            background-color: #ffffff;
+            background-color: transparent;
             color: #1d1d1f;
             border: 1px solid #d2d2d7;
         }
-        .btn-minimal-like:hover {
+
+        .btn-apple-outline:hover {
             background-color: #f5f5f7;
             border-color: #86868b;
+            color: #1d1d1f;
         }
-        .btn-minimal-like .like-icon {
-            color: #ff3b30;
-        }
-        /* 주요 액션 버튼 (Dark Solid) */
-        .btn-minimal-dark {
+
+        .btn-apple-dark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 38px;
+            padding: 0 18px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 980px;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+            line-height: 1;
+            cursor: pointer;
             background-color: #1d1d1f;
             color: #ffffff;
-            border: none;
+            border: 1px solid #1d1d1f;
         }
-        .btn-minimal-dark:hover {
-            background-color: #333336;
+
+        .btn-apple-dark:hover {
+            background-color: #434344;
+            border-color: #434344;
             color: #ffffff;
         }
 
-        /* Dropdown Icon Menu */
+        .btn-like-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 36px;
+            padding: 0 18px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 980px;
+            background-color: #ffffff;
+            border: 1px solid #d2d2d7;
+            color: #1d1d1f;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-like-pill:hover {
+            border-color: #ff2d55;
+            color: #ff2d55;
+            background-color: rgba(255, 45, 85, 0.04);
+        }
+
         .dropdown-toggle-icon {
             background: none;
             border: none;
             color: #86868b;
             font-size: 1.1rem;
-            padding: 2px 8px;
-            border-radius: 6px;
+            padding: 2px 10px;
+            height: 38px;
+            border-radius: 980px;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
         }
+
         .dropdown-toggle-icon:hover {
             background-color: #f5f5f7;
             color: #1d1d1f;
         }
+
         .dropdown-menu-apple {
             border-radius: 12px;
             border: 1px solid #e5e5e7;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
             padding: 6px;
-            min-width: 100px;
+            min-width: 130px;
+            z-index: 1050;
         }
+
         .dropdown-menu-apple .dropdown-item {
             font-size: 0.85rem;
             border-radius: 6px;
             padding: 6px 12px;
             font-weight: 500;
+            color: #1d1d1f;
         }
+
         .dropdown-menu-apple .dropdown-item.text-danger:hover {
             background-color: #fff2f2;
         }
 
-        /* Comments Section */
-        .comments-section {
-            margin-top: 40px;
-            padding-top: 24px;
-            border-top: 1px solid #1d1d1f;
+        .dropdown-menu-apple .dropdown-item:hover {
+            color: #0066cc;
+            background-color: #f5f5f7;
         }
+
+        .post-info-flat {
+            padding: 0 4px 16px 4px;
+            margin-bottom: 8px;
+        }
+
+        .post-info-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+        }
+
+        .info-col {
+            display: flex;
+            align-items: center;
+        }
+
+        .info-col.col-writer { justify-content: flex-start; }
+        .info-col.col-like { justify-content: center; }
+        .info-col.col-empty { justify-content: flex-end; }
+
+        .post-user-meta {
+            color: #86868b;
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .meta-divider {
+            color: #d2d2d7;
+            margin: 0 6px;
+            font-size: 0.75rem;
+        }
+
+        .post-card {
+            padding: 20px;
+            border: 1px solid #d2d2d7;
+            border-radius: 16px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            color: #1d1d1f;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            min-height: 180px;
+            margin-bottom: 32px;
+        }
+
+        .comments-section {
+            margin-top: 32px;
+        }
+
         .comments-header {
             font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            letter-spacing: -0.4px;
         }
+
         .comments-header .count {
             color: #0066cc;
             margin-left: 2px;
         }
+
         .comment-item {
-            padding: 16px 0;
-            border-bottom: 1px solid #e5e5e7;
+            padding: 16px 20px;
+            border: 1px solid #d2d2d7;
+            border-radius: 14px;
+            background-color: #ffffff;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
+
         .comment-header-row {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             align-items: center;
             margin-bottom: 8px;
         }
+
         .comment-writer {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 600;
             color: #1d1d1f;
-            white-space: nowrap;
         }
+
         .comment-date {
             font-size: 0.8rem;
             color: #86868b;
             text-align: center;
-            white-space: nowrap;
         }
+
         .comment-more-wrap {
             display: flex;
             justify-content: flex-end;
             min-height: 24px;
         }
+
         .comment-content {
-            font-size: 0.95rem;
-            color: #333336;
+            font-size: 0.92rem;
+            color: #1d1d1f;
             white-space: pre-wrap;
             line-height: 1.55;
             word-break: break-word;
         }
 
-        /* Comment Form */
-        .comment-write {
-            margin-top: 28px;
-            background-color: #f5f5f7;
-            padding: 16px;
-            border-radius: 14px;
-        }
-        .comment-textarea {
-            background-color: #ffffff;
+        .comment-write-card {
+            padding: 18px;
             border: 1px solid #d2d2d7;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 0.95rem;
-            resize: none;
-        }
-        .comment-textarea:focus {
-            border-color: #0066cc;
-            box-shadow: none;
-            outline: none;
+            border-radius: 16px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            margin-top: 20px;
         }
 
-        /* Pagination */
+        .form-control-apple {
+            width: 100%;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 0.95rem;
+            color: #1d1d1f;
+            background-color: #ffffff;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            resize: none;
+        }
+
+        .form-control-apple:focus {
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+        }
+
+        .form-control-apple::placeholder {
+            color: #86868b;
+        }
+
+        .comments-empty {
+            padding: 32px 0;
+            text-align: center;
+            color: #86868b;
+            font-size: 0.9rem;
+            border: 1px dashed #d2d2d7;
+            border-radius: 14px;
+            margin-bottom: 12px;
+        }
+
         .apple-pagination .page-link {
             border: none;
             color: #1d1d1f;
@@ -234,35 +314,36 @@
             border-radius: 980px;
             background: transparent;
         }
+
         .apple-pagination .page-item.active .page-link {
             background-color: #1d1d1f;
             color: #ffffff;
         }
+
         .apple-pagination .page-item.disabled .page-link {
             color: #d2d2d7;
         }
     </style>
 </head>
+
 <body>
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div class="detail-container">
+<div class="main-container">
 
-    <!-- Header Area -->
-    <div class="detail-header">
-        <div class="item-meta">
-            <span>커뮤니티</span> •
-            <span th:text="${#temporals.format(post.createdDate, 'yyyy년 MM월 dd일 HH:mm')}">2026년 07월 24일 15:30</span> •
-            <span>조회 <th:block th:text="${post.viewCount}">0</th:block></span>
-        </div>
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <h2 class="section-title m-0">
+            <span>Talk</span>
+            <span class="post-title-sub" th:text="${post.title}">제목</span>
+        </h2>
 
-        <h1 class="item-title" th:text="${post.title}">제목</h1>
-
-        <div class="item-author-bar">
-            <span class="author-name" th:text="${post.writer != null ? post.writer.username : '익명'}">작성자</span>
-
-            <div class="dropdown" th:if="${loginMember != null and ((post.writer != null and loginMember.id == post.writer.id) or (loginMember.memberType != null and loginMember.memberType.name() == 'ADMIN'))}">
+        <div class="d-flex gap-2 align-items-center">
+            <div class="dropdown"
+                 th:if="${loginMember != null and (
+                     (post.writer != null and post.writer.id == loginMember.id) or
+                     (loginMember.memberType != null and loginMember.memberType.name() == 'ADMIN')
+                 )}">
                 <button class="dropdown-toggle-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     •••
                 </button>
@@ -277,46 +358,55 @@
                     </li>
                 </ul>
             </div>
+
+            <a th:href="@{/community}" class="btn-apple-outline">뒤로</a>
         </div>
     </div>
 
-    <!-- Main Content Body -->
-    <div class="item-body" th:text="${post.content}">
+    <div class="post-info-flat">
+        <div class="post-info-row">
+            <div class="info-col col-writer">
+                <span class="post-user-meta">
+                    작성자 <span class="text-dark font-weight-bold" th:text="${post.writer != null ? post.writer.username : '익명'}">사용자</span>
+                    <span class="meta-divider">•</span>
+                    <span th:text="${#temporals.format(post.createdDate, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
+                    <span class="meta-divider">•</span>
+                    조회 <span class="text-dark font-weight-bold" th:text="${post.viewCount}">0</span>
+                </span>
+            </div>
+
+            <div class="info-col col-like">
+                <form th:action="@{/community/post/{id}/like(id=${post.id})}" method="post" class="m-0">
+                    <button type="submit" class="btn-like-pill">
+                        ❤️ <span th:text="${post.likeCount}">0</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="info-col col-empty"></div>
+        </div>
+    </div>
+
+    <div class="post-card" th:text="${post.content}">
         내용
     </div>
 
-    <!-- Actions (Equal sized buttons) -->
-    <div class="action-bar">
-        <div class="action-left">
-            <a th:href="@{/community}" class="btn-minimal btn-minimal-light">목록</a>
-        </div>
-
-        <div class="action-center">
-            <form th:action="@{/community/post/{id}/like(id=${post.id})}" method="post">
-                <button type="submit" class="btn-minimal btn-minimal-like">
-                    <span class="like-icon">♥</span>
-                    <strong th:text="${post.likeCount}">0</strong>
-                </button>
-            </form>
-        </div>
-
-        <div class="action-right"></div>
-    </div>
-
-    <!-- Comments Section -->
     <div class="comments-section">
-
-        <div th:if="${comments.isEmpty()}" class="py-4 text-center text-muted" style="font-size: 0.9rem;">
-            댓글이 없습니다
+        <div class="comments-header">
+            댓글 <span class="count" th:text="${comments.totalElements}">0</span>
         </div>
 
         <div th:each="comment : ${comments.content}" class="comment-item">
             <div class="comment-header-row">
-                <strong class="comment-writer" th:text="${comment.writer.username}">작성자</strong>
-                <span class="comment-date" th:text="${#temporals.format(comment.createdDate, 'yyyy.MM.dd HH:mm')}">2026.07.27 16:00</span>
+                <strong class="comment-writer" th:text="${comment.writer != null ? comment.writer.username : '익명'}">작성자</strong>
+                <span class="comment-date" th:text="${#temporals.format(comment.createdDate, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
 
                 <div class="comment-more-wrap">
-                    <div class="dropdown" th:if="${loginMember != null and ((comment.writer != null and loginMember.id == comment.writer.id) or (loginMember.memberType != null and loginMember.memberType.name() == 'ADMIN'))}">
+                    <div class="dropdown"
+                         th:if="${loginMember != null and (
+                             (comment.writer != null and comment.writer.id == loginMember.id) or
+                             (loginMember.memberType != null and loginMember.memberType.name() == 'ADMIN')
+                         )}">
                         <button class="dropdown-toggle-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                             •••
                         </button>
@@ -336,19 +426,17 @@
             </div>
         </div>
 
-        <!-- Comment Input -->
-        <div class="comment-write" th:if="${loginMember != null}">
+        <div class="comment-write-card" th:if="${loginMember != null}">
             <form method="post" th:action="@{/comment/{id}/add(id=${post.id})}">
                 <input type="hidden" name="postId" th:value="${post.id}"/>
-                <textarea name="content" rows="3" class="form-control comment-textarea" placeholder="댓글을 남겨주세요"></textarea>
-                <div class="text-end mt-3">
-                    <button class="btn-minimal btn-minimal-dark" type="submit">등록</button>
+                <textarea name="content" rows="3" class="form-control-apple" placeholder="댓글을 남겨주세요"></textarea>
+                <div class="d-flex justify-content-end mt-3">
+                    <button class="btn-apple-dark" type="submit">등록</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Pagination -->
     <div class="mt-4 d-flex justify-content-center" th:if="${comments.totalPages > 1}">
         <ul class="pagination apple-pagination gap-1">
             <li class="page-item" th:classappend="${comments.first} ? 'disabled'">
@@ -364,7 +452,7 @@
             </li>
 
             <li class="page-item" th:classappend="${comments.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/community/post/{id}(id=${post.id}, page=${pageNumber})}">&gt;</a>
+                <a class="page-link" th:href="@{/community/post/{id}(id=${post.id}, page=${comments.number + 1})}">&gt;</a>
             </li>
         </ul>
     </div>

@@ -33,7 +33,7 @@ public class OrderController {
         List<Order> orders = orderService.findByMemberId(loginMember.getId());
         model.addAttribute("orders", orders);
 
-        return "order/orderList";
+        return "member/myOrder";
     }
 
     @PostMapping("/one")
