@@ -41,6 +41,33 @@
             margin-bottom: 24px;
         }
 
+        .location-btn {
+            position: absolute;
+            right: 16px;
+            bottom: 16px;
+            z-index: 10;
+            background-color: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #1d1d1f;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border-radius: 100px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+        }
+
+        .location-btn:hover {
+            background-color: #ffffff;
+        }
+
+        .location-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .map-card {
             width: 100%;
             height: 100%;
@@ -164,6 +191,10 @@
         </div>
 
         <div id="map" class="map-card"></div>
+
+        <button type="button" id="locationBtn" class="location-btn">
+            📍 현재 위치
+        </button>
     </div>
 
     <form th:action="@{/walk}" method="post">
@@ -223,6 +254,7 @@
         }
     );
 
+    const locationBtn = document.getElementById('locationBtn');
     const status = document.getElementById('status');
     const submitButton = document.getElementById('submitButton');
     const resetButton = document.getElementById('resetButton');
@@ -273,6 +305,41 @@
 
             findRoute();
         }
+    });
+
+    // 현재 위치 클릭 이벤트
+    locationBtn.addEventListener('click', function() {
+        if (!navigator.geolocation) {
+            alert('이 브라우저에서는 위치 정보를 사용할 수 없습니다.');
+            return;
+        }
+
+        locationBtn.disabled = true;
+        locationBtn.innerText = '위치 확인 중..';
+
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                map.setCenter(new kakao.maps.LatLng(lat, lng));
+
+                locationBtn.disabled = false;
+                locationBtn.innerText = '📍 현재 위치';
+            },
+            function(error) {
+                console.error(error);
+                alert('현재 위치를 가져오지 못했습니다.\n위치 권한을 확인해주세요.');
+
+                locationBtn.disabled = false;
+                locationBtn.innerText = '📍 현재 위치';
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
     });
 
     // 초기화 버튼 이벤트
