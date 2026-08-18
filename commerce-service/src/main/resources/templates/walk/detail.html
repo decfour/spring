@@ -360,7 +360,7 @@
                 </ul>
             </div>
 
-            <a th:href="@{/walk}" class="btn-apple-outline">뒤로</a>
+            <button type="button" id="backBtn" class="btn-apple-outline">뒤로</button>
         </div>
     </div>
 
@@ -463,6 +463,9 @@
 </div>
 
 <script th:inline="javascript">
+    document.getElementById('backBtn').addEventListener('click', function () {
+        history.back();
+    });
 
     const course = {
         id: /*[[${course.id}]]*/ 0,
