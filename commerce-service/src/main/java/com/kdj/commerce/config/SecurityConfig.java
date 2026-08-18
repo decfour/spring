@@ -32,9 +32,17 @@ public class SecurityConfig {
                 // 접근 권한 제어
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/walk/course/add",
+                                "/walk/course/*/delete",
+                                "/walk/course/route",
+                                "/walk/course/*/like",
+                                "/walk/course/*/tag",
+
                                 "/shop/add",
                                 "/shop/item/*/review/add",
+
                                 "/community/add",
+
                                 "/notice/add"
 
                         ).authenticated()
@@ -44,7 +52,8 @@ public class SecurityConfig {
                                 "/member/login",
                                 "/member/register",
 
-                                "/info",
+                                "/walk",
+                                "/walk/course/*",
 
                                 "/shop",
                                 "/shop/item/*",

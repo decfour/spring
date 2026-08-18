@@ -27,15 +27,6 @@ public class OrderController {
     private final CartService cartService;
     private final ItemService itemService;
 
-    @GetMapping("/list")
-    public String list(@Login Member loginMember,
-                       Model model) {
-        List<Order> orders = orderService.findByMemberId(loginMember.getId());
-        model.addAttribute("orders", orders);
-
-        return "member/myOrder";
-    }
-
     @PostMapping("/one")
     public String orderOne(@Login Member loginMember,
                            @RequestParam("itemId") Long itemId,
@@ -93,7 +84,7 @@ public class OrderController {
             orderService.orderCart(loginMember.getId(), cartItems);
         }
 
-        return "redirect:/order/list";
+        return "redirect:/member/my-page/my-order";
     }
 
     @PostMapping("/{orderId}/cancel")
@@ -101,7 +92,7 @@ public class OrderController {
                          @PathVariable("orderId") Long orderId) {
         orderService.cancel(loginMember.getId(), orderId);
 
-        return "redirect:/order/list";
+        return "redirect:/member/my-page/my-order";
     }
 
     @ExceptionHandler(NotEnoughStockException.class)

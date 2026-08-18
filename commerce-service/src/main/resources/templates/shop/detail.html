@@ -219,7 +219,7 @@
             font-size: 0.95rem;
             line-height: 1.6;
             white-space: pre-wrap;
-            min-height: 140px;
+            min-height: 80px;
             margin-bottom: 12px;
         }
 
@@ -338,7 +338,9 @@
         </div>
     </div>
 
-    <div class="item-card" th:text="${item.description}">
+    <div th:if="${item.description != null and !#strings.isEmpty(#strings.trim(item.description))}"
+         class="item-card"
+         th:text="${item.description}">
         상품 설명
     </div>
 

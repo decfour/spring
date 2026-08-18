@@ -1,6 +1,7 @@
 package com.kdj.commerce.web.dto.member;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data

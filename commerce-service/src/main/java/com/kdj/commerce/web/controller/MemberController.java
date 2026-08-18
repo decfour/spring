@@ -2,14 +2,16 @@ package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.member.MemberType;
+import com.kdj.commerce.domain.order.Order;
 import com.kdj.commerce.domain.review.Review;
 import com.kdj.commerce.service.ItemService;
+import com.kdj.commerce.service.OrderService;
 import com.kdj.commerce.service.ReviewService;
 import com.kdj.commerce.web.argumentresolver.Login;
 import com.kdj.commerce.web.dto.member.LoginForm;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.MemberService;
-import com.kdj.commerce.web.dto.member.MemberCreateForm;
+import com.kdj.commerce.web.dto.member.registerForm;
 import com.kdj.commerce.web.security.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,17 +33,18 @@ public class MemberController {
     private final ReviewService reviewService;
     private final MemberService memberService;
     private final ItemService itemService;
+    private final OrderService orderService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/register")
     public String registerForm(Model model) {
-        model.addAttribute("member", new MemberCreateForm());
+        model.addAttribute("member", new registerForm());
 
         return "member/registerForm";
     }
 
     @PostMapping("/register")
-    public String register(@Valid @ModelAttribute("member") MemberCreateForm form,
+    public String register(@Valid @ModelAttribute("member") registerForm form,
                            BindingResult result) {
         if (result.hasErrors()) {
             return "member/registerForm";
@@ -81,37 +84,6 @@ public class MemberController {
         return "member/loginForm";
     }
 
-    /*
-    @PostMapping("/login")
-    public String login(@Valid @ModelAttribute LoginForm form,
-                            BindingResult result,
-                            @RequestParam(defaultValue = "/") String redirectURL,
-                            HttpServletRequest request) {
-        if (result.hasErrors()) {
-            return "member/loginForm";
-        }
-
-        if (redirectURL.contains(",")) {
-            redirectURL = redirectURL.split(",")[0];
-        }
-
-        Member loginMember = memberService.login(form.getLoginId(), form.getLoginPassword());
-
-        // 로그인 실패
-        if (loginMember == null) {
-            result.reject("loginError", "아이디 또는 비밀번호가 맞지 않습니다.");
-            return "member/loginForm";
-        }
-
-        // 로그인 성공
-        HttpSession session = request.getSession();
-        session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
-        log.info("loginUser={}", loginMember);
-
-        return "redirect:" + redirectURL;
-    }
-    */
-
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute LoginForm form,
                         BindingResult result,
@@ -143,26 +115,6 @@ public class MemberController {
         return "redirect:" + redirectURL;
     }
 
-    /*
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request,
-                         HttpServletResponse response) {
-        HttpSession session = request.getSession(false);
-
-        if (session != null) {
-            session.invalidate();
-        }
-
-        // 쿠키 제거
-        Cookie cookie = new Cookie("JSESSIONID", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
-        return "redirect:/";
-    }
-    */
-
     @PostMapping("/logout")
     public String logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("Authorization", null);
@@ -182,8 +134,8 @@ public class MemberController {
     }
 
     @GetMapping("/my-page/my-item")
-    public String myItems(@Login Member loginMember,
-                          Model model) {
+    public String myItem(@Login Member loginMember,
+                         Model model) {
         List<Item> myItems = itemService.findByCreatedBy(loginMember.getId());
 
         model.addAttribute("member", loginMember);
@@ -193,14 +145,23 @@ public class MemberController {
     }
 
     @GetMapping("/my-page/my-review")
-    public String myReviews(@Login Member loginMember,
-                          Model model) {
+    public String myReview(@Login Member loginMember,
+                           Model model) {
         List<Review> myReviews = reviewService.findByMemberId(loginMember.getId());
 
         model.addAttribute("member", loginMember);
         model.addAttribute("myReviews", myReviews);
 
         return "member/myReview";
+    }
+
+    @GetMapping("/my-page/my-order")
+    public String myOrder(@Login Member loginMember,
+                          Model model) {
+        List<Order> orders = orderService.findByMemberId(loginMember.getId());
+        model.addAttribute("orders", orders);
+
+        return "member/myOrder";
     }
 
     private String normalizeRedirectUrl(String redirectURL){
