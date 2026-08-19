@@ -77,8 +77,23 @@ public class WalkCourseService {
     public Page<WalkCourseResponse> findNearbyCourses(Pageable pageable,
                                                       Double latitude,
                                                       Double longitude) {
-        return walkCourseRepository
-                .findNearbyCourses(latitude, longitude, pageable)
+        // 바운싱 박스 (1km)
+        double latDelta = 1.0 / 111.0;
+        double lngDelta = 1.0 / (111.0 * Math.cos(Math.toRadians(latitude)));
+
+        double minLat = latitude - latDelta;
+        double maxLat = latitude + latDelta;
+        double minLng = longitude - lngDelta;
+        double maxLng = longitude + lngDelta;
+
+        return walkCourseRepository.findNearbyCourses(
+                        latitude,
+                        longitude,
+                        minLat,
+                        maxLat,
+                        minLng,
+                        maxLng,
+                        pageable)
                 .map(WalkCourseResponse::from);
     }
 
