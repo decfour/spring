@@ -7,6 +7,7 @@ Spring Boot & MySQL & Kakao Map API 기반 산책 경로 추천 및 쇼핑 서�
 ## 접속 주소
 
 [https://decfour.dev](https://decfour.dev)
+(ID: test  PASSWORD: 1234)
 
 ---
 
