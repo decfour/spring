@@ -163,6 +163,41 @@
             background-color: #de363a;
             color: #ffffff;
         }
+
+        .pagination-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: 28px;
+        }
+
+        .pagination {
+            gap: 6px;
+        }
+
+        .page-link {
+            border: 1px solid #d2d2d7;
+            border-radius: 8px !important;
+            color: #1d1d1f;
+            background-color: #ffffff;
+            min-width: 36px;
+            text-align: center;
+        }
+
+        .page-link:hover {
+            background-color: #f5f5f7;
+            color: #0066cc;
+        }
+
+        .page-item.active .page-link {
+            background-color: #1d1d1f;
+            border-color: #1d1d1f;
+            color: #ffffff;
+        }
+
+        .page-item.disabled .page-link {
+            color: #86868b;
+            background-color: #ffffff;
+        }
     </style>
 </head>
 
@@ -183,43 +218,131 @@
     </div>
 
     <div class="order-section">
-        <div th:if="${#lists.isEmpty(orders)}" class="order-empty">
+
+        <div th:if="${orders == null or orders.isEmpty()}"
+             class="order-empty">
             주문 내역이 없습니다
         </div>
 
-        <div th:if="${not #lists.isEmpty(orders)}" class="order-list">
-            <div th:each="order : ${orders}" class="order-card">
+        <div th:if="${orders != null and !orders.isEmpty()}"
+             class="order-list">
+
+            <div th:each="order : ${orders}"
+                 class="order-card">
 
                 <div class="order-info">
+
                     <div class="order-title">
-                        <span th:text="${order.orderItems[0].item.name}">상품명</span>
+                    <span th:text="${order.orderItems[0].item.name}">
+                        상품명
+                    </span>
+
                         <span th:if="${order.orderItems.size() > 1}"
-                              th:text="' 외 ' + ${order.orderItems.size() - 1} + '건'"
-                              class="order-count"> 외 1건</span>
+                              th:text="' 외 ' + (order.orderItems.size() - 1) + '건'"
+                              class="order-count">
+                        외 1건
+                    </span>
                     </div>
+
                     <div class="order-meta">
-                        <span>주문번호: <span th:text="${order.id}">1</span></span>
+                    <span>
+                        주문번호:
+                        <span th:text="${order.id}">1</span>
+                    </span>
+
                         <span>•</span>
-                        <span th:text="${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')} + '원'">10,000원</span>
+
+                        <span th:text="${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')} + '원'">
+                        10,000원
+                    </span>
+
                         <span>•</span>
-                        <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2026-05-24 14:00</span>
+
+                        <span th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">
+                        2026-05-24 14:00
+                    </span>
                     </div>
+
                 </div>
 
                 <div class="order-right">
-                    <span th:if="${order.status.name() == 'ORDER'}" class="status-badge-order">주문 완료</span>
-                    <span th:unless="${order.status.name() == 'ORDER'}" class="status-badge-cancel">주문 취소</span>
+
+                <span th:if="${order.status.name() == 'ORDER'}"
+                      class="status-badge-order">
+                    주문 완료
+                </span>
+
+                    <span th:unless="${order.status.name() == 'ORDER'}"
+                          class="status-badge-cancel">
+                    주문 취소
+                </span>
 
                     <form th:if="${order.status.name() == 'ORDER'}"
-                          th:action="@{/order/{id}/cancel (id=${order.id})}"
+                          th:action="@{/order/{id}/cancel(id=${order.id})}"
                           method="post"
                           class="m-0 d-inline-block">
-                        <button type="submit" class="btn-cancel-action" onclick="return confirm('정말 취소하시겠습니까?');">취소</button>
+
+                        <button type="submit"
+                                class="btn-cancel-action"
+                                onclick="return confirm('정말 취소하시겠습니까?');">
+                            취소
+                        </button>
+
                     </form>
+
                 </div>
 
             </div>
+
         </div>
+
+        <!-- 페이지네이션 -->
+        <div th:if="${orders != null and orders.totalPages > 1}"
+             class="pagination-wrap">
+
+            <nav>
+                <ul class="pagination mb-0">
+
+                    <!-- 이전 -->
+                    <li class="page-item"
+                        th:classappend="${orders.first} ? 'disabled'">
+
+                        <a class="page-link"
+                           th:href="@{/member/my-order(page=${orders.number - 1})}">
+                            &lsaquo;
+                        </a>
+
+                    </li>
+
+                    <!-- 페이지 번호 -->
+                    <li th:each="pageNum : ${#numbers.sequence(0, orders.totalPages - 1)}"
+                        class="page-item"
+                        th:classappend="${pageNum == orders.number} ? 'active'">
+
+                        <a class="page-link"
+                           th:href="@{/member/my-order(page=${pageNum})}"
+                           th:text="${pageNum + 1}">
+                            1
+                        </a>
+
+                    </li>
+
+                    <!-- 다음 -->
+                    <li class="page-item"
+                        th:classappend="${orders.last} ? 'disabled'">
+
+                        <a class="page-link"
+                           th:href="@{/member/my-order(page=${orders.number + 1})}">
+                            &rsaquo;
+                        </a>
+
+                    </li>
+
+                </ul>
+            </nav>
+
+        </div>
+
     </div>
 
 </div>

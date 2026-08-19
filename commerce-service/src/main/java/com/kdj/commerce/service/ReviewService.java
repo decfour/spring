@@ -26,11 +26,11 @@ public class ReviewService {
     }
 
     public Page<Review> findByItemId(Long itemId, Pageable pageable) {
-        return reviewRepository.findByItemId(itemId, pageable);
+        return reviewRepository.findByItemId(pageable, itemId);
     }
 
-    public List<Review> findByMemberId(Long memberId) {
-        return reviewRepository.findByMemberId(memberId);
+    public Page<Review> findByMemberId(Pageable pageable, Long memberId) {
+        return reviewRepository.findByMemberId(pageable, memberId);
     }
 
     @Transactional

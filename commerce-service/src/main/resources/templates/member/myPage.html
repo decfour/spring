@@ -120,8 +120,8 @@
         }
 
         .action-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+             display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
         }
 
@@ -193,14 +193,17 @@
         </div>
 
         <div class="action-grid">
-            <a th:href="@{/member/my-page/my-item}" class="action-card">
+            <a th:href="@{/member/my-course}" class="action-card">
+                내 코스
+            </a>
+            <a th:href="@{/member/my-item}" class="action-card">
                 내 상품
             </a>
-            <a th:href="@{/member/my-page/my-review}" class="action-card">
+            <a th:href="@{/member/my-review}" class="action-card">
                 내 후기
             </a>
-            <a th:href="@{/member/my-page/my-order}" class="action-card">
-                주문 내역
+            <a th:href="@{/member/my-order}" class="action-card">
+                내 주문
             </a>
         </div>
     </div>

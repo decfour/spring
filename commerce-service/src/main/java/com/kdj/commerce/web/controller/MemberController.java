@@ -4,13 +4,11 @@ import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.member.MemberType;
 import com.kdj.commerce.domain.order.Order;
 import com.kdj.commerce.domain.review.Review;
-import com.kdj.commerce.service.ItemService;
-import com.kdj.commerce.service.OrderService;
-import com.kdj.commerce.service.ReviewService;
+import com.kdj.commerce.domain.walk.WalkCourse;
+import com.kdj.commerce.service.*;
 import com.kdj.commerce.web.argumentresolver.Login;
 import com.kdj.commerce.web.dto.member.LoginForm;
 import com.kdj.commerce.domain.member.Member;
-import com.kdj.commerce.service.MemberService;
 import com.kdj.commerce.web.dto.member.registerForm;
 import com.kdj.commerce.web.security.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
@@ -18,6 +16,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,6 +36,7 @@ public class MemberController {
     private final MemberService memberService;
     private final ItemService itemService;
     private final OrderService orderService;
+    private final WalkCourseService walkCourseService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/register")
@@ -133,10 +136,23 @@ public class MemberController {
         return "member/myPage";
     }
 
-    @GetMapping("/my-page/my-item")
-    public String myItem(@Login Member loginMember,
+    @GetMapping("/my-course")
+    public String myCourse(@PageableDefault(size = 7, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                           @Login Member loginMember,
+                           Model model
+                            ) {
+        Page<WalkCourse> myCourses = walkCourseService.findByMemberId(pageable, loginMember.getId());
+        model.addAttribute("member", loginMember);
+        model.addAttribute("myCourses", myCourses);
+
+        return "member/myCourse";
+    }
+
+    @GetMapping("/my-item")
+    public String myItem(@PageableDefault(size = 7, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                         @Login Member loginMember,
                          Model model) {
-        List<Item> myItems = itemService.findByCreatedBy(loginMember.getId());
+        Page<Item> myItems = itemService.findByCreatedBy(pageable, loginMember.getId());
 
         model.addAttribute("member", loginMember);
         model.addAttribute("myItems", myItems);
@@ -144,10 +160,11 @@ public class MemberController {
         return "member/myItem";
     }
 
-    @GetMapping("/my-page/my-review")
-    public String myReview(@Login Member loginMember,
+    @GetMapping("/my-review")
+    public String myReview(@PageableDefault(size = 7, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                           @Login Member loginMember,
                            Model model) {
-        List<Review> myReviews = reviewService.findByMemberId(loginMember.getId());
+        Page<Review> myReviews = reviewService.findByMemberId(pageable, loginMember.getId());
 
         model.addAttribute("member", loginMember);
         model.addAttribute("myReviews", myReviews);
@@ -155,10 +172,11 @@ public class MemberController {
         return "member/myReview";
     }
 
-    @GetMapping("/my-page/my-order")
-    public String myOrder(@Login Member loginMember,
+    @GetMapping("/my-order")
+    public String myOrder(@PageableDefault(size = 7, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                          @Login Member loginMember,
                           Model model) {
-        List<Order> orders = orderService.findByMemberId(loginMember.getId());
+        Page<Order> orders = orderService.findByMemberId(pageable, loginMember.getId());
         model.addAttribute("orders", orders);
 
         return "member/myOrder";

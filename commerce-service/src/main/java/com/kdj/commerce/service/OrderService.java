@@ -10,6 +10,8 @@ import com.kdj.commerce.domain.order.OrderItem;
 import com.kdj.commerce.domain.order.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,8 +94,8 @@ public class OrderService {
     public List<Order> findAll() {return orderRepository.findAll();}
 
     // Fetch Join으로 회원 정보를 함께 조회하여 N+1 방지
-    public List<Order> findByMemberId(Long id) {
-        return orderRepository.findByMemberIdWithMember(id);
+    public Page<Order> findByMemberId(Pageable pageable, Long id) {
+        return orderRepository.findByMemberIdWithMember(pageable, id);
     }
 
     public List<Order> findAllFetch() {

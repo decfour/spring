@@ -3,7 +3,6 @@ package com.kdj.commerce.web.controller;
 import com.kdj.commerce.domain.cart.CartItem;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.member.Member;
-import com.kdj.commerce.domain.order.Order;
 import com.kdj.commerce.exception.NotEnoughStockException;
 import com.kdj.commerce.service.CartService;
 import com.kdj.commerce.service.ItemService;
@@ -84,7 +83,7 @@ public class OrderController {
             orderService.orderCart(loginMember.getId(), cartItems);
         }
 
-        return "redirect:/member/my-page/my-order";
+        return "redirect:/member/my-order";
     }
 
     @PostMapping("/{orderId}/cancel")
@@ -92,7 +91,7 @@ public class OrderController {
                          @PathVariable("orderId") Long orderId) {
         orderService.cancel(loginMember.getId(), orderId);
 
-        return "redirect:/member/my-page/my-order";
+        return "redirect:/member/my-order";
     }
 
     @ExceptionHandler(NotEnoughStockException.class)

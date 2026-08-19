@@ -45,7 +45,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public String list(@PageableDefault(size = 9, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    public String list(@PageableDefault(size = 8, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model) {
         Page<Item> items = itemService.findActive(pageable);
         model.addAttribute("items", items);

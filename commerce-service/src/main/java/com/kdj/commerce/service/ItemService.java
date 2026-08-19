@@ -110,8 +110,8 @@ public class ItemService {
         item.restore();
     }
 
-    public List<Item> findByCreatedBy(Long id) {
-        return itemRepository.findByCreatedBy(id);
+    public Page<Item> findByCreatedBy(Pageable pageable, Long id) {
+        return itemRepository.findByCreatedBy(pageable, id);
     }
 
     public Page<Item> findActive(Pageable pageable) {

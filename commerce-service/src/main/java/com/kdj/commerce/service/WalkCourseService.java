@@ -121,4 +121,8 @@ public class WalkCourseService {
                 .orElseThrow()
                 .getLikeCount();
     }
+
+    public Page<WalkCourse> findByMemberId(Pageable pageable, Long id) {
+        return walkCourseRepository.findByMemberIdOrderByCreatedAtDesc(id, pageable);
+    }
 }

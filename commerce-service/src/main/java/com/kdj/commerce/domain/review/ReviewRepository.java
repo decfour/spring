@@ -4,9 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    Page<Review> findByItemId(Long itemId, Pageable pageable);
-    List<Review> findByMemberId(Long id);
+    Page<Review> findByItemId(Pageable pageable, Long id);
+    Page<Review> findByMemberId(Pageable pageable, Long id);
 }

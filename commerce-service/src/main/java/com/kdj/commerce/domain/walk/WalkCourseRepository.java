@@ -34,6 +34,8 @@ public interface WalkCourseRepository extends JpaRepository<WalkCourse, Long> {
     @Modifying(clearAutomatically = true)
     @Query("UPDATE WalkCourse w SET w.likeCount = w.likeCount + 1 WHERE w.id = :id")
     int increaseLikeCount(@Param("id") Long id);
+
+    Page<WalkCourse> findByMemberIdOrderByCreatedAtDesc(Long id, Pageable pageable);
 }
 
 
