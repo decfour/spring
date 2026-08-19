@@ -110,22 +110,21 @@ public class LoginController {
     public String loginV4 ( @Valid @ModelAttribute LoginForm form, BindingResult bindingResult,
                             @RequestParam(defaultValue = "/") String redirectURL,
                             HttpServletRequest request) {
-
         if (bindingResult.hasErrors()) {
             return "login/loginForm";
         }
 
         Member loginMember = loginService.login(form.getLoginId(), form.getPassword());
-        log.info("login? {}", loginMember);
 
         if (loginMember == null) {
             bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다.");
             return "login/loginForm";
         }
 
-        // 로그인 성공 처리 (세션 있으면 반환, 없으면 생성), 세션에 사용자 정보 저장
+        // 로그인 성공 처리
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
+        log.info("login? {}", loginMember);
 
         return "redirect:" + redirectURL;
     }

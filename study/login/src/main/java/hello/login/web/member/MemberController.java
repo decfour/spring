@@ -16,20 +16,19 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/members")
 public class MemberController {
-
     private final MemberRepository memberRepository;
 
     @GetMapping("/add")
     public String addForm(@ModelAttribute("member") Member member) {
-
         return "members/addMemberForm";
     }
 
     @PostMapping("/add")
-    public String save(@Valid @ModelAttribute Member member, BindingResult result) {
+    public String add(@Valid @ModelAttribute Member member, BindingResult result) {
         if (result.hasErrors()) {
             return "members/addMemberForm";
         }
+
         memberRepository.save(member);
 
         return "redirect:/";
