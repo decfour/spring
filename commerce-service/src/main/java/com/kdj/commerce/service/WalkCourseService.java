@@ -54,6 +54,10 @@ public class WalkCourseService {
                 .map(WalkCourseResponse::from);
     }
 
+    public Page<WalkCourse> findBest(Pageable pageable) {
+        return walkCourseRepository.findAllByOrderByLikeCountDescCreatedAtDesc(pageable);
+    }
+
     @Transactional
     public Long save(
             Member member,

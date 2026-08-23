@@ -163,13 +163,13 @@
         }
 
         .course-name {
-        font-size: 0.98rem;
-        font-weight: 600;
-        margin-bottom: 3px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+            font-size: 0.98rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
         .course-detail-link {
             display: inline-block;
@@ -272,6 +272,7 @@
         </h2>
 
         <div class="d-flex gap-2">
+            <a th:href="@{/walk/course/hit}" class="btn-apple-outline">HIT</a>
             <a th:href="@{/walk/course/add}" class="btn-apple-dark">등록</a>
             <a th:href="@{/}" class="btn-apple-outline">뒤로</a>
         </div>

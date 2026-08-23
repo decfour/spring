@@ -36,6 +36,8 @@ public interface WalkCourseRepository extends JpaRepository<WalkCourse, Long> {
     int increaseLikeCount(@Param("id") Long id);
 
     Page<WalkCourse> findByMemberIdOrderByCreatedAtDesc(Long id, Pageable pageable);
+
+    Page<WalkCourse> findAllByOrderByLikeCountDescCreatedAtDesc(Pageable pageable);
 }
 
 

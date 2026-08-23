@@ -44,6 +44,18 @@ public class WalkController {
         return walkCourseService.findNearbyCourses(pageable, lat, lng);
     }
 
+    @GetMapping("/course/hit")
+    public String hitList(
+            @PageableDefault(size = 3) Pageable pageable,
+            Model model
+    ) {
+        Page<WalkCourse> courses = walkCourseService.findBest(pageable);
+
+        model.addAttribute("courses", courses);
+
+        return "walk/hit";
+    }
+
     @GetMapping("/course/{id}")
     public String detail(
             @Login Member loginMember,
