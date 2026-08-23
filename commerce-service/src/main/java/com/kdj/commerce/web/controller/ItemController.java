@@ -7,13 +7,10 @@ import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
 import com.kdj.commerce.service.ItemService;
 import com.kdj.commerce.web.argumentresolver.Login;
-import com.kdj.commerce.web.file.FileStore;
 import com.kdj.commerce.web.dto.item.ItemForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,9 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.io.IOException;
 
 @Slf4j
 @Controller
@@ -33,24 +27,40 @@ import java.io.IOException;
 public class ItemController {
     private final ItemService itemService;
 
-    @ModelAttribute("itemTypes") public ItemType[] itemTypes() {return ItemType.values();}
-    @ModelAttribute("deliveryTypes") public DeliveryType[] deliveryTypes() {return DeliveryType.values();}
-
-    private boolean isOwner(Item item, Member loginMember) {
-        return item.getCreatedBy().equals(loginMember.getId());
+    @ModelAttribute("itemTypes")
+    public ItemType[] itemTypes() {
+        return ItemType.values();
     }
 
-    private boolean isAdmin(Member loginMember) {
-        return loginMember.getMemberType() == MemberType.ADMIN;
+    @ModelAttribute("deliveryTypes")
+    public DeliveryType[] deliveryTypes() {
+        return DeliveryType.values();
     }
 
     @GetMapping
-    public String list(@PageableDefault(size = 8, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                       Model model) {
+    public String list(
+            @PageableDefault(size = 8, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model
+    ) {
         Page<Item> items = itemService.findActive(pageable);
+
         model.addAttribute("items", items);
 
         return "shop/list";
+    }
+
+    @GetMapping("/item/{id}")
+    public String detail(
+            @PathVariable Long id,
+            @Login Member loginMember,
+            Model model
+    ) {
+        Item item = itemService.findById(id);
+
+        model.addAttribute("item", item);
+        model.addAttribute("member", loginMember);
+
+        return "shop/detail";
     }
 
     @GetMapping("/add")
@@ -61,42 +71,32 @@ public class ItemController {
     }
 
     @PostMapping("/add")
-    public String add(@Login Member loginMember,
-                      @Valid @ModelAttribute("item") ItemForm form,
-                      BindingResult bindingResult,
-                      RedirectAttributes redirectAttributes,
-                      Model model) {
+    public String add(
+            @Login Member loginMember,
+            @Valid @ModelAttribute("item") ItemForm form,
+            BindingResult bindingResult,
+            Model model
+    ) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("item", form);
             return "shop/form";
         }
 
         Long itemId = itemService.save(form, loginMember.getId());
 
-        redirectAttributes.addAttribute("itemId", itemId);
-
-        return "redirect:/shop/item/{itemId}";
-    }
-
-    @GetMapping("/item/{id}")
-    public String detail(@PathVariable Long id,
-                         @Login Member loginMember,
-                         Model model) {
-        Item item = itemService.findOne(id);
-        model.addAttribute("item", item);
-        model.addAttribute("member", loginMember);
-
-        return "shop/detail";
+        return "redirect:/shop/item/" + itemId;
     }
 
     @GetMapping("/item/{id}/edit")
-    public String editForm(@PathVariable Long id,
-                           @Login Member loginMember,
-                           Model model) {
-        Item item = itemService.findOne(id);
+    public String editForm(
+            @Login Member loginMember,
+            @PathVariable Long id,
+            Model model
+    ) {
+        Item item = itemService.findById(id);
 
         if (!isOwner(item, loginMember) && !isAdmin(loginMember)) {
-            log.warn("수정 시도 차단 ID={}, 상품={}", loginMember.getId(), id);
+            log.warn("상품 수정 권한 없음 - memberId={}, itemId={}", loginMember.getId(), id);
+
             return "redirect:/shop/item/" + id;
         }
 
@@ -118,19 +118,24 @@ public class ItemController {
     }
 
     @PostMapping("/item/{id}/edit")
-    public String edit(@PathVariable Long id,
-                       @Login Member loginMember,
-                       @Valid @ModelAttribute("item") ItemForm form,
-                       BindingResult bindingResult,
-                       Model model) throws IOException {
+    public String edit(
+            @Login Member loginMember,
+            @PathVariable Long id,
+            @Valid @ModelAttribute("item") ItemForm form,
+            BindingResult bindingResult,
+            Model model
+    ) {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("item", form);
+            model.addAttribute("isEdit", true);
+
             return "shop/form";
         }
 
-        Item findItem = itemService.findOne(id);
-        if (!isOwner(findItem, loginMember) && !isAdmin(loginMember)) {
-            log.warn("수정 시도 차단 ID={}", loginMember.getId());
+        Item item = itemService.findById(id);
+
+        if (!isOwner(item, loginMember) && !isAdmin(loginMember)) {
+            log.warn("상품 수정 권한 없음 - memberId={}, itemId={}", loginMember.getId(), id);
+
             return "redirect:/shop/item/" + id;
         }
 
@@ -140,39 +145,46 @@ public class ItemController {
     }
 
     @PostMapping("/item/{id}/delete")
-    public String delete(@PathVariable Long id,
-                         @Login Member loginMember) {
-        Item item = itemService.findOne(id);
-        if (item == null)
-            return "redirect:/shop";
+    public String delete(
+            @Login Member loginMember,
+            @PathVariable Long id
+    ) {
+        Item item = itemService.findById(id);
 
         if (!isOwner(item, loginMember) && !isAdmin(loginMember)) {
-            log.warn("상품 삭제 차단={}", id);
+            log.warn("상품 삭제 권한 없음 - memberId={}, itemId={}", loginMember.getId(), id);
+
             return "redirect:/shop/item/" + id;
         }
 
         itemService.delete(id);
-        log.info("상품 삭제 완료={}", id);
 
         return "redirect:/shop";
     }
 
     @PostMapping("/item/{id}/restore")
-    public String restore(@PathVariable Long id,
-                          @Login Member loginMember) {
-        Item item = itemService.findOne(id);
-        if (item == null) {
-            return "redirect:/shop";
-        }
+    public String restore(
+            @Login Member loginMember,
+            @PathVariable Long id
+    ) {
+        Item item = itemService.findById(id);
 
         if (!isOwner(item, loginMember)) {
-            log.warn("상품 복원 차단={}", id);
+            log.warn("상품 복원 권한 없음 - memberId={}, itemId={}", loginMember.getId(), id);
+
             return "redirect:/shop/item/" + id;
         }
 
         itemService.restore(id);
-        log.info("상품 복원 완료={}", id);
 
         return "redirect:/shop/item/" + id;
+    }
+
+    private boolean isOwner(Item item, Member loginMember) {
+        return item.getCreatedBy().equals(loginMember.getId());
+    }
+
+    private boolean isAdmin(Member loginMember) {
+        return loginMember.getMemberType() == MemberType.ADMIN;
     }
 }

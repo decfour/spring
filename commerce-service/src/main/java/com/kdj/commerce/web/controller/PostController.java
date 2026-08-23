@@ -29,31 +29,39 @@ public class PostController {
     private final CommentService commentService;
 
     @GetMapping
-    public String list(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                       Model model) {
+    public String list(
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model
+    ) {
         Page<Post> posts = postService.findAll(pageable);
+
         model.addAttribute("posts", posts);
 
         return "community/list";
     }
 
     @GetMapping("/hits")
-    public String hitList(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                          Model model) {
+    public String hitList(
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model
+    ) {
         Page<Post> posts = postService.findHit(pageable);
+
         model.addAttribute("posts", posts);
 
         return "community/hit";
     }
 
     @GetMapping("/post/{id}")
-    public String detail(@PathVariable Long id,
-                         @Login Member loginMember,
-                         @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                         Model model) {
+    public String detail(
+            @Login Member loginMember,
+            @PathVariable Long id,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model
+    ) {
         postService.increaseViewCount(id);
 
-        Post post = postService.findOne(id);
+        Post post = postService.findById(id);
         Page<Comment> comments = commentService.findByPostId(id, pageable);
 
         model.addAttribute("post", post);
@@ -64,17 +72,18 @@ public class PostController {
     }
 
     @GetMapping("/add")
-    public String addForm(@Login Member loginMember,
-                          Model model) {
+    public String addForm(Model model) {
         model.addAttribute("postForm", new PostForm());
 
         return "community/form";
     }
 
     @PostMapping("/add")
-    public String add(@Login Member loginMember,
-                      @Valid @ModelAttribute("postForm") PostForm form,
-                      BindingResult bindingResult) {
+    public String add(
+            @Login Member loginMember,
+            @Valid @ModelAttribute("postForm") PostForm form,
+            BindingResult bindingResult
+    ) {
         if (bindingResult.hasErrors()) {
             return "community/form";
         }
@@ -85,10 +94,12 @@ public class PostController {
     }
 
     @GetMapping("/post/{id}/edit")
-    public String editForm(@PathVariable Long id,
-                           @Login Member loginMember,
-                           Model model) {
-        Post post = postService.findOne(id);
+    public String editForm(
+            @Login Member loginMember,
+            @PathVariable Long id,
+            Model model
+    ) {
+        Post post = postService.findById(id);
 
         if (!isOwner(post, loginMember) && !isAdmin(loginMember)) {
             log.warn("수정 시도 차단 ID={}, 게시글={}", loginMember != null ? loginMember.getId() : "비로그인", id);
@@ -107,20 +118,23 @@ public class PostController {
     }
 
     @PostMapping("/post/{id}/edit")
-    public String edit(@PathVariable Long id,
-                       @Login Member loginMember,
-                       @Valid @ModelAttribute("postForm") PostForm form,
-                       BindingResult bindingResult,
-                       Model model) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("isEdit", true);
-            return "community/form";
-        }
+    public String edit(
+            @Login Member loginMember,
+            @PathVariable Long id,
+            @Valid @ModelAttribute("postForm") PostForm form,
+            BindingResult bindingResult,
+            Model model
+    ) {
+        Post findPost = postService.findById(id);
 
-        Post findPost = postService.findOne(id);
         if (!isOwner(findPost, loginMember) && !isAdmin(loginMember)) {
             log.warn("수정 시도 차단 ID={}, 게시글={}", loginMember != null ? loginMember.getId() : "비로그인", id);
             return "redirect:/community/post/" + id;
+        }
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("isEdit", true);
+            return "community/form";
         }
 
         postService.update(id, form.getTitle(), form.getContent());
@@ -129,9 +143,11 @@ public class PostController {
     }
 
     @PostMapping("/post/{id}/delete")
-    public String delete(@PathVariable Long id,
-                         @Login Member loginMember) {
-        Post findPost = postService.findOne(id);
+    public String delete(
+            @Login Member loginMember,
+            @PathVariable Long id
+    ) {
+        Post findPost = postService.findById(id);
         if (!isOwner(findPost, loginMember) && !isAdmin(loginMember)) {
             log.warn("삭제 시도 차단 ID={}, 게시글={}", loginMember != null ? loginMember.getId() : "비로그인", id);
             return "redirect:/community/post/" + id;
@@ -142,9 +158,11 @@ public class PostController {
     }
 
     @PostMapping("/post/{id}/like")
-    public String like(@PathVariable Long id,
-                       @Login Member loginMember) {
-        postService.like(id, loginMember);
+    public String like(
+            @Login Member loginMember,
+            @PathVariable Long id
+    ) {
+        postService.increaseLikeCount(id, loginMember);
 
         return "redirect:/community/post/" + id;
     }

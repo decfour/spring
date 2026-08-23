@@ -24,19 +24,28 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private LocalDateTime orderDate = LocalDateTime.now();;
+    private LocalDateTime orderDate = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    private String receiverName;
+    private String receiverAddress;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    public static Order create(Member member, OrderItem... orderItems) {
+    public static Order create(Member member,
+                               String receiverName,
+                               String receiverAddress,
+                               OrderItem... orderItems) {
         Order order = new Order();
 
         order.member = member;
+        order.receiverName = receiverName;
+        order.receiverAddress = receiverAddress;
         order.status = OrderStatus.ORDER;
+
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
         }
@@ -53,6 +62,7 @@ public class Order {
         if (status == OrderStatus.CANCEL) {
             return;
         }
+
         this.status = OrderStatus.CANCEL;
 
         for (OrderItem orderItem : orderItems) {
@@ -62,6 +72,7 @@ public class Order {
 
     public int getTotalPrice() {
         int totalPrice = 0;
+
         for (OrderItem orderItem : orderItems) {
             totalPrice += orderItem.getTotalPrice();
         }

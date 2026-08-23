@@ -27,21 +27,14 @@ import java.io.IOException;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    private boolean isOwner(Review review, Member loginMember) {
-        if (loginMember == null)
-            return false;
-        return review.getMember().getId().equals(loginMember.getId());
-    }
-
-    private boolean isAdmin(Member loginMember) {
-        return loginMember != null && loginMember.getMemberType() == MemberType.ADMIN;
-    }
-
     @GetMapping
-    public String list(@PathVariable Long itemId,
-                       @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                       Model model) {
+    public String list(
+            @PathVariable Long itemId,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model
+    ) {
         Page<Review> reviews = reviewService.findByItemId(itemId, pageable);
+
         model.addAttribute("itemId", itemId);
         model.addAttribute("reviews", reviews);
 
@@ -49,11 +42,14 @@ public class ReviewController {
     }
 
     @GetMapping("/{reviewId}")
-    public String detail(@PathVariable Long itemId,
-                         @PathVariable Long reviewId,
-                         @Login Member loginMember,
-                         Model model) {
-        Review review = reviewService.findOne(reviewId);
+    public String detail(
+            @Login Member loginMember,
+            @PathVariable Long itemId,
+            @PathVariable Long reviewId,
+            Model model
+    ) {
+        Review review = reviewService.findById(reviewId);
+
         model.addAttribute("review", review);
         model.addAttribute("itemId", itemId);
         model.addAttribute("member", loginMember);
@@ -62,9 +58,10 @@ public class ReviewController {
     }
 
     @GetMapping("/add")
-    public String addForm(@PathVariable Long itemId,
-                          @Login Member loginMember,
-                          Model model) {
+    public String addForm(
+            @PathVariable Long itemId,
+            Model model
+    ) {
         model.addAttribute("reviewForm", new ReviewForm());
         model.addAttribute("itemId", itemId);
         model.addAttribute("isEdit", false);
@@ -73,31 +70,42 @@ public class ReviewController {
     }
 
     @PostMapping("/add")
-    public String add(@PathVariable Long itemId,
-                      @Valid @ModelAttribute("reviewForm") ReviewForm form,
-                      BindingResult bindingResult,
-                      @Login Member loginMember,
-                      Model model) {
+    public String add(
+            @Login Member loginMember,
+            @PathVariable Long itemId,
+            @Valid @ModelAttribute("reviewForm") ReviewForm form,
+            BindingResult bindingResult,
+            Model model
+    ) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("itemId", itemId);
+
             return "review/form";
         }
 
-        Long reviewId = reviewService.save(itemId, loginMember, form.getTitle(), form.getContent());
+        Long reviewId = reviewService.save(
+                itemId,
+                loginMember,
+                form.getTitle(),
+                form.getContent()
+        );
 
         return "redirect:/shop/item/" + itemId + "/review/" + reviewId;
     }
 
     @GetMapping("/{reviewId}/edit")
-    public String editForm(@PathVariable Long itemId,
-                           @PathVariable Long reviewId,
-                           @Login Member loginMember,
-                           Model model) {
-        Review review = reviewService.findOne(reviewId);
+    public String editForm(
+            @Login Member loginMember,
+            @PathVariable Long itemId,
+            @PathVariable Long reviewId,
+            Model model
+    ) {
+        Review review = reviewService.findById(reviewId);
 
         if (!isOwner(review, loginMember)) {
             log.warn("리뷰 수정 시도 차단 ID={}, 리뷰={}",
                     loginMember == null ? null : loginMember.getId(), review.getId());
+
             return "redirect:/shop/item/" + itemId + "/review/" + reviewId;
         }
 
@@ -114,42 +122,63 @@ public class ReviewController {
     }
 
     @PostMapping("/{reviewId}/edit")
-    public String edit(@PathVariable Long itemId,
-                       @PathVariable Long reviewId,
-                       @Login Member loginMember,
-                       @Valid @ModelAttribute ReviewForm form,
-                       BindingResult bindingResult,
-                       Model model) throws IOException {
+    public String edit(
+            @Login Member loginMember,
+            @PathVariable Long itemId,
+            @PathVariable Long reviewId,
+            @Valid @ModelAttribute ReviewForm form,
+            BindingResult bindingResult,
+            Model model
+    ) throws IOException {
         if (bindingResult.hasErrors()) {
             model.addAttribute("itemId", itemId);
             return "review/form";
         }
 
-        Review findReview = reviewService.findOne(reviewId);
+        Review findReview = reviewService.findById(reviewId);
         if (!isOwner(findReview, loginMember)) {
             log.warn("리뷰 수정 시도 차단 ID={}, 리뷰={}",
                     loginMember == null ? null : loginMember.getId(), findReview.getId());
+
             return "redirect:/shop/item/" + itemId + "/review/" + reviewId;
         }
 
-        reviewService.update(reviewId, form.getTitle(), form.getContent());
+        reviewService.update(
+                reviewId,
+                form.getTitle(),
+                form.getContent()
+        );
 
         return "redirect:/shop/item/" + itemId + "/review/" + reviewId;
     }
 
     @PostMapping("/{reviewId}/delete")
-    public String delete(@PathVariable Long itemId,
-                         @PathVariable Long reviewId,
-                         @Login Member loginMember) {
-        Review findReview = reviewService.findOne(reviewId);
+    public String delete(
+            @Login Member loginMember,
+            @PathVariable Long itemId,
+            @PathVariable Long reviewId
+    ) {
+        Review findReview = reviewService.findById(reviewId);
+
         if (!isOwner(findReview, loginMember) && !isAdmin(loginMember)) {
             log.warn("리뷰 삭제 시도 차단 ID={}, 리뷰={}",
                     loginMember == null ? null : loginMember.getId(), findReview.getId());
+
             return "redirect:/shop/item/" + itemId + "/review/" + reviewId;
         }
 
         reviewService.delete(reviewId);
 
         return "redirect:/shop/item/" + itemId + "/review";
+    }
+
+    private boolean isOwner(Review review, Member loginMember) {
+        if (loginMember == null)
+            return false;
+        return review.getMember().getId().equals(loginMember.getId());
+    }
+
+    private boolean isAdmin(Member loginMember) {
+        return loginMember != null && loginMember.getMemberType() == MemberType.ADMIN;
     }
 }

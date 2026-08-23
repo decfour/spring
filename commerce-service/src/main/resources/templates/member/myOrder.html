@@ -219,16 +219,13 @@
 
     <div class="order-section">
 
-        <div th:if="${orders == null or orders.isEmpty()}"
-             class="order-empty">
+        <div th:if="${orders == null or orders.isEmpty()}" class="order-empty">
             주문 내역이 없습니다
         </div>
 
-        <div th:if="${orders != null and !orders.isEmpty()}"
-             class="order-list">
+        <div th:if="${orders != null and !orders.isEmpty()}" class="order-list">
 
-            <div th:each="order : ${orders}"
-                 class="order-card">
+            <div th:each="order : ${orders}" class="order-card">
 
                 <div class="order-info">
 
@@ -238,10 +235,10 @@
                     </span>
 
                         <span th:if="${order.orderItems.size() > 1}"
-                              th:text="' 외 ' + (order.orderItems.size() - 1) + '건'"
+                              th:text="${'외 ' + (order.orderItems.size() - 1) + '건'}"
                               class="order-count">
-                        외 1건
-                    </span>
+                            외 1건
+                        </span>
                     </div>
 
                     <div class="order-meta">

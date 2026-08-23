@@ -15,8 +15,8 @@ public class FileController {
     private final FileStore fileStore;
 
     @ResponseBody
-    @GetMapping("/images/{filename}")
-    public Resource downloadImage(@PathVariable String filename) {
-        return new FileSystemResource(fileStore.getFullPath(filename));
+    @GetMapping("/images/{fileName}")
+    public Resource downloadImage(@PathVariable String fileName) {
+        return new FileSystemResource(fileStore.getFullPath(fileName));
     }
 }

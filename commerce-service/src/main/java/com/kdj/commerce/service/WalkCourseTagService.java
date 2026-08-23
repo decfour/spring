@@ -14,12 +14,12 @@ public class WalkCourseTagService {
     private final WalkCourseTagRepository walkCourseTagRepository;
     private final WalkCourseRepository walkCourseRepository;
 
-    public List<WalkCourseTag> findTagsByCourseId(Long courseId) {
+    public List<WalkCourseTag> findByCourseId(Long courseId) {
         return walkCourseTagRepository.findByWalkCourseId(courseId);
     }
 
     @Transactional
-    public void addTagToCourse(Long courseId, WalkTag tag) {
+    public void create(Long courseId, WalkTag tag) {
         if (walkCourseTagRepository.existsByWalkCourseIdAndTag(courseId, tag)) {
             throw new IllegalArgumentException("이미 등록된 태그입니다.");
         }

@@ -9,10 +9,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+
+    public Optional<Member> findById(long id) {
+        return memberRepository.findById(id);
+    }
+
+    public Member findByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이메일의 회원이 존재하지 않습니다."));
+    }
 
     @Transactional
     public void signUp(Member member) {
@@ -27,18 +36,9 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public Member login(String loginId, String loginPassword) {
+    public Member signIn(String loginId, String loginPassword) {
         return memberRepository.findByLoginId(loginId)
                 .filter(m -> m.getLoginPassword().equals(loginPassword))
                 .orElse(null);
-    }
-
-    public Optional<Member> findOne(long id) {
-        return memberRepository.findById(id);
-    }
-
-    public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException("해당 이메일의 회원이 존재하지 않습니다."));
     }
 }

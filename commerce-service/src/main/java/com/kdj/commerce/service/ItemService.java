@@ -21,9 +21,17 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final FileStore fileStore;
 
-    public Item findOne(Long id) {
+    public Item findById(Long id) {
         return itemRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
+    }
+
+    public Page<Item> findByCreatedBy(Pageable pageable, Long id) {
+        return itemRepository.findByCreatedBy(pageable, id);
+    }
+
+    public Page<Item> findActive(Pageable pageable) {
+        return itemRepository.findByDeletedFalse(pageable);
     }
 
     public List<Item> findAll() {
@@ -46,7 +54,7 @@ public class ItemService {
                         ? null
                         : imageFile.getOriginalFilename();
 
-        Item item = Item.createItem(
+        Item item = Item.create(
                 form.getName(),
                 form.getPrice(),
                 form.getStock(),
@@ -100,6 +108,7 @@ public class ItemService {
     public void delete(Long id) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
+
         item.delete();
     }
 
@@ -107,14 +116,7 @@ public class ItemService {
     public void restore(Long id) {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
+
         item.restore();
-    }
-
-    public Page<Item> findByCreatedBy(Pageable pageable, Long id) {
-        return itemRepository.findByCreatedBy(pageable, id);
-    }
-
-    public Page<Item> findActive(Pageable pageable) {
-        return itemRepository.findByDeletedFalse(pageable);
     }
 }

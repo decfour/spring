@@ -18,36 +18,35 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @Controller
 @RequestMapping("/notice")
 @RequiredArgsConstructor
-@Slf4j
 public class NoticeController {
     private final NoticeService noticeService;
 
-    private boolean isAdmin(Member loginMember) {
-        return loginMember != null && loginMember.getMemberType() == MemberType.ADMIN;
-    }
-
     @GetMapping
-    public String list(@Login Member loginMember,
-                       @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                       Model model) {
+    public String list(
+            @Login Member loginMember,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            Model model
+    ) {
         Page<Notice> notices = noticeService.findAll(pageable);
-        model.addAttribute("notices", notices);
 
-        if (loginMember != null) {
-            model.addAttribute("member", loginMember);
-        }
+        model.addAttribute("member", loginMember);
+        model.addAttribute("notices", notices);
 
         return "notice/list";
     }
 
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id,
-                         @Login Member loginMember,
-                         Model model) {
-        Notice notice = noticeService.findOne(id);
+    public String detail(
+            @Login Member loginMember,
+            @PathVariable Long id,
+            Model model
+    ) {
+        Notice notice = noticeService.findById(id);
+
         model.addAttribute("notice", notice);
         model.addAttribute("member", loginMember);
 
@@ -55,12 +54,16 @@ public class NoticeController {
     }
 
     @GetMapping("/add")
-    public String addForm(@Login Member loginMember,
-                          Model model) {
+    public String addForm(
+            @Login Member loginMember,
+            Model model
+    ) {
         if (!isAdmin(loginMember)) {
-            log.warn("일반 사용자의 공지사항 작성 시도 차단");
+            log.warn("공지사항 작성 권한 없음");
+
             return "redirect:/notice";
         }
+
         model.addAttribute("noticeForm", new NoticeForm());
         model.addAttribute("isEdit", false);
 
@@ -68,11 +71,14 @@ public class NoticeController {
     }
 
     @PostMapping("/add")
-    public String add(@Login Member loginMember,
-                      @Valid @ModelAttribute("noticeForm") NoticeForm form,
-                      BindingResult bindingResult) {
+    public String add(
+            @Login Member loginMember,
+            @Valid @ModelAttribute("noticeForm") NoticeForm form,
+            BindingResult bindingResult
+    ) {
         if (!isAdmin(loginMember)) {
-            log.warn("일반 사용자의 공지사항 작성 시도 차단");
+            log.warn("공지사항 작성 권한 없음");
+
             return "redirect:/notice";
         }
 
@@ -86,17 +92,20 @@ public class NoticeController {
     }
 
     @GetMapping("/{id}/edit")
-    public String editForm(@Login Member loginMember,
-                           @PathVariable Long id,
-                           Model model) {
+    public String editForm(
+            @Login Member loginMember,
+            @PathVariable Long id,
+            Model model
+    ) {
         if (!isAdmin(loginMember)) {
-            log.warn("일반 사용자의 공지사항 수정 시도 차단");
+            log.warn("공지사항 수정 권한 없음");
+
             return "redirect:/notice";
         }
 
-        Notice notice = noticeService.findOne(id);
-        NoticeForm form = new NoticeForm();
+        Notice notice = noticeService.findById(id);
 
+        NoticeForm form = new NoticeForm();
         form.setId(notice.getId());
         form.setTitle(notice.getTitle());
         form.setContent(notice.getContent());
@@ -108,17 +117,22 @@ public class NoticeController {
     }
 
     @PostMapping("/{id}/edit")
-    public String edit(@PathVariable Long id,
-                       @Login Member loginMember,
-                       @Valid @ModelAttribute("noticeForm") NoticeForm form,
-                       BindingResult bindingResult) {
+    public String edit(
+            @Login Member loginMember,
+            @PathVariable Long id,
+            @Valid @ModelAttribute("noticeForm") NoticeForm form,
+            BindingResult bindingResult,
+            Model model
+    ) {
         if (!isAdmin(loginMember)) {
-            log.warn("일반 사용자의 공지사항 수정 시도 차단");
+            log.warn("공지사항 수정 권한 없음");
+
             return "redirect:/notice";
         }
 
         if (bindingResult.hasErrors()) {
-            log.info("errors={}", bindingResult);
+            model.addAttribute("isEdit", true);
+
             return "notice/form";
         }
 
@@ -128,15 +142,23 @@ public class NoticeController {
     }
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable Long id,
-                         @Login Member loginMember) {
+    public String delete(
+            @Login Member loginMember,
+            @PathVariable Long id
+    ) {
         if (!isAdmin(loginMember)) {
-            log.warn("일반 사용자의 공지사항 삭제 시도 차단");
+            log.warn("공지사항 삭제 권한 없음");
+
             return "redirect:/notice";
         }
 
         noticeService.delete(id);
 
         return "redirect:/notice";
+    }
+
+    private boolean isAdmin(Member loginMember) {
+        return loginMember != null
+                && loginMember.getMemberType() == MemberType.ADMIN;
     }
 }

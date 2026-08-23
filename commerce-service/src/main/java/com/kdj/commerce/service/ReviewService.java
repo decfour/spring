@@ -20,7 +20,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ItemRepository itemRepository;
 
-    public Review findOne(Long id) {
+    public Review findById(Long id) {
         return reviewRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + id));
     }

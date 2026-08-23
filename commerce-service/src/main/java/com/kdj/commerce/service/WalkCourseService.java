@@ -21,6 +21,39 @@ public class WalkCourseService {
     private final KakaoRouteService kakaoRouteService;
     private final WalkCourseLikeRepository walkCourseLikeRepository;
 
+    public WalkCourse findById(long id) {
+        WalkCourse walkCourse = walkCourseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("찾을 수 없습니다"));
+        return walkCourse;
+    }
+
+    public Page<WalkCourse> findByMemberId(Pageable pageable, Long id) {
+        return walkCourseRepository.findByMemberIdOrderByCreatedAtDesc(id, pageable);
+    }
+
+    public Page<WalkCourseResponse> findNearbyCourses(Pageable pageable,
+                                                      Double latitude,
+                                                      Double longitude) {
+        // 바운싱 박스 (1km)
+        double latDelta = 1.0 / 111.0;
+        double lngDelta = 1.0 / (111.0 * Math.cos(Math.toRadians(latitude)));
+
+        double minLat = latitude - latDelta;
+        double maxLat = latitude + latDelta;
+        double minLng = longitude - lngDelta;
+        double maxLng = longitude + lngDelta;
+
+        return walkCourseRepository.findNearbyCourses(
+                        latitude,
+                        longitude,
+                        minLat,
+                        maxLat,
+                        minLng,
+                        maxLng,
+                        pageable)
+                .map(WalkCourseResponse::from);
+    }
+
     @Transactional
     public Long save(
             Member member,
@@ -68,44 +101,8 @@ public class WalkCourseService {
         walkCourseRepository.delete(walkCourse);
     }
 
-    public WalkCourse findOne(long id) {
-        WalkCourse walkCourse = walkCourseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("찾을 수 없습니다"));
-        return walkCourse;
-    }
-
-    public Page<WalkCourseResponse> findNearbyCourses(Pageable pageable,
-                                                      Double latitude,
-                                                      Double longitude) {
-        // 바운싱 박스 (1km)
-        double latDelta = 1.0 / 111.0;
-        double lngDelta = 1.0 / (111.0 * Math.cos(Math.toRadians(latitude)));
-
-        double minLat = latitude - latDelta;
-        double maxLat = latitude + latDelta;
-        double minLng = longitude - lngDelta;
-        double maxLng = longitude + lngDelta;
-
-        return walkCourseRepository.findNearbyCourses(
-                        latitude,
-                        longitude,
-                        minLat,
-                        maxLat,
-                        minLng,
-                        maxLng,
-                        pageable)
-                .map(WalkCourseResponse::from);
-    }
-
-    public WalkRouteResult findRoute(Double startLat,
-                                     Double startLng,
-                                     Double endLat,
-                                     Double endLng) {
-        return kakaoRouteService.findWalkRoute(startLat, startLng, endLat, endLng);
-    }
-
     @Transactional
-    public int like(Long courseId, Member member) {
+    public int increaseLikeCount(Long courseId, Member member) {
          WalkCourse walkCourse = walkCourseRepository.findById(courseId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다 id=" + courseId));
 
@@ -122,7 +119,10 @@ public class WalkCourseService {
                 .getLikeCount();
     }
 
-    public Page<WalkCourse> findByMemberId(Pageable pageable, Long id) {
-        return walkCourseRepository.findByMemberIdOrderByCreatedAtDesc(id, pageable);
+    public WalkRouteResult findRoute(Double startLat,
+                                     Double startLng,
+                                     Double endLat,
+                                     Double endLng) {
+        return kakaoRouteService.findWalkRoute(startLat, startLng, endLat, endLng);
     }
 }

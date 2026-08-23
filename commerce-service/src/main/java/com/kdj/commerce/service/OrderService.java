@@ -23,21 +23,27 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OrderService {
+    private final CartService cartService;
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
-    private final CartService cartService;
 
     @Transactional
-    public Long order(Long memberId, Long itemId, int count) {
+    public Long order(
+            Long memberId,
+            Long itemId,
+            int count,
+            String receiverName,
+            String receiverAddress
+    ) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
-        // 동시 주문 시 재고 정합성을 위해 비관적 락
+
         Item item = itemRepository.findByIdWithLock(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
         OrderItem orderItem = OrderItem.create(item, item.getPrice(), count);
-        Order order = Order.create(member, orderItem);
+        Order order = Order.create(member, receiverName, receiverAddress, orderItem);
         orderRepository.save(order);
 
         log.info("주문 생성 orderId={}, memberId={}, itemId={}, quantity={}",
@@ -47,26 +53,38 @@ public class OrderService {
     }
 
     @Transactional
-    public Long orderCart(Long memberId, List<CartItem> cartItems) {
+    public Long orderCart(
+            Long memberId,
+            List<CartItem> cartItems,
+            String receiverName,
+            String receiverAddress
+    ) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         List<OrderItem> orderItems = new ArrayList<>();
+
         for (CartItem cartItem : cartItems) {
-            // 동시 주문 시 재고 정합성을 위해 비관적 락
-            Item lockItem = itemRepository.findByIdWithLock(cartItem.getItem().getId())
+            Item item = itemRepository.findByIdWithLock(cartItem.getItem().getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않거나 품절된 상품입니다."));
+
             OrderItem orderItem = OrderItem.create(
-                    lockItem,
-                    lockItem.getPrice(),
+                    item,
+                    item.getPrice(),
                     cartItem.getCount()
             );
+
             orderItems.add(orderItem);
         }
 
-        Order order = Order.create(member, orderItems.toArray(new OrderItem[0]));
+        Order order = Order.create(
+                member, receiverName,
+                receiverAddress,
+                orderItems.toArray(new OrderItem[0])
+        );
+
         orderRepository.save(order);
-        cartService.clear(memberId);
+        cartService.clearItem(memberId);
 
         log.info("주문 생성(장바구니) orderId={}, memberId={}, itemCount={}",
                 order.getId(), memberId, orderItems.size());
@@ -81,7 +99,7 @@ public class OrderService {
 
         order.cancel();
 
-        log.info("주문 취소 orderId={}, memberId={}", orderId, memberId);
+        log.info("주문 취소 orderId={}", orderId);
     }
 
     public int getTotalPrice(Long id) {
@@ -91,7 +109,8 @@ public class OrderService {
         return order.getTotalPrice();
     }
 
-    public List<Order> findAll() {return orderRepository.findAll();}
+    public List<Order> findAll() {
+        return orderRepository.findAll();}
 
     // Fetch Join으로 회원 정보를 함께 조회하여 N+1 방지
     public Page<Order> findByMemberId(Pageable pageable, Long id) {

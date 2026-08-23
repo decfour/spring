@@ -70,7 +70,7 @@ public class Item {
         this.stock = restStock;
     }
 
-    public static Item createItem(
+    public static Item create(
             String name,
             Integer price,
             Integer stock,

@@ -3,13 +3,11 @@ package com.kdj.commerce.web.controller;
 import com.kdj.commerce.domain.cart.CartItem;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.member.Member;
-import com.kdj.commerce.exception.NotEnoughStockException;
 import com.kdj.commerce.service.CartService;
 import com.kdj.commerce.service.ItemService;
 import com.kdj.commerce.service.OrderService;
 import com.kdj.commerce.web.argumentresolver.Login;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import com.kdj.commerce.web.dto.order.OrderItemForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,37 +25,57 @@ public class OrderController {
     private final ItemService itemService;
 
     @PostMapping("/one")
-    public String orderOne(@Login Member loginMember,
-                           @RequestParam("itemId") Long itemId,
-                           @RequestParam("count") int count,
-                           Model model) {
-        Item item = itemService.findOne(itemId);
+    public String orderOne(
+            @RequestParam("itemId") Long itemId,
+            @RequestParam("itemCount") int itemCount,
+            Model model
+    ) {
+        Item item = itemService.findById(itemId);
 
-        List<OrderItemDto> orderItems = new ArrayList<>();
-        orderItems.add(new OrderItemDto(item.getName(), item.getPrice(), count));
+        List<OrderItemForm> orderItems = new ArrayList<>();
+        orderItems.add(
+                new OrderItemForm(
+                        item.getName(),
+                        item.getPrice(),
+                        itemCount
+                )
+        );
 
         model.addAttribute("orderItems", orderItems);
-        model.addAttribute("totalPrice", item.getPrice() * count);
+        model.addAttribute("totalPrice", item.getPrice() * itemCount);
         model.addAttribute("orderType", "ONE");
         model.addAttribute("itemId", itemId);
-        model.addAttribute("count", count);
+        model.addAttribute("count", itemCount);
 
         return "order/orderForm";
     }
 
     @PostMapping("/cart")
-    public String orderCart(@Login Member loginMember,
-                            Model model) {
-        List<CartItem> cartItems = cartService.findCartItem(loginMember.getId());
+    public String orderCart(
+            @Login Member loginMember,
+            Model model
+    ) {
+        List<CartItem> cartItems = cartService.findItem(loginMember.getId());
+
         if (cartItems.isEmpty()) {
             return "redirect:/cart";
         }
 
-        List<OrderItemDto> orderItems = new ArrayList<>();
+        List<OrderItemForm> orderItems = new ArrayList<>();
         int totalPrice = 0;
+
         for (CartItem cartItem : cartItems) {
-            orderItems.add(new OrderItemDto(cartItem.getItem().getName(), cartItem.getItem().getPrice(), cartItem.getCount()));
-            totalPrice += cartItem.getItem().getPrice() * cartItem.getCount();
+            Item item = cartItem.getItem();
+
+            orderItems.add(
+                    new OrderItemForm(
+                            item.getName(),
+                            item.getPrice(),
+                            cartItem.getCount()
+                    )
+            );
+
+            totalPrice += item.getPrice() * cartItem.getCount();
         }
 
         model.addAttribute("orderItems", orderItems);
@@ -74,47 +92,37 @@ public class OrderController {
             @RequestParam(value = "itemId", required = false) Long itemId,
             @RequestParam(value = "count", required = false) Integer count,
             @RequestParam("receiverName") String receiverName,
-            @RequestParam("address") String address) {
+            @RequestParam("receiverAddress") String receiverAddress
+    ) {
         if ("ONE".equals(orderType)) {
-            orderService.order(loginMember.getId(), itemId, count);
-        }
-        else {
-            List<CartItem> cartItems = cartService.findCartItem(loginMember.getId());
-            orderService.orderCart(loginMember.getId(), cartItems);
+            orderService.order(
+                    loginMember.getId(),
+                    itemId,
+                    count,
+                    receiverName,
+                    receiverAddress
+            );
+        } else {
+            List<CartItem> cartItems = cartService.findItem(loginMember.getId());
+
+            orderService.orderCart(
+                    loginMember.getId(),
+                    cartItems,
+                    receiverName,
+                    receiverAddress
+            );
         }
 
         return "redirect:/member/my-order";
     }
 
     @PostMapping("/{orderId}/cancel")
-    public String cancel(@Login Member loginMember,
-                         @PathVariable("orderId") Long orderId) {
+    public String cancel(
+            @Login Member loginMember,
+            @PathVariable("orderId") Long orderId
+    ) {
         orderService.cancel(loginMember.getId(), orderId);
 
         return "redirect:/member/my-order";
-    }
-
-    @ExceptionHandler(NotEnoughStockException.class)
-    public String handleNotEnoughStockException(NotEnoughStockException e, Model model) {
-        model.addAttribute("errorMessage", e.getMessage());
-
-        return "common/alertAndRedirect";
-    }
-
-    @Data
-    @AllArgsConstructor
-    static class OrderItemDto {
-        private String itemName;
-        private int orderPrice;
-        private int count;
-    }
-
-    @Data
-    static class OrderCreateRequest {
-        private String receiverName;
-        private String address;
-        private String orderType;
-        private Long itemId;
-        private Integer count;
     }
 }

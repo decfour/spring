@@ -25,12 +25,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Slf4j
 @Controller
-@RequiredArgsConstructor
 @RequestMapping("/member")
+@RequiredArgsConstructor
 public class MemberController {
     private final ReviewService reviewService;
     private final MemberService memberService;
@@ -47,8 +45,10 @@ public class MemberController {
     }
 
     @PostMapping("/register")
-    public String register(@Valid @ModelAttribute("member") registerForm form,
-                           BindingResult result) {
+    public String register(
+            @Valid @ModelAttribute("member") registerForm form,
+            BindingResult result
+    ) {
         if (result.hasErrors()) {
             return "member/registerForm";
         }
@@ -77,8 +77,10 @@ public class MemberController {
     }
 
     @GetMapping("/login")
-    public String loginForm(@RequestParam(defaultValue = "/") String redirectURL,
-                            Model model) {
+    public String loginForm(
+            @RequestParam(defaultValue = "/") String redirectURL,
+            Model model
+    ) {
         redirectURL = normalizeRedirectUrl(redirectURL);
 
         model.addAttribute("loginForm", new LoginForm());
@@ -88,16 +90,18 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @ModelAttribute LoginForm form,
-                        BindingResult result,
-                        @RequestParam(defaultValue = "/") String redirectURL,
-                        HttpServletResponse response) {
+    public String login(
+            @Valid @ModelAttribute LoginForm form,
+            BindingResult result,
+            @RequestParam(defaultValue = "/") String redirectURL,
+            HttpServletResponse response
+    ) {
         if (result.hasErrors()) {
             return "member/loginForm";
         }
         redirectURL = normalizeRedirectUrl(redirectURL);
 
-        Member loginMember = memberService.login(form.getLoginId(), form.getLoginPassword());
+        Member loginMember = memberService.signIn(form.getLoginId(), form.getLoginPassword());
 
         // 로그인 실패
         if (loginMember == null) {

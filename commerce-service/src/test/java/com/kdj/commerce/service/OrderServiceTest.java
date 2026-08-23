@@ -67,7 +67,7 @@ class OrderServiceTest {
             memberRepository.save(member);
             memberIds.add(member.getId());
         }
-        Item item = Item.createItem(
+        Item item = Item.create(
                 "우주 최강 초콜릿",
                 1000,
                 100,
@@ -95,7 +95,7 @@ class OrderServiceTest {
             executorService.submit(() -> {
                 try {
                     // 1개씩 주문 (OrderService 내 findByIdWithLock으로 비관적 락)
-                    orderService.order(memberId, itemId, 1);
+                    orderService.order(memberId, itemId, 1, "name", "address");
                 } catch (Exception e) {
                     System.out.println("주문 실패 원인: " + e.getMessage());
                 } finally {
@@ -127,7 +127,7 @@ class OrderServiceTest {
                     MemberType.USER
             );
             memberRepository.save(member);
-            Item item = Item.createItem(
+            Item item = Item.create(
                     "item" + i,
                     1000,
                     100,
@@ -141,7 +141,7 @@ class OrderServiceTest {
                     null
             );
             itemRepository.save(item);
-            orderService.order(member.getId(), item.getId(), 1);
+            orderService.order(member.getId(), item.getId(), 1, "name", "address");
         }
 
         em.flush();

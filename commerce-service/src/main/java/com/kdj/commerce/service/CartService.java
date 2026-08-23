@@ -18,16 +18,22 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
 
+    public List<CartItem> findItem(Long memberId) {
+        return cartRepository.findByMemberId(memberId)
+                .map(cart -> cartItemRepository.findAllByCartId(cart.getId()))
+                .orElse(Collections.emptyList());
+    }
+
     @Transactional
-    public void add(Long memberId, Long itemId, int count) {
+    public void addItem(Long memberId, Long itemId, int count) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다 id=" + memberId));
         Item item = itemRepository.findById(itemId)
@@ -54,24 +60,18 @@ public class CartService {
     }
 
     @Transactional
-    public void clear(Long memberId) {
-        Cart cart = cartRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("장바구니가 없습니다."));
-
-        cartItemRepository.deleteByCartId(cart.getId());
-    }
-
-    public List<CartItem> findCartItem(Long memberId) {
-        return cartRepository.findByMemberId(memberId)
-                .map(cart -> cartItemRepository.findAllByCartId(cart.getId()))
-                .orElse(Collections.emptyList());
-    }
-
-    @Transactional
-    public void deleteCartItem(Long memberId, Long cartItemId) {
+    public void deleteItem(Long memberId, Long cartItemId) {
         CartItem cartItem = cartItemRepository.findByIdAndMemberId(cartItemId, memberId)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다."));
 
         cartItemRepository.delete(cartItem);
+    }
+
+    @Transactional
+    public void clearItem(Long memberId) {
+        Cart cart = cartRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("장바구니가 없습니다."));
+
+        cartItemRepository.deleteByCartId(cart.getId());
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class NoticeService {
     private final NoticeRepository noticeRepository;
 
-    public Notice findOne(Long id) {
+    public Notice findById(Long id) {
         return noticeRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 ID=" + id));
     }

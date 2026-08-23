@@ -350,16 +350,16 @@
                 <input type="hidden" name="itemId" th:value="${item.id}" />
                 <span class="form-label-fixed">즉시 결제</span>
                 <div class="d-flex align-items-center gap-2">
-                    <input type="number" name="count" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
+                    <input type="number" name="itemCount" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
                     <button type="submit" class="btn-apple-dark">결제</button>
                 </div>
             </form>
 
-            <form th:action="@{/cart/add}" method="post" class="order-row">
+            <form th:action="@{/cart/item/add}" method="post" class="order-row">
                 <input type="hidden" name="itemId" th:value="${item.id}" />
                 <span class="form-label-fixed">장바구니</span>
                 <div class="d-flex align-items-center gap-2">
-                    <input type="number" name="count" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
+                    <input type="number" name="itemCount" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
                     <button type="submit" class="btn-apple-outline">담기</button>
                 </div>
             </form>

@@ -16,6 +16,11 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
 
+    public Post findById(Long id) {
+        return postRepository.findByIdWithWriter(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + id));
+    }
+
     // Fetch (Post + Member)
     public Page<Post> findAll(Pageable pageable) {
         return postRepository.findAllWithWriter(pageable);
@@ -24,11 +29,6 @@ public class PostService {
     // Fetch (Post + Member)
     public Page<Post> findHit(Pageable pageable) {
         return postRepository.findHitWithWriter(20, pageable);
-    }
-
-    public Post findOne(Long id) {
-        return postRepository.findByIdWithWriter(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + id));
     }
 
     @Transactional
@@ -65,7 +65,7 @@ public class PostService {
     }
 
     @Transactional
-    public void like(Long postId, Member member) {
+    public void increaseLikeCount(Long postId, Member member) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다 id=" + postId));
 

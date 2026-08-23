@@ -34,13 +34,25 @@ public class WalkController {
         return "walk/main";
     }
 
-    @GetMapping("/course/{id}")
-    public String detail(@Login Member loginMember,
-                         @PathVariable Long id,
-                         Model model) {
-        WalkCourse walkCourse = walkCourseService.findOne(id);
+    @GetMapping("/course/nearby")
+    @ResponseBody
+    public Page<WalkCourseResponse> nearbyCourses(
+            @PageableDefault(size = 3) Pageable pageable,
+            @RequestParam Double lat,
+            @RequestParam Double lng
+    ) {
+        return walkCourseService.findNearbyCourses(pageable, lat, lng);
+    }
 
-        List<WalkCourseTagForm> tags = walkCourseTagService.findTagsByCourseId(id).stream()
+    @GetMapping("/course/{id}")
+    public String detail(
+            @Login Member loginMember,
+            @PathVariable Long id,
+            Model model
+    ) {
+        WalkCourse walkCourse = walkCourseService.findById(id);
+
+        List<WalkCourseTagForm> tags = walkCourseTagService.findByCourseId(id).stream()
                 .map(courseTag -> new WalkCourseTagForm(courseTag.getTag()))
                 .toList();
 
@@ -51,36 +63,22 @@ public class WalkController {
         return "walk/detail";
     }
 
-    @PostMapping("/course/{id}/tag")
-    @ResponseBody
-    public ResponseEntity<?> addTag(@PathVariable Long id,
-                                    @RequestBody Map<String, String> request) {
-        try {
-            String tagCode = request.get("tag");
-            WalkTag tag = WalkTag.valueOf(tagCode);
-
-            walkCourseTagService.addTagToCourse(id, tag);
-
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @GetMapping("/course/add")
     public String addForm() {
         return "walk/form";
     }
 
     @PostMapping
-    public String add(@Login Member loginMember,
-                      @Valid @ModelAttribute WalkCourseForm form,
-                      BindingResult result) {
+    public String add(
+            @Login Member loginMember,
+            @Valid @ModelAttribute WalkCourseForm form,
+            BindingResult result
+    ) {
         if (result.hasErrors()) {
             return "walk/form";
         }
 
-        Long courseId = walkCourseService.save(
+        walkCourseService.save(
                 loginMember,
                 form.getName(),
                 form.getReview(),
@@ -97,9 +95,12 @@ public class WalkController {
     }
 
     @PostMapping("/course/{id}/delete")
-    public String delete(@Login Member loginMember,
-                         @PathVariable Long id) {
-        WalkCourse walkCourse = walkCourseService.findOne(id);
+    public String delete(
+            @Login Member loginMember,
+            @PathVariable Long id
+    ) {
+        WalkCourse walkCourse = walkCourseService.findById(id);
+
         if (!isOwner(walkCourse, loginMember) && !isAdmin(loginMember)) {
             return "redirect:/walk/course/" + id;
         }
@@ -120,20 +121,31 @@ public class WalkController {
         );
     }
 
-    @GetMapping("/course/nearby")
-    @ResponseBody
-    public Page<WalkCourseResponse> nearbyCourses(
-            @PageableDefault(size = 3) Pageable pageable,
-            @RequestParam Double lat,
-            @RequestParam Double lng) {
-        return walkCourseService.findNearbyCourses(pageable, lat, lng);
-    }
-
     @PostMapping("/course/{id}/like")
     @ResponseBody
-    public int like(@PathVariable Long id,
-                       @Login Member loginMember) {
-        return walkCourseService.like(id, loginMember);
+    public int like(
+            @Login Member loginMember,
+            @PathVariable Long id
+    ) {
+        return walkCourseService.increaseLikeCount(id, loginMember);
+    }
+
+    @PostMapping("/course/{id}/tag")
+    @ResponseBody
+    public ResponseEntity<?> addTag(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> request
+    ) {
+        try {
+            String tagCode = request.get("tag");
+            WalkTag tag = WalkTag.valueOf(tagCode);
+
+            walkCourseTagService.create(id, tag);
+
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     private boolean isOwner(WalkCourse walkCourse, Member loginMember) {

@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
     private String serverErrorPage(Model model, String message) {
         model.addAttribute("errorMessage", message);
 
-        return "error/4xx";
+        return "error/5xx";
     }
 }
 

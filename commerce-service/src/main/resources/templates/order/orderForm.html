@@ -155,17 +155,26 @@
         <input type="hidden" name="count" th:value="${count}">
 
         <div class="sub-section-title">주문 상품 정보</div>
+
         <div th:each="orderItem : ${orderItems}" class="item-card">
             <div class="item-row">
                 <div>
                     <span th:text="${orderItem.itemName}" class="fw-semibold">상품명</span>
-                    <span th:text="' x ' + ${orderItem.count} + '개'" style="color: #86868b; font-size: 0.88rem;">x 1개</span>
+                    <span th:text="' x ' + ${orderItem.count} + '개'"
+                          style="color: #86868b; font-size: 0.88rem;">
+                        x 1개
+                    </span>
                 </div>
-                <div th:text="${#numbers.formatInteger(orderItem.orderPrice * orderItem.count, 0, 'COMMA')} + '원'" class="fw-bold">0원</div>
+
+                <div th:text="${#numbers.formatInteger(orderItem.orderPrice * orderItem.count, 0, 'COMMA')} + '원'"
+                     class="fw-bold">
+                    0원
+                </div>
             </div>
         </div>
 
         <div class="sub-section-title">배송지 정보</div>
+
         <div class="mb-4">
             <label for="receiverName" class="form-label-custom">수령인</label>
             <input type="text"
@@ -177,10 +186,10 @@
         </div>
 
         <div class="mb-4">
-            <label for="address" class="form-label-custom">배송 주소</label>
+            <label for="receiverAddress" class="form-label-custom">배송 주소</label>
             <input type="text"
-                   id="address"
-                   name="address"
+                   id="receiverAddress"
+                   name="receiverAddress"
                    class="form-control-apple"
                    placeholder="상세 주소를 입력해 주세요."
                    required>
@@ -188,14 +197,21 @@
 
         <div class="summary-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <span style="color: #86868b; font-size: 0.95rem; font-weight: 500;">최종 결제 금액</span>
+                <span style="color: #86868b; font-size: 0.95rem; font-weight: 500;">
+                    최종 결제 금액
+                </span>
+
                 <span style="font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px;"
-                      th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원'">0원</span>
+                      th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원'">
+                    0원
+                </span>
             </div>
+
             <div class="d-flex justify-content-end gap-2 mt-4">
                 <a th:href="@{/shop}" class="btn-apple-outline">
                     취소
                 </a>
+
                 <button type="submit" class="btn-apple-dark">
                     주문
                 </button>
