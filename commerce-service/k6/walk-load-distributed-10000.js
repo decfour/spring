@@ -1,15 +1,16 @@
+// 10,000개 코스 분산 환경 기반 주변 목록 조회 부하 테스트
+
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-// 임시 코스 생성 → 주변 코스 조회 부하 테스트 → 생성 코스 삭제를 한 번에 수행한다.
-// 생성 데이터는 RUN_ID 접두어로 식별되며, 기존 데이터에는 영향을 주지 않는다.
+// 임시 코스 생성 → 주변 코스 조회 부하 테스트 → 생성 코스 삭제
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080';
-const DATASET_SIZE = Number(__ENV.DATASET_SIZE || 1000);
+const DATASET_SIZE = Number(__ENV.DATASET_SIZE || 10000);
 const MAX_VUS = Number(__ENV.MAX_VUS || 500);
 const RUN_ID = __ENV.RUN_ID || `walk-scale-${Date.now()}`;
 const QUICK = __ENV.QUICK === 'true';
-const CENTER_LAT = 0;
-const CENTER_LNG = 0;
+const CENTER_LAT = 37.5665;
+const CENTER_LNG = 126.9780;
 const BATCH_SIZE = 20;
 
 const stages = QUICK
@@ -68,9 +69,9 @@ function authParams(token) {
 }
 
 function courseBody(index) {
-  // 중심점에서 약 300m 이내에 분포시켜 nearby 쿼리의 정렬 대상을 늘린다.
-  const lat = CENTER_LAT + ((index % 40) - 20) * 0.0001;
-  const lng = CENTER_LNG + ((Math.floor(index / 40) % 25) - 12) * 0.0001;
+  // 서울 전역에 코스를 분산시킨다.
+  const lat = 37.45 + ((index % 100) / 99) * 0.25;
+  const lng = 126.80 + (Math.floor(index / 100) / 99) * 0.40;
 
   const form = {
     name: `${RUN_ID}-${index}`,
@@ -85,7 +86,9 @@ function courseBody(index) {
   };
 
   return Object.entries(form)
-    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+    .map(([key, value]) =>
+      `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+    )
     .join('&');
 }
 
