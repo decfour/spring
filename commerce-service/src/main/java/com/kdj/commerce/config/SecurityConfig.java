@@ -48,6 +48,9 @@ public class SecurityConfig {
                         ).authenticated()
                         .requestMatchers(
                                 "/",
+                                "/actuator/health",
+                                "/actuator/metrics",
+                                "/actuator/prometheus",
 
                                 "/member/login",
                                 "/member/register",
