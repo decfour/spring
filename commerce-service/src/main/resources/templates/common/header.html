@@ -28,8 +28,8 @@
     <div class="global-nav-menu-set">
 
         <span th:if="${#authentication == null or #authentication.principal == 'anonymousUser'}" class="global-nav-link-group">
-            <a href="/member/login" class="global-nav-link">Login</a>
-            <a href="/member/register" class="global-nav-link">Register</a>
+            <a href="/member/login" class="global-nav-link">Sign In</a>
+            <a href="/member/register" class="global-nav-link">Sign On</a>
         </span>
 
         <span th:if="${#authentication != null and #authentication.principal != 'anonymousUser'}" class="global-nav-link-group">
@@ -40,7 +40,7 @@
             <a href="/cart" class="global-nav-link">Cart</a>
 
             <form th:action="@{/member/logout}" method="post" style="display: inline; margin: 0;">
-                <button type="submit" class="btn-nav-logout-link">Logout</button>
+                <button type="submit" class="btn-nav-logout-link">Sign Out</button>
             </form>
         </span>
 

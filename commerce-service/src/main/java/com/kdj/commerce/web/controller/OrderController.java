@@ -24,7 +24,7 @@ public class OrderController {
     private final CartService cartService;
     private final ItemService itemService;
 
-    @PostMapping("/one")
+    @GetMapping("/one")
     public String orderOne(
             @RequestParam("itemId") Long itemId,
             @RequestParam("itemCount") int itemCount,
@@ -50,7 +50,7 @@ public class OrderController {
         return "order/orderForm";
     }
 
-    @PostMapping("/cart")
+    @GetMapping("/cart")
     public String orderCart(
             @Login Member loginMember,
             Model model

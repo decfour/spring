@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Configuration
 @EnableWebSecurity
@@ -84,9 +85,22 @@ public class SecurityConfig {
 
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
-                            System.out.println("비로그인 제한 : " + request.getRequestURI());
+                            String redirectURL = request.getRequestURI();
 
-                            response.sendRedirect("/member/login");
+                            if (request.getQueryString() != null) {
+                                redirectURL += "?" + request.getQueryString();
+                            }
+
+                            String loginUrl = UriComponentsBuilder
+                                    .fromPath("/member/login")
+                                    .queryParam("redirectURL", redirectURL)
+                                    .build()
+                                    .encode()
+                                    .toUriString();
+
+                            if (!response.isCommitted()) {
+                                response.sendRedirect(loginUrl);
+                            }
                         })
                 )
 

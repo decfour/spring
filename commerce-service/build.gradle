@@ -26,6 +26,9 @@ dependencies {
     implementation platform('org.springframework.boot:spring-boot-dependencies:3.2.5')
     annotationProcessor platform('org.springframework.boot:spring-boot-dependencies:3.2.5')
 
+    // DevTool
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
     // Web
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'

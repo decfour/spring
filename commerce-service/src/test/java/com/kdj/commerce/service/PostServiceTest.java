@@ -72,7 +72,7 @@ class PostServiceTest {
 
         latch.await();
 
-        int result = postService.findOne(postId).getViewCount();
+        int result = postService.findById(postId).getViewCount();
         System.out.println("최종 조회수= " + result);
         Assertions.assertThat(result).isEqualTo(1000);
     }

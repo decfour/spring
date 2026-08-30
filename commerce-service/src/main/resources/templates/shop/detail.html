@@ -346,11 +346,17 @@
 
     <div th:if="${item.open}" class="order-card">
         <div th:if="${item.stock > 0}" class="d-flex flex-column gap-3">
-            <form th:action="@{/order/one}" method="post" class="order-row">
+            <form th:action="@{/order/one}" method="get" class="order-row">
                 <input type="hidden" name="itemId" th:value="${item.id}" />
                 <span class="form-label-fixed">즉시 결제</span>
                 <div class="d-flex align-items-center gap-2">
-                    <input type="number" name="itemCount" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
+                    <input type="number"
+                           name="itemCount"
+                           min="1"
+                           th:max="${item.stock}"
+                           value="1"
+                           class="input-quantity"
+                           required />
                     <button type="submit" class="btn-apple-dark">결제</button>
                 </div>
             </form>
