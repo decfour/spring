@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.5'
+    id 'io.spring.dependency-management' version '1.1.4'
 }
 
 group = 'com.kdj'
@@ -23,9 +24,6 @@ repositories {
 }
 
 dependencies {
-    implementation platform('org.springframework.boot:spring-boot-dependencies:3.2.5')
-    annotationProcessor platform('org.springframework.boot:spring-boot-dependencies:3.2.5')
-
     // DevTool
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
