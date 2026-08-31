@@ -1,5 +1,5 @@
 package com.kdj.commerce.web.session;
 
-public class SessionConst {
+public class SessionConstants {
     public static final String LOGIN_MEMBER = "loginMember";
 }

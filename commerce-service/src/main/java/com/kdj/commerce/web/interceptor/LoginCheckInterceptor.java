@@ -1,6 +1,6 @@
 package com.kdj.commerce.web.interceptor;
 
-import com.kdj.commerce.web.session.SessionConst;
+import com.kdj.commerce.web.session.SessionConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -18,9 +18,9 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute(SessionConst.LOGIN_MEMBER) == null) {
+        if (session == null || session.getAttribute(SessionConstants.LOGIN_MEMBER) == null) {
             log.info("미인증 사용자 요청");
-            response.sendRedirect("/member/login?redirectURL=" + requestURI);
+            response.sendRedirect("/member/sign-in?redirectURL=" + requestURI);
 
             return false;
         }

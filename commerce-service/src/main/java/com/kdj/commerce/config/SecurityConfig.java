@@ -53,8 +53,8 @@ public class SecurityConfig {
                                 "/actuator/metrics",
                                 "/actuator/prometheus",
 
-                                "/member/login",
-                                "/member/register",
+                                "/member/sign-in",
+                                "/member/sign-on",
 
                                 "/walk",
                                 "/walk/course/*",
@@ -92,7 +92,7 @@ public class SecurityConfig {
                             }
 
                             String loginUrl = UriComponentsBuilder
-                                    .fromPath("/member/login")
+                                    .fromPath("/member/sign-in")
                                     .queryParam("redirectURL", redirectURL)
                                     .build()
                                     .encode()

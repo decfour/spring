@@ -9,12 +9,12 @@ function Header() {
 
             <div className="global-nav-menu-set">
                 <span className="global-nav-link-group">
-                    <a href="http://localhost:8080/member/login" className="global-nav-link">
-                        Login
+                    <a href="http://localhost:8080/member/sign-in" className="global-nav-link">
+                        Sign In
                     </a>
 
-                    <a href="http://localhost:8080/member/regiseter" className="global-nav-link">
-                        Register
+                    <a href="http://localhost:8080/member/sign-on" className="global-nav-link">
+                        Sign On
                     </a>
                 </span>
             </div>

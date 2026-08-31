@@ -1,11 +1,10 @@
 package com.kdj.commerce.web.dto.member;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class LoginForm {
+public class SignInForm {
     @NotEmpty(message = "아이디를 입력해주세요.")
     private String loginId;
 

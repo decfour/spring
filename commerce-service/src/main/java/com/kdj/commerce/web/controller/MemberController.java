@@ -1,15 +1,15 @@
 package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.item.Item;
+import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
 import com.kdj.commerce.domain.order.Order;
 import com.kdj.commerce.domain.review.Review;
 import com.kdj.commerce.domain.walk.WalkCourse;
 import com.kdj.commerce.service.*;
 import com.kdj.commerce.web.argumentresolver.Login;
-import com.kdj.commerce.web.dto.member.LoginForm;
-import com.kdj.commerce.domain.member.Member;
-import com.kdj.commerce.web.dto.member.registerForm;
+import com.kdj.commerce.web.dto.member.SignInForm;
+import com.kdj.commerce.web.dto.member.SignOnForm;
 import com.kdj.commerce.web.security.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,20 +37,20 @@ public class MemberController {
     private final WalkCourseService walkCourseService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/register")
-    public String registerForm(Model model) {
-        model.addAttribute("member", new registerForm());
+    @GetMapping("/sign-on")
+    public String signOnForm(Model model) {
+        model.addAttribute("member", new SignOnForm());
 
-        return "member/registerForm";
+        return "member/signOnForm";
     }
 
-    @PostMapping("/register")
-    public String register(
-            @Valid @ModelAttribute("member") registerForm form,
+    @PostMapping("/sign-on")
+    public String signOn(
+            @Valid @ModelAttribute("member") SignOnForm form,
             BindingResult result
     ) {
         if (result.hasErrors()) {
-            return "member/registerForm";
+            return "member/signOnForm";
         }
 
         try {
@@ -70,60 +70,58 @@ public class MemberController {
             } else {
                 result.reject("signupError", e.getMessage());
             }
-            return "member/registerForm";
+            return "member/signOnForm";
         }
 
         return "redirect:/";
     }
 
-    @GetMapping("/login")
-    public String loginForm(
+    @GetMapping("/sign-in")
+    public String signInForm(
             @RequestParam(defaultValue = "/") String redirectURL,
             Model model
     ) {
         redirectURL = normalizeRedirectUrl(redirectURL);
 
-        model.addAttribute("loginForm", new LoginForm());
+        model.addAttribute("signInForm", new SignInForm());
         model.addAttribute("redirectURL", redirectURL);
 
-        return "member/loginForm";
+        return "member/signInForm";
     }
 
-    @PostMapping("/login")
-    public String login(
-            @Valid @ModelAttribute LoginForm form,
+    @PostMapping("/sign-in")
+    public String signIn(
+            @Valid @ModelAttribute SignInForm form,
             BindingResult result,
             @RequestParam(defaultValue = "/") String redirectURL,
             HttpServletResponse response
     ) {
         if (result.hasErrors()) {
-            return "member/loginForm";
+            return "member/signInForm";
         }
         redirectURL = normalizeRedirectUrl(redirectURL);
 
         Member loginMember = memberService.signIn(form.getLoginId(), form.getLoginPassword());
 
-        // 로그인 실패
         if (loginMember == null) {
-            result.reject("loginError", "아이디 또는 비밀번호가 맞지 않습니다.");
-            return "member/loginForm";
+            result.reject("signInError", "아이디 또는 비밀번호가 맞지 않습니다.");
+            return "member/signInForm";
         }
 
-        // 로그인 성공 -> JWT 토큰 생성
         String token = jwtTokenProvider.createToken(loginMember.getEmail());
         log.info("회원 로그인 email={}", loginMember.getEmail());
 
         Cookie jwtCookie = new Cookie("Authorization", token);
-        jwtCookie.setHttpOnly(true);        // 자바스크립트로 해킹 못 하게 보안 설정
-        jwtCookie.setPath("/");             // 모든 경로에서 이 쿠키를 들고 오도록 설정
-        jwtCookie.setMaxAge(1800);          // 유효시간 30분
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(1800);
         response.addCookie(jwtCookie);
 
         return "redirect:" + redirectURL;
     }
 
-    @PostMapping("/logout")
-    public String logout(HttpServletResponse response) {
+    @PostMapping("/sign-out")
+    public String signOut(HttpServletResponse response) {
         Cookie cookie = new Cookie("Authorization", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");

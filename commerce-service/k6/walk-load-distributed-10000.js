@@ -44,8 +44,8 @@ export const options = {
   },
 };
 
-function login() {
-  const response = http.post(`${BASE_URL}/member/login`, {
+function signIn() {
+  const response = http.post(`${BASE_URL}/member/sign-in`, {
     loginId: 'test',
     loginPassword: '1234',
     redirectURL: '/',
@@ -105,7 +105,7 @@ function findTemporaryCourseIds(runId) {
 }
 
 export function setup() {
-  const token = login();
+  const token = signIn();
   let created = 0;
 
   for (let start = 0; start < DATASET_SIZE; start += BATCH_SIZE) {

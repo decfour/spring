@@ -7,8 +7,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
-public class registerForm {
+@Getter
+@Setter
+public class SignOnForm {
     @NotBlank(message = "이름은 필수입니다.")
     @Size(min = 2, max = 10, message = "이름은 2~10자여야 합니다.")
     @Pattern(
