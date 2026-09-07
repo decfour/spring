@@ -26,8 +26,8 @@ public class ItemService {
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
     }
 
-    public Page<Item> findByCreatedBy(Pageable pageable, Long id) {
-        return itemRepository.findByCreatedBy(pageable, id);
+    public Page<Item> findByCreatorId(Pageable pageable, Long id) {
+        return itemRepository.findByCreatorId(pageable, id);
     }
 
     public Page<Item> findActive(Pageable pageable) {
@@ -42,14 +42,14 @@ public class ItemService {
     public Long save(ItemForm form, Long memberId) {
         MultipartFile imageFile = form.getImageFile();
 
-        String storeFileName;
+        String storedFileName;
         try {
-            storeFileName = fileStore.storeFile(imageFile);
+            storedFileName = fileStore.storeFile(imageFile);
         } catch (IOException e) {
             throw new IllegalStateException("파일 저장에 실패했습니다.", e);
         }
 
-        String uploadFileName =
+        String originalFileName =
                 (imageFile == null || imageFile.isEmpty())
                         ? null
                         : imageFile.getOriginalFilename();
@@ -64,8 +64,8 @@ public class ItemService {
                 form.getItemType(),
                 form.getDeliveryType(),
                 memberId,
-                uploadFileName,
-                storeFileName
+                originalFileName,
+                storedFileName
         );
 
         return itemRepository.save(item).getId();
@@ -76,19 +76,19 @@ public class ItemService {
         Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
 
-        String storeFileName = item.getStoreFileName();
-        String uploadFileName = item.getUploadFileName();
+        String storedFileName = item.getStoredFileName();
+        String originalFileName = item.getOriginalFileName();
 
         MultipartFile imageFile = form.getImageFile();
 
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
-                storeFileName = fileStore.storeFile(imageFile);
+                storedFileName = fileStore.storeFile(imageFile);
             } catch (IOException e) {
                 throw new IllegalStateException("파일 저장에 실패했습니다.", e);
             }
 
-            uploadFileName = imageFile.getOriginalFilename();
+            originalFileName = imageFile.getOriginalFilename();
         }
 
         item.update(
@@ -99,8 +99,8 @@ public class ItemService {
                 form.isOpen(),
                 form.getItemType(),
                 form.getDeliveryType(),
-                uploadFileName,
-                storeFileName
+                originalFileName,
+                storedFileName
         );
     }
 

@@ -10,9 +10,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "item_review")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+public class ItemReview {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,17 +28,17 @@ public class Review {
     private Item item;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "creator_id")
+    private Member creator;
 
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    public static Review create(String title, String content, Item item, Member member) {
-        Review review = new Review();
+    public static ItemReview create(String title, String content, Item item, Member creator) {
+        ItemReview review = new ItemReview();
         review.title = title;
         review.content = content;
         review.item = item;
-        review.member = member;
+        review.creator = creator;
 
         return review;
     }

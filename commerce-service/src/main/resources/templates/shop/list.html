@@ -246,11 +246,11 @@
             <!-- 이미지 -->
             <div class="product-image">
 
-                <img th:if="${item.storeFileName != null}"
-                     th:src="@{/images/{fileName}(fileName=${item.storeFileName})}"
+                <img th:if="${item.storedFileName != null}"
+                     th:src="@{/images/{fileName}(fileName=${item.storedFileName})}"
                      th:alt="${item.name}">
 
-                <span th:unless="${item.storeFileName != null}"
+                <span th:unless="${item.storedFileName != null}"
                       class="no-image">
                     이미지 없음
                 </span>

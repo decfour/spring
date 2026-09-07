@@ -21,7 +21,7 @@ public class Notice {
     @Lob
     private String content;
 
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public static Notice create(String title, String content) {
         Notice notice = new Notice();

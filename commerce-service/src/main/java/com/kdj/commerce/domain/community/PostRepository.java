@@ -14,19 +14,19 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             value = """
                 select p
                 from Post p
-                join fetch p.writer
+                join fetch p.creator
                 """,
             countQuery = """
                 select count(p)
                 from Post p
                 """)
-    Page<Post> findAllWithWriter(Pageable pageable);
+    Page<Post> findAllWithCreator(Pageable pageable);
 
     @Query(
             value = """
                 select p
                 from Post p
-                join fetch p.writer
+                join fetch p.creator
                 where p.likeCount >= :likeCount
                 order by p.likeCount desc
                 """,
@@ -35,15 +35,15 @@ public interface PostRepository extends JpaRepository<Post, Long> {
                 from Post p
                 where p.likeCount >= :likeCount
                 """)
-    Page<Post> findHitWithWriter(@Param("likeCount") int likeCount, Pageable pageable);
+    Page<Post> findHitWithCreator(@Param("likeCount") int likeCount, Pageable pageable);
 
     @Query("""
                 select p
                 from Post p
-                join fetch p.writer
+                join fetch p.creator
                 where p.id = :id
                 """)
-    Optional<Post> findByIdWithWriter(@Param("id") Long id);
+    Optional<Post> findByIdWithCreator(@Param("id") Long id);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :id")

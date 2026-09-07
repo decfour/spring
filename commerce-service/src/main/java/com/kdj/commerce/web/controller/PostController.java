@@ -1,10 +1,10 @@
 package com.kdj.commerce.web.controller;
 
-import com.kdj.commerce.domain.community.Comment;
+import com.kdj.commerce.domain.community.PostComment;
 import com.kdj.commerce.domain.community.Post;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
-import com.kdj.commerce.service.CommentService;
+import com.kdj.commerce.service.PostCommentService;
 import com.kdj.commerce.service.PostService;
 import com.kdj.commerce.web.argumentresolver.Login;
 import com.kdj.commerce.web.dto.community.PostForm;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
-    private final CommentService commentService;
+    private final PostCommentService postCommentService;
 
     @GetMapping
     public String list(
@@ -62,7 +62,7 @@ public class PostController {
         postService.increaseViewCount(id);
 
         Post post = postService.findById(id);
-        Page<Comment> comments = commentService.findByPostId(id, pageable);
+        Page<PostComment> comments = postCommentService.findByPostId(id, pageable);
 
         model.addAttribute("post", post);
         model.addAttribute("loginMember", loginMember);
@@ -168,10 +168,10 @@ public class PostController {
     }
 
     private boolean isOwner(Post post, Member loginMember) {
-        if (post == null || post.getWriter() == null || loginMember == null) {
+        if (post == null || post.getCreator() == null || loginMember == null) {
             return false;
         }
-        return post.getWriter().getId().equals(loginMember.getId());
+        return post.getCreator().getId().equals(loginMember.getId());
     }
 
     private boolean isAdmin(Member loginMember) {

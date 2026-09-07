@@ -25,13 +25,13 @@ public class Post {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member writer;
+    @JoinColumn(name = "creator_id", nullable = false)
+    private Member creator;
 
     private int viewCount;
     private int likeCount;
 
-    private LocalDateTime createdDate = LocalDateTime.now();;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public void increaseViewCount() {
         this.viewCount++;
@@ -45,7 +45,7 @@ public class Post {
         Post post = new Post();
         post.title = title;
         post.content = content;
-        post.writer = member;
+        post.creator = member;
         post.viewCount = 0;
         post.likeCount = 0;
 

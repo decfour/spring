@@ -26,7 +26,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
                 """)
     Optional<Item> findByIdWithLock(@Param("id") Long id);
 
-    Page<Item> findByCreatedBy(Pageable pageable, Long createdBy);
+    Page<Item> findByCreatorId(Pageable pageable, Long creatorId);
     Page<Item> findByDeletedFalse(Pageable pageable);
 }
 

@@ -181,7 +181,7 @@ public class ItemController {
     }
 
     private boolean isOwner(Item item, Member loginMember) {
-        return item.getCreatedBy().equals(loginMember.getId());
+        return item.getCreatorId().equals(loginMember.getId());
     }
 
     private boolean isAdmin(Member loginMember) {

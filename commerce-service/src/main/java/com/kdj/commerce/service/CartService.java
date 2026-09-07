@@ -33,7 +33,7 @@ public class CartService {
     }
 
     @Transactional
-    public void addItem(Long memberId, Long itemId, int count) {
+    public void addItem(Long memberId, Long itemId, int quantity) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다 id=" + memberId));
         Item item = itemRepository.findById(itemId)
@@ -44,18 +44,18 @@ public class CartService {
         Optional<CartItem> existingItem =
                 cartItemRepository.findByCartIdAndItemId(cart.getId(), item.getId());
 
-        int requestedCount = existingItem
-                .map(cartItem -> cartItem.getCount() + count)
-                .orElse(count);
+        int requestedQuantity = existingItem
+                .map(cartItem -> cartItem.getQuantity() + quantity)
+                .orElse(quantity);
 
-        if (requestedCount > item.getStock()) {
+        if (requestedQuantity > item.getStock()) {
             throw new NotEnoughStockException("재고가 부족합니다. (재고: " + item.getStock() + "개)");
         }
 
         if (existingItem.isPresent()) {
-            existingItem.get().addCount(count);
+            existingItem.get().addQuantity(quantity);
         } else {
-            cartItemRepository.save(CartItem.create(cart, item, count));
+            cartItemRepository.save(CartItem.create(cart, item, quantity));
         }
     }
 

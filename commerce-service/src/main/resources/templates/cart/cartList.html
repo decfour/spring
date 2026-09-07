@@ -171,8 +171,8 @@
                        class="cart-item-link">상품명</a>
                 </td>
                 <td th:text="${#numbers.formatInteger(cartItem.item.price, 0, 'COMMA')} + '원'" style="text-align: center; color: #86868b;">0원</td>
-                <td th:text="${cartItem.count} + '개'" style="text-align: center; color: #1d1d1f; font-weight: 500;">1개</td>
-                <td th:text="${#numbers.formatInteger(cartItem.item.price * cartItem.count, 0, 'COMMA')} + '원'" class="fw-semibold" style="text-align: right;">0원</td>
+                <td th:text="${cartItem.quantity} + '개'" style="text-align: center; color: #1d1d1f; font-weight: 500;">1개</td>
+                <td th:text="${#numbers.formatInteger(cartItem.item.price * cartItem.quantity, 0, 'COMMA')} + '원'" class="fw-semibold" style="text-align: right;">0원</td>
                 <td style="text-align: right; padding-right: 10px;">
                     <form th:action="@{/cart/item/{id}/delete(id=${cartItem.id})}" method="post" class="m-0">
                         <button type="submit" class="btn-delete-icon" title="삭제">✕</button>
@@ -188,7 +188,7 @@
                 <span style="font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px;" th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원'">0원</span>
             </div>
             <div class="d-flex justify-content-end gap-2 mt-4">
-                <form th:action="@{/order/cart}" method="post" class="m-0">
+                <form th:action="@{/order/cart}" method="get" class="m-0">
                     <button type="submit" class="btn-apple-dark">전체 주문</button>
                 </form>
             </div>

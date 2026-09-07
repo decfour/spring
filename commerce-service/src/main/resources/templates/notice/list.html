@@ -200,7 +200,7 @@
             <td>
                 <a th:href="@{/notice/{id}(id=${notice.id})}" th:text="${notice.title}" class="notice-link">[안내] 공지사항 제목</a>
             </td>
-            <td th:text="${#temporals.format(notice.createdDate, 'yyyy.MM.dd')}" class="notice-date">2026.08.13</td>
+            <td th:text="${#temporals.format(notice.createdAt, 'yyyy.MM.dd')}" class="notice-date">2026.08.13</td>
         </tr>
         </tbody>
     </table>

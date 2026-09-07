@@ -3,8 +3,8 @@ package com.kdj.commerce.web.controller;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
-import com.kdj.commerce.domain.order.Order;
-import com.kdj.commerce.domain.review.Review;
+import com.kdj.commerce.domain.purchase.Purchase;
+import com.kdj.commerce.domain.review.ItemReview;
 import com.kdj.commerce.domain.walk.WalkCourse;
 import com.kdj.commerce.service.*;
 import com.kdj.commerce.web.argumentresolver.Login;
@@ -30,10 +30,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/member")
 @RequiredArgsConstructor
 public class MemberController {
-    private final ReviewService reviewService;
+    private final ItemReviewService itemReviewService;
     private final MemberService memberService;
     private final ItemService itemService;
-    private final OrderService orderService;
+    private final PurchaseService purchaseService;
     private final WalkCourseService walkCourseService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -55,10 +55,10 @@ public class MemberController {
 
         try {
             Member member = Member.create(
-                    form.getUsername(),
+                    form.getName(),
                     form.getEmail(),
-                    form.getLoginId(),
-                    form.getLoginPassword(),
+                    form.getSignInId(),
+                    form.getSignInPassword(),
                     MemberType.USER
             );
             memberService.signUp(member);
@@ -66,7 +66,7 @@ public class MemberController {
             if (e.getMessage().contains("이메일")) {
                 result.rejectValue("email", "duplicate", e.getMessage());
             } else if (e.getMessage().contains("아이디")) {
-                result.rejectValue("loginId", "duplicate", e.getMessage());
+                result.rejectValue("signInId", "duplicate", e.getMessage());
             } else {
                 result.reject("signupError", e.getMessage());
             }
@@ -101,7 +101,7 @@ public class MemberController {
         }
         redirectURL = normalizeRedirectUrl(redirectURL);
 
-        Member loginMember = memberService.signIn(form.getLoginId(), form.getLoginPassword());
+        Member loginMember = memberService.signIn(form.getSignInId(), form.getSignInPassword());
 
         if (loginMember == null) {
             result.reject("signInError", "아이디 또는 비밀번호가 맞지 않습니다.");
@@ -143,7 +143,7 @@ public class MemberController {
                            @Login Member loginMember,
                            Model model
                             ) {
-        Page<WalkCourse> myCourses = walkCourseService.findByMemberId(pageable, loginMember.getId());
+        Page<WalkCourse> myCourses = walkCourseService.findByCreatorId(pageable, loginMember.getId());
         model.addAttribute("member", loginMember);
         model.addAttribute("myCourses", myCourses);
 
@@ -154,7 +154,7 @@ public class MemberController {
     public String myItem(@PageableDefault(size = 7, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                          @Login Member loginMember,
                          Model model) {
-        Page<Item> myItems = itemService.findByCreatedBy(pageable, loginMember.getId());
+        Page<Item> myItems = itemService.findByCreatorId(pageable, loginMember.getId());
 
         model.addAttribute("member", loginMember);
         model.addAttribute("myItems", myItems);
@@ -166,7 +166,7 @@ public class MemberController {
     public String myReview(@PageableDefault(size = 7, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                            @Login Member loginMember,
                            Model model) {
-        Page<Review> myReviews = reviewService.findByMemberId(pageable, loginMember.getId());
+        Page<ItemReview> myReviews = itemReviewService.findByCreatorId(pageable, loginMember.getId());
 
         model.addAttribute("member", loginMember);
         model.addAttribute("myReviews", myReviews);
@@ -175,13 +175,13 @@ public class MemberController {
     }
 
     @GetMapping("/my-order")
-    public String myOrder(@PageableDefault(size = 7, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+    public String myPurchase(@PageableDefault(size = 7, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                           @Login Member loginMember,
                           Model model) {
-        Page<Order> orders = orderService.findByMemberId(pageable, loginMember.getId());
-        model.addAttribute("orders", orders);
+        Page<Purchase> purchases = purchaseService.findByMemberId(pageable, loginMember.getId());
+        model.addAttribute("purchases", purchases);
 
-        return "member/myOrder";
+        return "member/myPurchase";
     }
 
     private String normalizeRedirectUrl(String redirectURL){

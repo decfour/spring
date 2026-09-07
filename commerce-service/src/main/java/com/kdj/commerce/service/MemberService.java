@@ -29,16 +29,16 @@ public class MemberService {
                 .ifPresent(m -> {
                     throw new IllegalStateException("사용중인 이메일입니다.");
                 });
-        memberRepository.findByLoginId(member.getLoginId())
+        memberRepository.findBySignInId(member.getSignInId())
                 .ifPresent(m -> {
                     throw new IllegalStateException("사용중인 아이디입니다.");
                 });
         memberRepository.save(member);
     }
 
-    public Member signIn(String loginId, String loginPassword) {
-        return memberRepository.findByLoginId(loginId)
-                .filter(m -> m.getLoginPassword().equals(loginPassword))
+    public Member signIn(String signInId, String signInPassword) {
+        return memberRepository.findBySignInId(signInId)
+                .filter(m -> m.getSignInPassword().equals(signInPassword))
                 .orElse(null);
     }
 }

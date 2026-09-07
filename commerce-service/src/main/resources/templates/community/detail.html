@@ -341,7 +341,7 @@
         <div class="d-flex gap-2 align-items-center">
             <div class="dropdown"
                  th:if="${loginMember != null and (
-                     (post.writer != null and post.writer.id == loginMember.id) or
+                     (post.creator != null and post.creator.id == loginMember.id) or
                      (loginMember.memberType != null and loginMember.memberType.name() == 'ADMIN')
                  )}">
                 <button class="dropdown-toggle-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -367,9 +367,9 @@
         <div class="post-info-row">
             <div class="info-col col-writer">
                 <span class="post-user-meta">
-                    작성자 <span class="text-dark font-weight-bold" th:text="${post.writer != null ? post.writer.username : '익명'}">사용자</span>
+                    작성자 <span class="text-dark font-weight-bold" th:text="${post.creator != null ? post.creator.name : '익명'}">사용자</span>
                     <span class="meta-divider">•</span>
-                    <span th:text="${#temporals.format(post.createdDate, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
+                    <span th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
                     <span class="meta-divider">•</span>
                     조회 <span class="text-dark font-weight-bold" th:text="${post.viewCount}">0</span>
                 </span>
@@ -398,13 +398,13 @@
 
         <div th:each="comment : ${comments.content}" class="comment-item">
             <div class="comment-header-row">
-                <strong class="comment-writer" th:text="${comment.writer != null ? comment.writer.username : '익명'}">작성자</strong>
-                <span class="comment-date" th:text="${#temporals.format(comment.createdDate, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
+                <strong class="comment-writer" th:text="${comment.creator != null ? comment.creator.name : '익명'}">작성자</strong>
+                <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
 
                 <div class="comment-more-wrap">
                     <div class="dropdown"
                          th:if="${loginMember != null and (
-                             (comment.writer != null and comment.writer.id == loginMember.id) or
+                             (comment.creator != null and comment.creator.id == loginMember.id) or
                              (loginMember.memberType != null and loginMember.memberType.name() == 'ADMIN')
                          )}">
                         <button class="dropdown-toggle-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">

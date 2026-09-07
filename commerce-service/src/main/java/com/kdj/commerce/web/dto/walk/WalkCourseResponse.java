@@ -8,8 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class WalkCourseResponse {
     private Long id;
-    private String name;
-    private String review;
+    private String title;
+    private String content;
 
     private Double startLat;
     private Double startLng;
@@ -26,8 +26,8 @@ public class WalkCourseResponse {
     public static WalkCourseResponse from(WalkCourse course) {
         return new WalkCourseResponse(
                 course.getId(),
-                course.getName(),
-                course.getReview(),
+                course.getTitle(),
+                course.getContent(),
                 course.getStartLat(),
                 course.getStartLng(),
                 course.getEndLat(),

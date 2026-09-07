@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 public class SignInForm {
     @NotEmpty(message = "아이디를 입력해주세요.")
-    private String loginId;
+    private String signInId;
 
     @NotEmpty(message = "비밀번호를 입력해주세요.")
-    private String loginPassword;
+    private String signInPassword;
 }

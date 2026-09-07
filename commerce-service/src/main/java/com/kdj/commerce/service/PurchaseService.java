@@ -5,9 +5,9 @@ import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemRepository;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberRepository;
-import com.kdj.commerce.domain.order.Order;
-import com.kdj.commerce.domain.order.OrderItem;
-import com.kdj.commerce.domain.order.OrderRepository;
+import com.kdj.commerce.domain.purchase.Purchase;
+import com.kdj.commerce.domain.purchase.PurchaseItem;
+import com.kdj.commerce.domain.purchase.PurchaseRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,17 +22,24 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class OrderService {
+public class PurchaseService {
     private final CartService cartService;
-    private final OrderRepository orderRepository;
+    private final PurchaseRepository purchaseRepository;
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
 
+    public Purchase findById(Long id) {
+        Purchase purchase = purchaseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다"));
+
+        return purchase;
+    }
+
     @Transactional
-    public Long order(
+    public Long purchase(
             Long memberId,
             Long itemId,
-            int count,
+            int quantity,
             String receiverName,
             String receiverAddress
     ) {
@@ -42,18 +49,18 @@ public class OrderService {
         Item item = itemRepository.findByIdWithLock(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
 
-        OrderItem orderItem = OrderItem.create(item, item.getPrice(), count);
-        Order order = Order.create(member, receiverName, receiverAddress, orderItem);
-        orderRepository.save(order);
+        PurchaseItem purchaseItem = PurchaseItem.create(item, item.getPrice(), quantity);
+        Purchase purchase = Purchase.create(member, receiverName, receiverAddress, purchaseItem);
+        purchaseRepository.save(purchase);
 
-        log.info("주문 생성 orderId={}, memberId={}, itemId={}, quantity={}",
-                order.getId(), memberId, itemId, count);
+        log.info("주문 생성 purchaseId={}, memberId={}, itemId={}, quantity={}",
+                purchase.getId(), memberId, itemId, quantity);
 
-        return order.getId();
+        return purchase.getId();
     }
 
     @Transactional
-    public Long orderCart(
+    public Long purchaseCart(
             Long memberId,
             List<CartItem> cartItems,
             String receiverName,
@@ -62,62 +69,62 @@ public class OrderService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
-        List<OrderItem> orderItems = new ArrayList<>();
+        List<PurchaseItem> purchaseItems = new ArrayList<>();
 
         for (CartItem cartItem : cartItems) {
             Item item = itemRepository.findByIdWithLock(cartItem.getItem().getId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않거나 품절된 상품입니다."));
 
-            OrderItem orderItem = OrderItem.create(
+            PurchaseItem purchaseItem = PurchaseItem.create(
                     item,
                     item.getPrice(),
-                    cartItem.getCount()
+                    cartItem.getQuantity()
             );
 
-            orderItems.add(orderItem);
+            purchaseItems.add(purchaseItem);
         }
 
-        Order order = Order.create(
+        Purchase purchase = Purchase.create(
                 member, receiverName,
                 receiverAddress,
-                orderItems.toArray(new OrderItem[0])
+                purchaseItems.toArray(new PurchaseItem[0])
         );
 
-        orderRepository.save(order);
+        purchaseRepository.save(purchase);
         cartService.clearItem(memberId);
 
-        log.info("주문 생성(장바구니) orderId={}, memberId={}, itemCount={}",
-                order.getId(), memberId, orderItems.size());
+        log.info("주문 생성(장바구니) purchaseId={}, memberId={}, itemCount={}",
+                purchase.getId(), memberId, purchaseItems.size());
 
-        return order.getId();
+        return purchase.getId();
     }
 
     @Transactional
-    public void cancel(Long memberId, Long orderId) {
-        Order order = orderRepository.findById(orderId)
+    public void cancel(Long purchaseId) {
+        Purchase purchase = purchaseRepository.findById(purchaseId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
 
-        order.cancel();
+        purchase.cancel();
 
-        log.info("주문 취소 orderId={}", orderId);
+        log.info("주문 취소 purchaseId={}", purchaseId);
     }
 
     public int getTotalPrice(Long id) {
-        Order order = orderRepository.findById(id)
+        Purchase purchase = purchaseRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
 
-        return order.getTotalPrice();
+        return purchase.getTotalPrice();
     }
 
-    public List<Order> findAll() {
-        return orderRepository.findAll();}
+    public List<Purchase> findAll() {
+        return purchaseRepository.findAll();}
 
     // Fetch Join으로 회원 정보를 함께 조회하여 N+1 방지
-    public Page<Order> findByMemberId(Pageable pageable, Long id) {
-        return orderRepository.findByMemberIdWithMember(pageable, id);
+    public Page<Purchase> findByMemberId(Pageable pageable, Long id) {
+        return purchaseRepository.findByMemberIdWithMember(pageable, id);
     }
 
-    public List<Order> findAllFetch() {
-        return orderRepository.findAllWithMember();
+    public List<Purchase> findAllFetch() {
+        return purchaseRepository.findAllWithMember();
     }
 }

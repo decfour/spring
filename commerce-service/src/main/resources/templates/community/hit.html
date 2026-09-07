@@ -216,11 +216,11 @@
                    class="product-link">제목</a>
             </td>
 
-            <td th:text="${post.writer != null ? post.writer.username : '익명'}" class="post-writer">작성자</td>
+            <td th:text="${post.creator != null ? post.creator.name : '익명'}" class="post-writer">작성자</td>
 
             <td th:text="${post.likeCount}" class="post-likes">0</td>
 
-            <td th:text="${#temporals.format(post.createdDate, 'yyyy.MM.dd')}" class="post-date">2026.07.24</td>
+            <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}" class="post-date">2026.07.24</td>
         </tr>
         </tbody>
     </table>

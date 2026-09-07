@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cart_item_id")
+    @Column(name = "id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,19 +24,19 @@ public class CartItem {
     @JoinColumn(name = "item_id")
     private Item item;
 
-    private int count;
+    private int quantity;
 
-    private CartItem(Cart cart, Item item, int count) {
+    private CartItem(Cart cart, Item item, int quantity) {
         this.cart = cart;
         this.item = item;
-        this.count = count;
+        this.quantity = quantity;
     }
 
-    public static CartItem create(Cart cart, Item item, int count) {
-        return new CartItem(cart, item, count);
+    public static CartItem create(Cart cart, Item item, int quantity) {
+        return new CartItem(cart, item, quantity);
     }
 
-    public void addCount(int count) {
-        this.count += count;
+    public void addQuantity(int quantity) {
+        this.quantity += quantity;
     }
 }

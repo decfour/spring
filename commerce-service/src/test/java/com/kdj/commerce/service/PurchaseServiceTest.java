@@ -7,9 +7,9 @@ import com.kdj.commerce.domain.item.ItemType;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberRepository;
 import com.kdj.commerce.domain.member.MemberType;
-import com.kdj.commerce.domain.order.Order;
-import com.kdj.commerce.domain.order.OrderItemRepository;
-import com.kdj.commerce.domain.order.OrderRepository;
+import com.kdj.commerce.domain.purchase.Purchase;
+import com.kdj.commerce.domain.purchase.PurchaseItemRepository;
+import com.kdj.commerce.domain.purchase.PurchaseRepository;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,13 +27,13 @@ import java.util.concurrent.Executors;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-class OrderServiceTest {
-    @Autowired OrderService orderService;
+class PurchaseServiceTest {
+    @Autowired PurchaseService purchaseService;
 
     @Autowired MemberRepository memberRepository;
     @Autowired ItemRepository itemRepository;
-    @Autowired OrderRepository orderRepository;
-    @Autowired OrderItemRepository orderItemRepository;
+    @Autowired PurchaseRepository purchaseRepository;
+    @Autowired PurchaseItemRepository purchaseItemRepository;
 
     private final List<Long> memberIds = new ArrayList<>();
 
@@ -43,8 +43,8 @@ class OrderServiceTest {
     @AfterEach
     public void setUp () {
         System.out.println("==================== 청소 시작");
-        orderItemRepository.deleteAllInBatch();
-        orderRepository.deleteAllInBatch();
+        purchaseItemRepository.deleteAllInBatch();
+        purchaseRepository.deleteAllInBatch();
         itemRepository.deleteAllInBatch();
         memberRepository.deleteAllInBatch();
         memberIds.clear();
@@ -53,7 +53,7 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("동시 주문 테스트")
-    public void concurrencyOrderTest() throws InterruptedException {
+    public void concurrencyPurchaseTest() throws InterruptedException {
         System.out.println("==================== 동시 주문 테스트 시작");
         // given    : 회원 100명, 재고 100개 이벤트 상품 DB 저장
         for (int i = 1; i <= 100; i++) {
@@ -94,8 +94,8 @@ class OrderServiceTest {
             Long memberId = memberIds.get(i);
             executorService.submit(() -> {
                 try {
-                    // 1개씩 주문 (OrderService 내 findByIdWithLock으로 비관적 락)
-                    orderService.order(memberId, itemId, 1, "name", "address");
+                    // 1개씩 주문 (PurchaseService 내 findByIdWithLock으로 비관적 락)
+                    purchaseService.purchase(memberId, itemId, 1, "name", "address");
                 } catch (Exception e) {
                     System.out.println("주문 실패 원인: " + e.getMessage());
                 } finally {
@@ -141,19 +141,19 @@ class OrderServiceTest {
                     null
             );
             itemRepository.save(item);
-            orderService.order(member.getId(), item.getId(), 1, "name", "address");
+            purchaseService.purchase(member.getId(), item.getId(), 1, "name", "address");
         }
 
         em.flush();
         em.clear();
 
         // when
-        List<Order> orders = orderService.findAll();
-        System.out.println("========== Order 조회 완료");
+        List<Purchase> purchases = purchaseService.findAll();
+        System.out.println("========== Purchase 조회 완료");
 
         // then
-        orders.forEach(order ->
-                order.getMember().getUsername());
+        purchases.forEach(purchase ->
+                purchase.getMember().getName());
         System.out.println("==================== N+1 방지 테스트 종료");
     }
 }

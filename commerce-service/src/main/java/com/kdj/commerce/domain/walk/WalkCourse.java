@@ -19,12 +19,13 @@ public class WalkCourse {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    @JoinColumn(name = "creator_id")
+    private Member creator;
 
-    private String name;
+    private String title;
 
     @Column(columnDefinition = "TEXT")
-    private String review;
+    private String content;
 
     private Double startLat;
     private Double startLng;
@@ -50,9 +51,9 @@ public class WalkCourse {
     private List<WalkCourseTag> tags = new ArrayList<>();
 
     public static WalkCourse create(
-            Member member,
-            String name,
-            String review,
+            Member creator,
+            String title,
+            String content,
             Double startLat,
             Double startLng,
             Double endLat,
@@ -62,9 +63,9 @@ public class WalkCourse {
             Integer duration
     ) {
         WalkCourse course = new WalkCourse();
-        course.member = member;
-        course.name = name;
-        course.review = review;
+        course.creator = creator;
+        course.title = title;
+        course.content = content;
         course.startLat = startLat;
         course.startLng = startLng;
         course.endLat = endLat;
@@ -77,8 +78,8 @@ public class WalkCourse {
         return course;
     }
 
-    public void update (String name, String review) {
-        this.name = name;
-        this.review = review;
+    public void update (String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 }

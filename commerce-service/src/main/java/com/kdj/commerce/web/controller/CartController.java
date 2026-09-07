@@ -25,7 +25,7 @@ public class CartController {
         List<CartItem> cartItems = cartService.findItem(loginMember.getId());
 
         int totalPrice = cartItems.stream()
-                .mapToInt(cartItem -> cartItem.getItem().getPrice() * cartItem.getCount())
+                .mapToInt(cartItem -> cartItem.getItem().getPrice() * cartItem.getQuantity())
                 .sum();
 
         model.addAttribute("cartItems", cartItems);

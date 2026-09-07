@@ -1,11 +1,11 @@
 package com.kdj.commerce.web.controller;
 
-import com.kdj.commerce.domain.community.Comment;
+import com.kdj.commerce.domain.community.PostComment;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
-import com.kdj.commerce.service.CommentService;
+import com.kdj.commerce.service.PostCommentService;
 import com.kdj.commerce.web.argumentresolver.Login;
-import com.kdj.commerce.web.dto.community.CommentForm;
+import com.kdj.commerce.web.dto.community.PostCommentForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,21 +15,21 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/comment")
 @RequiredArgsConstructor
-public class CommentController {
-    private final CommentService commentService;
+public class PostCommentController {
+    private final PostCommentService postCommentService;
 
     @PostMapping("/{postId}/add")
     public String add(
             @Login Member loginMember,
             @PathVariable Long postId,
-            @Valid @ModelAttribute CommentForm form,
+            @Valid @ModelAttribute PostCommentForm form,
             BindingResult result
     ) {
         if (result.hasErrors()) {
             return "redirect:/community/post/" + postId;
         }
 
-        commentService.save(postId, loginMember.getId(), form.getContent());
+        postCommentService.save(postId, loginMember.getId(), form.getContent());
 
         return "redirect:/community/post/" + postId;
     }
@@ -39,13 +39,13 @@ public class CommentController {
             @Login Member loginMember,
             @PathVariable Long id
     ) {
-        Comment comment = commentService.findById(id);
+        PostComment comment = postCommentService.findById(id);
 
         if (!isOwner(comment, loginMember) && !isAdmin(loginMember)) {
             return "redirect:/community/post/" + comment.getPost().getId();
         }
 
-        commentService.delete(id);
+        postCommentService.delete(id);
 
         return "redirect:/community/post/" + comment.getPost().getId();
     }
@@ -54,11 +54,11 @@ public class CommentController {
         return loginMember != null && loginMember.getMemberType() == MemberType.ADMIN;
     }
 
-    private boolean isOwner(Comment comment, Member loginMember) {
-        if (comment == null || comment.getWriter() == null || loginMember == null) {
+    private boolean isOwner(PostComment comment, Member loginMember) {
+        if (comment == null || comment.getCreator() == null || loginMember == null) {
             return false;
         }
 
-        return comment.getWriter().getId().equals(loginMember.getId());
+        return comment.getCreator().getId().equals(loginMember.getId());
     }
 }

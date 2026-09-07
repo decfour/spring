@@ -92,8 +92,8 @@ public class WalkController {
 
         walkCourseService.save(
                 loginMember,
-                form.getName(),
-                form.getReview(),
+                form.getTitle(),
+                form.getContent(),
                 form.getStartLat(),
                 form.getStartLng(),
                 form.getEndLat(),
@@ -161,10 +161,10 @@ public class WalkController {
     }
 
     private boolean isOwner(WalkCourse walkCourse, Member loginMember) {
-        if (walkCourse == null || walkCourse.getMember() == null || loginMember == null) {
+        if (walkCourse == null || walkCourse.getCreator() == null || loginMember == null) {
             return false;
         }
-        return walkCourse.getMember().getId().equals(loginMember.getId());
+        return walkCourse.getCreator().getId().equals(loginMember.getId());
     }
 
     private boolean isAdmin(Member loginMember) {

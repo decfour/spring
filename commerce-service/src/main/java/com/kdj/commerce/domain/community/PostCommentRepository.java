@@ -6,23 +6,23 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface PostCommentRepository extends JpaRepository<PostComment, Long> {
     @Query(
             value = """
                     select c
-                    from Comment c
-                    join fetch c.writer
+                    from PostComment c
+                    join fetch c.creator
                     where c.post.id = :postId
-                    order by c.createdDate asc, c.id desc
+                    order by c.createdAt asc, c.id desc
                     """,
             countQuery = """
                     select count(c)
-                    from Comment c
+                    from PostComment c
                     where c.post.id = :postId
                     """)
-    Page<Comment> findByPostIdWithWriter(@Param("postId") Long postId, Pageable pageable);
+    Page<PostComment> findByPostIdWithCreator(@Param("postId") Long postId, Pageable pageable);
 
-    Page<Comment> findByPostIdOrderByCreatedDateAsc(Long id, Pageable pageable);
+    Page<PostComment> findByPostIdOrderByCreatedAtAsc(Long id, Pageable pageable);
 
     void deleteByPostId (Long id);
 }

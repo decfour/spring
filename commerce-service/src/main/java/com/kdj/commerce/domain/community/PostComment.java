@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "post_comment")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment {
+public class PostComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,17 +26,17 @@ public class Comment {
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member writer;
+    @JoinColumn(name = "creator_id")
+    private Member creator;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdDate = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    public static Comment create(Post post, Member writer, String content) {
-        Comment comment = new Comment();
+    public static PostComment create(Post post, Member creator, String content) {
+        PostComment comment = new PostComment();
         comment.content = content;
         comment.post = post;
-        comment.writer = writer;
+        comment.creator = creator;
 
         return comment;
     }

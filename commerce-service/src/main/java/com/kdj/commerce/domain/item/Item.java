@@ -17,7 +17,7 @@ import lombok.Setter;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
+    @Column(name = "id")
     private Long id;
 
     @Column(nullable = false)
@@ -32,10 +32,10 @@ public class Item {
     @Column(length = 1000)
     private String description;
 
-    @Column(nullable = false)
+    @Column(name = "is_open", nullable = false)
     private boolean open;
 
-    @Column(nullable = false)
+    @Column(name = "is_deleted", nullable = false)
     private boolean deleted;
 
     @Enumerated(EnumType.STRING)
@@ -47,10 +47,10 @@ public class Item {
     private DeliveryType deliveryType;
 
     @Column(nullable = false)
-    private Long createdBy;
+    private Long creatorId;
 
-    private String uploadFileName;          // 유저가 업로드한 파일명
-    private String storeFileName;           // 서버가 관리하는 파일명
+    private String originalFileName;          // 유저가 업로드한 파일명
+    private String storedFileName;           // 서버가 관리하는 파일명
 
     // 재고 증가 (주문 취소)
     public void addStock(int quantity) {
@@ -79,9 +79,9 @@ public class Item {
             boolean deleted,
             ItemType itemType,
             DeliveryType deliveryType,
-            Long createdBy,
-            String uploadFileName,
-            String storeFileName) {
+            Long creatorId,
+            String originalFileName,
+            String storedFileName) {
         Item item = new Item();
         item.name = name;
         item.price = price;
@@ -91,9 +91,9 @@ public class Item {
         item.deleted = deleted;
         item.itemType = itemType;
         item.deliveryType = deliveryType;
-        item.createdBy = createdBy;
-        item.uploadFileName = uploadFileName;
-        item.storeFileName = storeFileName;
+        item.creatorId = creatorId;
+        item.originalFileName = originalFileName;
+        item.storedFileName = storedFileName;
 
         return item;
     }
@@ -106,8 +106,8 @@ public class Item {
             boolean open,
             ItemType itemType,
             DeliveryType deliveryType,
-            String uploadFileName,
-            String storeFileName) {
+            String originalFileName,
+            String storedFileName) {
         this.name = name;
         this.price = price;
         this.stock = stock;
@@ -116,9 +116,9 @@ public class Item {
         this.itemType = itemType;
         this.deliveryType = deliveryType;
 
-        if(uploadFileName != null) {
-            this.uploadFileName = uploadFileName;
-            this.storeFileName = storeFileName;
+        if(originalFileName != null) {
+            this.originalFileName = originalFileName;
+            this.storedFileName = storedFileName;
         }
     }
 

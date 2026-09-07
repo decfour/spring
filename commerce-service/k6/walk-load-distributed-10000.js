@@ -46,8 +46,8 @@ export const options = {
 
 function signIn() {
   const response = http.post(`${BASE_URL}/member/sign-in`, {
-    loginId: 'test',
-    loginPassword: '1234',
+    signInId: 'test',
+    signInPassword: '1234',
     redirectURL: '/',
   }, { redirects: 0 });
   const token = response.cookies.Authorization && response.cookies.Authorization[0].value;
@@ -74,8 +74,8 @@ function courseBody(index) {
   const lng = 126.80 + (Math.floor(index / 100) / 99) * 0.40;
 
   const form = {
-    name: `${RUN_ID}-${index}`,
-    review: 'Temporary load-test course. Automatically deleted after the test.',
+    title: `${RUN_ID}-${index}`,
+    content: 'Temporary load-test course. Automatically deleted after the test.',
     startLat: lat,
     startLng: lng,
     endLat: lat + 0.0001,
@@ -100,7 +100,7 @@ function findTemporaryCourseIds(runId) {
   const courses = response.json('content') || [];
 
   return courses
-    .filter((course) => course.name && course.name.startsWith(`${runId}-`))
+    .filter((course) => course.title && course.title.startsWith(`${runId}-`))
     .map((course) => course.id);
 }
 

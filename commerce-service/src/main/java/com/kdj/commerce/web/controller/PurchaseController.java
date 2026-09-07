@@ -1,13 +1,15 @@
 package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.cart.CartItem;
+import com.kdj.commerce.domain.community.Post;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.member.Member;
+import com.kdj.commerce.domain.purchase.Purchase;
 import com.kdj.commerce.service.CartService;
 import com.kdj.commerce.service.ItemService;
-import com.kdj.commerce.service.OrderService;
+import com.kdj.commerce.service.PurchaseService;
 import com.kdj.commerce.web.argumentresolver.Login;
-import com.kdj.commerce.web.dto.order.OrderItemForm;
+import com.kdj.commerce.web.dto.purchase.PurchaseItemForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,39 +21,39 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/order")
-public class OrderController {
-    private final OrderService orderService;
+public class PurchaseController {
+    private final PurchaseService purchaseService;
     private final CartService cartService;
     private final ItemService itemService;
 
     @GetMapping("/one")
-    public String orderOne(
+    public String purchaseOne(
             @RequestParam("itemId") Long itemId,
             @RequestParam("itemCount") int itemCount,
             Model model
     ) {
         Item item = itemService.findById(itemId);
 
-        List<OrderItemForm> orderItems = new ArrayList<>();
-        orderItems.add(
-                new OrderItemForm(
+        List<PurchaseItemForm> purchaseItems = new ArrayList<>();
+        purchaseItems.add(
+                new PurchaseItemForm(
                         item.getName(),
                         item.getPrice(),
                         itemCount
                 )
         );
 
-        model.addAttribute("orderItems", orderItems);
+        model.addAttribute("purchaseItems", purchaseItems);
         model.addAttribute("totalPrice", item.getPrice() * itemCount);
-        model.addAttribute("orderType", "ONE");
+        model.addAttribute("purchaseType", "ONE");
         model.addAttribute("itemId", itemId);
-        model.addAttribute("count", itemCount);
+        model.addAttribute("quantity", itemCount);
 
-        return "order/orderForm";
+        return "purchase/purchaseForm";
     }
 
     @GetMapping("/cart")
-    public String orderCart(
+    public String purchaseCart(
             @Login Member loginMember,
             Model model
     ) {
@@ -61,51 +63,51 @@ public class OrderController {
             return "redirect:/cart";
         }
 
-        List<OrderItemForm> orderItems = new ArrayList<>();
+        List<PurchaseItemForm> purchaseItems = new ArrayList<>();
         int totalPrice = 0;
 
         for (CartItem cartItem : cartItems) {
             Item item = cartItem.getItem();
 
-            orderItems.add(
-                    new OrderItemForm(
+            purchaseItems.add(
+                    new PurchaseItemForm(
                             item.getName(),
                             item.getPrice(),
-                            cartItem.getCount()
+                            cartItem.getQuantity()
                     )
             );
 
-            totalPrice += item.getPrice() * cartItem.getCount();
+            totalPrice += item.getPrice() * cartItem.getQuantity();
         }
 
-        model.addAttribute("orderItems", orderItems);
+        model.addAttribute("purchaseItems", purchaseItems);
         model.addAttribute("totalPrice", totalPrice);
-        model.addAttribute("orderType", "CART");
+        model.addAttribute("purchaseType", "CART");
 
-        return "order/orderForm";
+        return "purchase/purchaseForm";
     }
 
     @PostMapping("/create")
-    public String createOrder(
+    public String createPurchase(
             @Login Member loginMember,
-            @RequestParam("orderType") String orderType,
+            @RequestParam("purchaseType") String purchaseType,
             @RequestParam(value = "itemId", required = false) Long itemId,
-            @RequestParam(value = "count", required = false) Integer count,
+            @RequestParam(value = "quantity", required = false) Integer quantity,
             @RequestParam("receiverName") String receiverName,
             @RequestParam("receiverAddress") String receiverAddress
     ) {
-        if ("ONE".equals(orderType)) {
-            orderService.order(
+        if ("ONE".equals(purchaseType)) {
+            purchaseService.purchase(
                     loginMember.getId(),
                     itemId,
-                    count,
+                    quantity,
                     receiverName,
                     receiverAddress
             );
         } else {
             List<CartItem> cartItems = cartService.findItem(loginMember.getId());
 
-            orderService.orderCart(
+            purchaseService.purchaseCart(
                     loginMember.getId(),
                     cartItems,
                     receiverName,
@@ -116,13 +118,26 @@ public class OrderController {
         return "redirect:/member/my-order";
     }
 
-    @PostMapping("/{orderId}/cancel")
+    @PostMapping("/{id}/cancel")
     public String cancel(
             @Login Member loginMember,
-            @PathVariable("orderId") Long orderId
+            @PathVariable("id") Long id
     ) {
-        orderService.cancel(loginMember.getId(), orderId);
+        Purchase purchase = purchaseService.findById(id);
+
+        if (!isOwner(purchase, loginMember)) {
+            return "redirect:/member/my-order";
+        }
+
+        purchaseService.cancel(id);
 
         return "redirect:/member/my-order";
+    }
+
+    private boolean isOwner(Purchase purchase, Member loginMember) {
+        if (purchase == null || purchase.getMember() == null || loginMember == null) {
+            return false;
+        }
+        return purchase.getMember().equals(loginMember);
     }
 }

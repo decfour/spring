@@ -1,7 +1,7 @@
 package com.kdj.commerce.service;
 
-import com.kdj.commerce.domain.community.Comment;
-import com.kdj.commerce.domain.community.CommentRepository;
+import com.kdj.commerce.domain.community.PostComment;
+import com.kdj.commerce.domain.community.PostCommentRepository;
 import com.kdj.commerce.domain.community.Post;
 import com.kdj.commerce.domain.community.PostRepository;
 import com.kdj.commerce.domain.member.Member;
@@ -15,19 +15,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class CommentService {
-    private final CommentRepository commentRepository;
+public class PostCommentService {
+    private final PostCommentRepository postCommentRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
-    public Comment findById(Long id) {
-        Comment comment = commentRepository.findById(id)
+    public PostComment findById(Long id) {
+        PostComment comment = postCommentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다 id=" + id));
         return comment;
     }
 
-    public Page<Comment> findByPostId(Long postId, Pageable pageable) {
-        return commentRepository.findByPostIdWithWriter(postId, pageable);
+    public Page<PostComment> findByPostId(Long postId, Pageable pageable) {
+        return postCommentRepository.findByPostIdWithCreator(postId, pageable);
     }
 
     @Transactional
@@ -37,14 +37,14 @@ public class CommentService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다 id=" + memberId));
 
-        Comment comment = Comment.create(post, member, content);
+        PostComment comment = PostComment.create(post, member, content);
 
-        return commentRepository.save(comment).getId();
+        return postCommentRepository.save(comment).getId();
     }
 
     @Transactional
-    public void update(Long id, Comment updateParam) {
-        Comment comment = commentRepository.findById(id)
+    public void update(Long id, PostComment updateParam) {
+        PostComment comment = postCommentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다 id=" + id));
 
         comment.update(updateParam.getContent());
@@ -52,9 +52,9 @@ public class CommentService {
 
     @Transactional
     public void delete(Long id) {
-        Comment comment = commentRepository.findById(id)
+        PostComment comment = postCommentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다 id=" + id));
 
-        commentRepository.delete(comment);
+        postCommentRepository.delete(comment);
     }
 }

@@ -27,8 +27,8 @@ public class WalkCourseService {
         return walkCourse;
     }
 
-    public Page<WalkCourse> findByMemberId(Pageable pageable, Long id) {
-        return walkCourseRepository.findByMemberIdOrderByCreatedAtDesc(id, pageable);
+    public Page<WalkCourse> findByCreatorId(Pageable pageable, Long id) {
+        return walkCourseRepository.findByCreatorIdOrderByCreatedAtDesc(id, pageable);
     }
 
     public Page<WalkCourseResponse> findNearbyCourses(Pageable pageable,
@@ -61,8 +61,8 @@ public class WalkCourseService {
     @Transactional
     public Long save(
             Member member,
-            String name,
-            String review,
+            String title,
+            String content,
             Double startLat,
             Double startLng,
             Double endLat,
@@ -72,8 +72,8 @@ public class WalkCourseService {
             Integer duration) {
         WalkCourse walkCourse = WalkCourse.create(
                 member,
-                name,
-                review,
+                title,
+                content,
                 startLat,
                 startLng,
                 endLat,
@@ -89,10 +89,10 @@ public class WalkCourseService {
     }
 
     @Transactional
-    public Long update(Long id, String name, String review) {
+    public Long update(Long id, String title, String content) {
         WalkCourse walkCourse = walkCourseRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("찾을 수 없습니다 id=" + id));
-        walkCourse.update(name, review);
+        walkCourse.update(title, content);
 
         return walkCourse.getId();
     }

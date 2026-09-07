@@ -16,7 +16,7 @@ public class SignOnForm {
             regexp = "^[가-힣a-zA-Z0-9]+$",
             message = "이름은 한글, 영문, 숫자만 사용할 수 있습니다."
     )
-    private String username;
+    private String name;
 
     @NotBlank(message = "이메일은 필수입니다.")
     @Email(message = "올바른 이메일이 아닙니다.")
@@ -29,9 +29,9 @@ public class SignOnForm {
             regexp = "^[a-zA-Z0-9_]+$",
             message = "아이디는 영문, 숫자, 언더바(_)만 사용할 수 있습니다."
     )
-    private String loginId;
+    private String signInId;
 
     @NotBlank(message = "비밀번호는 필수입니다.")
     @Size(min = 8, max = 20, message = "비밀번호는 8~20자여야 합니다.")
-    private String loginPassword;
+    private String signInPassword;
 }

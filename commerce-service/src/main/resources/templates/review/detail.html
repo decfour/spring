@@ -165,7 +165,7 @@
         <div class="d-flex gap-2 align-items-center">
             <div class="dropdown"
                  th:if="${member != null and (
-                     (review?.member != null and review.member.id == member.id) or
+                     (review?.creator != null and review.creator.id == member.id) or
                      (member.memberType != null and member.memberType.name() == 'ADMIN')
                  )}">
                 <button class="dropdown-toggle-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -190,9 +190,9 @@
     <div class="post-info-flat">
         <div class="post-info-row">
             <span class="post-user-meta">
-                작성자 <span class="text-dark font-weight-bold" th:text="${review?.member != null ? review.member.username : '익명'}">사용자</span>
+                작성자 <span class="text-dark font-weight-bold" th:text="${review?.creator != null ? review.creator.name : '익명'}">사용자</span>
                 <span class="meta-divider">•</span>
-                <span th:text="${#temporals.format(review?.createdDate, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
+                <span th:text="${#temporals.format(review?.createdAt, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
             </span>
         </div>
     </div>

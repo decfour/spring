@@ -14,21 +14,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
-    private final CommentRepository commentRepository;
+    private final PostCommentRepository postCommentRepository;
 
     public Post findById(Long id) {
-        return postRepository.findByIdWithWriter(id)
+        return postRepository.findByIdWithCreator(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + id));
     }
 
     // Fetch (Post + Member)
     public Page<Post> findAll(Pageable pageable) {
-        return postRepository.findAllWithWriter(pageable);
+        return postRepository.findAllWithCreator(pageable);
     }
 
     // Fetch (Post + Member)
     public Page<Post> findHit(Pageable pageable) {
-        return postRepository.findHitWithWriter(20, pageable);
+        return postRepository.findHitWithCreator(20, pageable);
     }
 
     @Transactional
@@ -50,7 +50,7 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id = " + id));
 
-        commentRepository.deleteByPostId(id);
+        postCommentRepository.deleteByPostId(id);
         postLikeRepository.deleteByPostId(id);
         postRepository.delete(post);
     }

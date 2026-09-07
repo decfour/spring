@@ -30,17 +30,17 @@ public class FileStore {
         String originalFilename = multipartFile.getOriginalFilename();
 
         // 2. 서버 저장 고유 파일명 생성 (예: "uuid-1234.png")
-        String storeFileName = createStoreFileName(originalFilename);
+        String storedFileName = createStoredFileName(originalFilename);
 
         // 3. 실제 하드디스크 경로에 파일 객체 생성 후 저장 처리
-        multipartFile.transferTo(new File(getFullPath(storeFileName)));
+        multipartFile.transferTo(new File(getFullPath(storedFileName)));
 
         // DB에 저장할 수 있도록 '서버용 고유 파일명'을 반환
-        return storeFileName;
+        return storedFileName;
     }
 
     // UUID + 확장자
-    private String createStoreFileName(String originalFilename) {
+    private String createStoredFileName(String originalFilename) {
         String ext = extractExt(originalFilename);
         String uuid = UUID.randomUUID().toString();
 

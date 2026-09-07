@@ -3,8 +3,8 @@ package com.kdj.commerce.service;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemRepository;
 import com.kdj.commerce.domain.member.Member;
-import com.kdj.commerce.domain.review.Review;
-import com.kdj.commerce.domain.review.ReviewRepository;
+import com.kdj.commerce.domain.review.ItemReview;
+import com.kdj.commerce.domain.review.ItemReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,37 +16,37 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ReviewService {
-    private final ReviewRepository reviewRepository;
+public class ItemReviewService {
+    private final ItemReviewRepository itemReviewRepository;
     private final ItemRepository itemRepository;
 
-    public Review findById(Long id) {
-        return reviewRepository.findById(id)
+    public ItemReview findById(Long id) {
+        return itemReviewRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + id));
     }
 
-    public Page<Review> findByItemId(Long itemId, Pageable pageable) {
-        return reviewRepository.findByItemId(pageable, itemId);
+    public Page<ItemReview> findByItemId(Long itemId, Pageable pageable) {
+        return itemReviewRepository.findByItemId(pageable, itemId);
     }
 
-    public Page<Review> findByMemberId(Pageable pageable, Long memberId) {
-        return reviewRepository.findByMemberId(pageable, memberId);
+    public Page<ItemReview> findByCreatorId(Pageable pageable, Long memberId) {
+        return itemReviewRepository.findByCreatorId(pageable, memberId);
     }
 
     @Transactional
     public Long save(Long itemId, Member member, String title, String content) {
         Item item = itemRepository.findByIdWithLock(itemId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + itemId));
-        Review review = Review.create(title, content, item, member);
+        ItemReview review = ItemReview.create(title, content, item, member);
 
-        reviewRepository.save(review);
+        itemReviewRepository.save(review);
 
         return review.getId();
     }
 
     @Transactional
     public void update(Long id, String title, String content) {
-        Review review = reviewRepository.findById(id)
+        ItemReview review = itemReviewRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + id));
 
         review.update(title, content);
@@ -54,9 +54,9 @@ public class ReviewService {
 
     @Transactional
     public void delete(Long id) {
-        Review review = reviewRepository.findById(id)
+        ItemReview review = itemReviewRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + id));
 
-        reviewRepository.delete(review);
+        itemReviewRepository.delete(review);
     }
 }
