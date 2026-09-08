@@ -4,183 +4,24 @@
     <meta charset="UTF-8">
     <title>THGTE - Add Course</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <th:block th:replace="~{common/header :: styles}"></th:block>
 
     <script type="text/javascript"
             src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
-
-    <style>
-        body {
-            background-color: #ffffff;
-            color: #1d1d1f;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .main-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.8px;
-        }
-
-        .map-wrapper {
-            position: relative;
-            width: 100%;
-            height: 340px;
-            border-radius: 18px;
-            overflow: hidden;
-            border: 1px solid #d2d2d7;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            margin-bottom: 24px;
-        }
-
-        .location-btn {
-            position: absolute;
-            right: 16px;
-            bottom: 16px;
-            z-index: 10;
-            background-color: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #1d1d1f;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            border-radius: 100px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-        }
-
-        .location-btn:hover {
-            background-color: #ffffff;
-        }
-
-        .location-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .map-card {
-            width: 100%;
-            height: 100%;
-        }
-
-        .map-status-badge {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            z-index: 10;
-            background-color: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #1d1d1f;
-            padding: 8px 14px;
-            border-radius: 100px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            pointer-events: none;
-        }
-
-        .form-label-custom {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #1d1d1f;
-            margin-bottom: 6px;
-            display: block;
-        }
-
-        .form-control-apple {
-            width: 100%;
-            border: 1px solid #d2d2d7;
-            border-radius: 12px;
-            padding: 12px 16px;
-            font-size: 0.95rem;
-            color: #1d1d1f;
-            background-color: #ffffff;
-            outline: none;
-        }
-
-        .form-control-apple:focus {
-            border-color: #0066cc;
-            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
-        }
-
-        .form-control-apple::placeholder {
-            color: #86868b;
-        }
-
-        .btn-apple-dark,
-        .btn-apple-outline {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 38px;
-            padding: 0 18px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 980px;
-            text-decoration: none;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        .btn-apple-dark {
-            background-color: #1d1d1f;
-            color: #ffffff;
-            border: 1px solid #1d1d1f;
-        }
-
-        .btn-apple-dark:hover {
-            background-color: #434344;
-            border-color: #434344;
-            color: #ffffff;
-        }
-
-        .btn-apple-dark:disabled {
-            background-color: #e5e5e7;
-            border-color: #e5e5e7;
-            color: #86868b;
-            cursor: not-allowed;
-        }
-
-        .btn-apple-outline {
-            background-color: transparent;
-            color: #1d1d1f;
-            border: 1px solid #d2d2d7;
-        }
-
-        .btn-apple-outline:hover {
-            background-color: #f5f5f7;
-            border-color: #86868b;
-            color: #1d1d1f;
-        }
-    </style>
 </head>
 
-<body>
+<body data-view="walk-form">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div class="main-container">
+<div class="page">
 
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h2 class="section-title m-0">
-            Walking <span class="text-muted" style="font-weight:400;">Add</span>
+        <h2 class="page-title m-0">
+            Walking <span class="subtitle">Add</span>
         </h2>
 
-        <a th:href="@{/walk}" class="btn-apple-outline">
+        <a th:href="@{/walk}" class="btn-secondary">
             뒤로
         </a>
     </div>
@@ -192,26 +33,26 @@
 
         <div id="map" class="map-card"></div>
 
-        <button type="button" id="locationBtn" class="location-btn">
+        <button type="button" id="locationBtn" class="btn-location">
             📍 현재 위치
         </button>
     </div>
 
     <form th:action="@{/walk}" method="post">
-        <div class="mb-4">
+        <div class="field-group">
             <input type="text"
                    id="title"
                    name="title"
-                   class="form-control-apple"
+                   class="field"
                    placeholder="코스 이름"
                    maxlength="30"
                    required>
         </div>
 
-        <div class="mb-4">
+        <div class="field-group">
             <textarea id="content"
                       name="content"
-                      class="form-control-apple"
+                      class="field"
                       rows="2"
                       placeholder="코스 설명"
                       maxlength="500"
@@ -229,13 +70,13 @@
         <div class="d-flex justify-content-end gap-2 mt-4">
             <button type="button"
                     id="resetButton"
-                    class="btn-apple-outline">
+                    class="btn-secondary">
                 초기화
             </button>
 
             <button type="submit"
                     id="submitButton"
-                    class="btn-apple-dark"
+                    class="btn-primary"
                     disabled>
                 등록
             </button>

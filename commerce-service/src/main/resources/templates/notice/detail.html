@@ -4,170 +4,28 @@
     <meta charset="UTF-8">
     <title th:text="'THGTE - ' + ${notice.title}">THGTE - Notice Detail</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <th:block th:replace="~{common/header :: styles}"></th:block>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <style>
-        body {
-            background-color: #ffffff;
-            color: #1d1d1f;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .main-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.8px;
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            overflow: hidden;
-        }
-
-        .post-title-sub {
-            font-size: 1.5rem;
-            font-weight: 500;
-            color: #86868b;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 450px;
-        }
-
-        .btn-apple-outline {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 38px;
-            padding: 0 18px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 980px;
-            text-decoration: none;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-            line-height: 1;
-            cursor: pointer;
-            background-color: transparent;
-            color: #1d1d1f;
-            border: 1px solid #d2d2d7;
-        }
-
-        .btn-apple-outline:hover {
-            background-color: #f5f5f7;
-            border-color: #86868b;
-            color: #1d1d1f;
-        }
-
-        .dropdown-toggle-icon {
-            background: none;
-            border: none;
-            color: #86868b;
-            font-size: 1.1rem;
-            padding: 2px 10px;
-            height: 38px;
-            border-radius: 980px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .dropdown-toggle-icon:hover {
-            background-color: #f5f5f7;
-            color: #1d1d1f;
-        }
-
-        .dropdown-menu-apple {
-            border-radius: 12px;
-            border: 1px solid #e5e5e7;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-            padding: 6px;
-            min-width: 130px;
-            z-index: 1050;
-        }
-
-        .dropdown-menu-apple .dropdown-item {
-            font-size: 0.85rem;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-weight: 500;
-            color: #1d1d1f;
-        }
-
-        .dropdown-menu-apple .dropdown-item.text-danger:hover {
-            background-color: #fff2f2;
-        }
-
-        .dropdown-menu-apple .dropdown-item:hover {
-            color: #0066cc;
-            background-color: #f5f5f7;
-        }
-
-        .post-info-flat {
-            padding: 0 4px 16px 4px;
-            margin-bottom: 8px;
-        }
-
-        .post-info-row {
-            display: flex;
-            align-items: center;
-        }
-
-        .post-user-meta {
-            color: #86868b;
-            font-size: 0.88rem;
-            font-weight: 500;
-        }
-
-        .meta-divider {
-            color: #d2d2d7;
-            margin: 0 6px;
-            font-size: 0.75rem;
-        }
-
-        .post-card {
-            padding: 20px;
-            border: 1px solid #d2d2d7;
-            border-radius: 16px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-            color: #1d1d1f;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            min-height: 180px;
-            margin-bottom: 32px;
-        }
-    </style>
 </head>
 
-<body>
+<body data-view="notice-detail">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div class="main-container">
+<div class="page">
 
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h2 class="section-title m-0">
+        <h2 class="page-title m-0">
             <span>Notice</span>
             <span class="post-title-sub" th:text="${notice.title}">제목</span>
         </h2>
 
         <div class="d-flex gap-2 align-items-center">
             <div class="dropdown" th:if="${member != null and member.memberType?.name() == 'ADMIN'}">
-                <button class="dropdown-toggle-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     •••
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-apple">
+                <ul class="dropdown-menu dropdown-menu-end menu">
                     <li>
                         <a class="dropdown-item" th:href="@{/notice/{id}/edit(id=${notice.id})}">수정</a>
                     </li>
@@ -179,7 +37,7 @@
                 </ul>
             </div>
 
-            <a th:href="@{/notice}" class="btn-apple-outline">뒤로</a>
+            <a th:href="@{/notice}" class="btn-secondary">뒤로</a>
         </div>
     </div>
 

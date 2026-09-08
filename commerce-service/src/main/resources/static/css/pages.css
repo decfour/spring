@@ -1,0 +1,1132 @@
+/* =========================================================
+   Home
+   ========================================================= */
+
+:where([data-view="home"]) .page {
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+    min-height: auto;
+    margin: 0 auto;
+    padding: 32px 20px;
+
+    /* 홈 콘텐츠만 살짝 위로 */
+    transform: translateY(-90px);
+}
+
+:where([data-view="home"]) .main-title {
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -1.2px;
+    color: var(--ink);
+    margin-bottom: 8px;
+}
+
+:where([data-view="home"]) .main-sub {
+    font-size: 1.3rem;
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: -0.4px;
+    margin-bottom: 48px;
+}
+
+:where([data-view="home"]) .nav-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+:where([data-view="home"]) .link-item {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: var(--ink);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="home"]) .link-item:hover {
+    color: var(--accent);
+    transform: translateX(6px);
+}
+
+:where([data-view="home"]) .link-item-primary {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+
+:where([data-view="home"]) .link-item-secondary {
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+}
+
+:where([data-view="home"]) .link-arrow {
+    font-size: 0.95rem;
+    margin-left: 8px;
+    opacity: 0.4;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+:where([data-view="home"]) .link-item-primary .link-arrow {
+    font-size: 1.2rem;
+    opacity: 0.6;
+}
+
+:where([data-view="home"]) .link-item:hover .link-arrow {
+    opacity: 1;
+    transform: translateX(3px);
+}
+
+
+/* =========================================================
+   Cart
+   ========================================================= */
+
+:where([data-view="cart-cartList"]) .cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+}
+
+:where([data-view="cart-cartList"]) .cart-table th {
+    padding: 14px 0;
+    font-weight: 500;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--line);
+}
+
+:where([data-view="cart-cartList"]) .cart-table td {
+    padding: 18px 0;
+    border-bottom: 1px solid #e5e5e7;
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+:where([data-view="cart-cartList"]) .cart-item-link {
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: -0.2px;
+    transition: color 0.2s ease;
+}
+
+:where([data-view="cart-cartList"]) .cart-item-link:hover,
+:where([data-view="notice-list"]) .entry-link:hover,
+:where([data-view="review-list"]) .entry-link:hover {
+    color: var(--accent);
+}
+
+:where([data-view="cart-cartList"]) .btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    background: none;
+    border: none;
+    border-radius: 980px;
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="cart-cartList"]) .btn-delete:hover {
+    background-color: #fff2f2;
+    color: #de363a;
+}
+
+
+/* =========================================================
+   Community
+   ========================================================= */
+
+:where([data-view="community-detail"]) .menu .dropdown-item,
+:where([data-view="notice-detail"]) .menu .dropdown-item,
+:where([data-view="review-detail"]) .menu .dropdown-item,
+:where([data-view="walk-detail"]) .menu .dropdown-item {
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+:where([data-view="community-detail"]) .menu .dropdown-item.text-danger:hover,
+:where([data-view="notice-detail"]) .menu .dropdown-item.text-danger:hover,
+:where([data-view="review-detail"]) .menu .dropdown-item.text-danger:hover,
+:where([data-view="walk-detail"]) .menu .dropdown-item.text-danger:hover {
+    background-color: #fff2f2;
+}
+
+:where([data-view="community-detail"]) .post-info-row,
+:where([data-view="walk-detail"]) .course-info-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+:where([data-view="community-detail"]) .comments-section {
+    margin-top: 32px;
+}
+
+:where([data-view="community-detail"]) .comments-header {
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+}
+
+:where([data-view="community-detail"]) .comments-header .count {
+    margin-left: 2px;
+    color: var(--accent);
+}
+
+:where([data-view="community-detail"]) .comment-item {
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+:where([data-view="community-detail"]) .comment-header-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+:where([data-view="community-detail"]) .comment-writer {
+    color: var(--ink);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+:where([data-view="community-detail"]) .comment-date {
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+:where([data-view="community-detail"]) .comment-more-wrap {
+    display: flex;
+    justify-content: flex-end;
+    min-height: 24px;
+}
+
+:where([data-view="community-detail"]) .comment-content {
+    color: var(--ink);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+:where([data-view="community-detail"]) .comment-write-card {
+    padding: 18px;
+    margin-top: 20px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+:where([data-view="community-detail"]) .comments-empty {
+    padding: 32px 0;
+    margin-bottom: 12px;
+    border: 1px dashed var(--line);
+    border-radius: 14px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+
+/* =========================================================
+   Member
+   ========================================================= */
+
+/* My Course / My Review */
+
+:where([data-view="member-myCourse"]) .course-id,
+:where([data-view="member-myReview"]) .review-item-name {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+
+/* My Item */
+
+:where([data-view="member-myItem"]) .soldout-badge {
+    padding: 3px 10px;
+    border: 1px solid #f8d7da;
+    border-radius: 980px;
+    background-color: #fdf2f2;
+    color: #de363a;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+:where([data-view="member-myItem"]) .status-badge-open,
+:where([data-view="member-myPurchase"]) .status-badge-purchase {
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 980px;
+    background-color: var(--surface);
+    color: var(--ink);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+:where([data-view="member-myItem"]) .status-badge-closed,
+:where([data-view="member-myPurchase"]) .status-badge-cancel {
+    padding: 3px 10px;
+    border: 1px solid #e5e5e7;
+    border-radius: 980px;
+    background-color: #ffffff;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+
+/* My Page */
+
+:where([data-view="member-myPage"]) .profile-card {
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+:where([data-view="member-myPage"]) .profile-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid #e5e5e7;
+    font-size: 0.95rem;
+}
+
+:where([data-view="member-myPage"]) .profile-row:first-child {
+    padding-top: 0;
+}
+
+:where([data-view="member-myPage"]) .profile-row:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+:where([data-view="member-myPage"]) .profile-label {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+:where([data-view="member-myPage"]) .profile-value {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+:where([data-view="member-myPage"]) .type-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 980px;
+    background-color: var(--surface);
+    color: var(--ink);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+:where([data-view="member-myPage"]) .action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+:where([data-view="member-myPage"]) .action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    color: var(--ink);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="member-myPage"]) .action-card:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 4px 16px rgba(0, 102, 204, 0.12);
+}
+
+
+/* My Purchase */
+
+:where([data-view="member-myPurchase"]) .purchase-count {
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+:where([data-view="member-myPurchase"]) .btn-cancel {
+    padding: 3px 12px;
+    border: 1px solid #de363a;
+    border-radius: 980px;
+    background: none;
+    color: #de363a;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="member-myPurchase"]) .btn-cancel:hover {
+    background-color: #de363a;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   Notice / Review
+   ========================================================= */
+
+/* Detail */
+
+:where([data-view="notice-detail"]) .post-info-row,
+:where([data-view="review-detail"]) .post-info-row {
+    display: flex;
+    align-items: center;
+}
+
+
+/* List */
+
+:where([data-view="notice-list"]) .data-table,
+:where([data-view="review-list"]) .data-table {
+    width: 100%;
+    margin-top: 12px;
+    border-collapse: collapse;
+}
+
+:where([data-view="notice-list"]) .data-table th,
+:where([data-view="review-list"]) .data-table th {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+:where([data-view="notice-list"]) .data-table td,
+:where([data-view="review-list"]) .data-table td {
+    padding: 16px;
+    border-bottom: 1px solid #e5e5e7;
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+:where([data-view="notice-list"]) .entry-row,
+:where([data-view="review-list"]) .entry-row {
+    transition: background-color 0.2s ease;
+}
+
+:where([data-view="notice-list"]) .data-table tbody tr.entry-row:hover,
+:where([data-view="review-list"]) .data-table tbody tr.entry-row:hover {
+    background-color: var(--surface);
+}
+
+:where([data-view="notice-list"]) .entry-link,
+:where([data-view="review-list"]) .entry-link {
+    display: block;
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: -0.2px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+:where([data-view="notice-list"]) .entry-date,
+:where([data-view="review-list"]) .entry-date {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: right;
+}
+
+
+/* =========================================================
+   Purchase
+   ========================================================= */
+
+:where([data-view="purchase-purchaseForm"]) .sub-section-title {
+    margin-top: 32px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--ink);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+:where([data-view="purchase-purchaseForm"]) .item-card {
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+:where([data-view="purchase-purchaseForm"]) .item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.95rem;
+}
+
+
+/* =========================================================
+   Shop
+   ========================================================= */
+
+/* Shop Detail */
+
+:where([data-view="shop-detail"]) .item-title-sub,
+:where([data-view="walk-detail"]) .course-title-sub {
+    max-width: 450px;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 1.5rem;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+:where([data-view="shop-detail"]) .menu .dropdown-item {
+    width: 100%;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: none;
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+}
+
+:where([data-view="shop-detail"]) .menu .dropdown-item.text-danger:hover {
+    background-color: #fff2f2;
+    color: var(--danger) !important;
+}
+
+:where([data-view="shop-detail"]) .product-overview-card {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+    padding: 20px;
+    margin-bottom: 12px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+:where([data-view="shop-detail"]) .img-square-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border: 1px solid #e5e5e7;
+    border-radius: 14px;
+    background-color: var(--surface);
+}
+
+:where([data-view="shop-detail"]) .img-square-wrapper img,
+:where([data-view="shop-list"]) .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+:where([data-view="shop-detail"]) .detail-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--surface);
+    font-size: 0.95rem;
+}
+
+:where([data-view="shop-detail"]) .detail-row:last-child {
+    border-bottom: none;
+}
+
+:where([data-view="shop-detail"]) .detail-label {
+    width: 90px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+:where([data-view="shop-detail"]) .detail-value {
+    flex: 1;
+    color: var(--ink);
+}
+
+:where([data-view="shop-detail"]) .status-badge {
+    display: inline-block;
+    font-weight: 600;
+}
+
+:where([data-view="shop-detail"]) .item-card {
+    min-height: 80px;
+    padding: 20px;
+    margin-bottom: 12px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+:where([data-view="shop-detail"]) .purchase-card {
+    padding: 20px;
+    margin-bottom: 12px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+:where([data-view="shop-detail"]) .purchase-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+:where([data-view="shop-detail"]) .form-label-fixed {
+    width: 80px;
+    color: var(--ink);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+:where([data-view="shop-detail"]) .input-quantity {
+    width: 80px;
+    height: 38px;
+    padding: 0 8px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    outline: none;
+    background-color: #ffffff;
+    font-size: 0.95rem;
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+:where([data-view="shop-detail"]) .input-quantity:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+}
+
+
+/* Shop Form */
+
+:where([data-view="shop-form"]) .select {
+    appearance: none;
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2386868b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 12px 12px;
+}
+
+:where([data-view="shop-form"]) .form-check-input {
+    width: 1.1em;
+    height: 1.1em;
+    margin-top: 0.15em;
+    border-color: var(--line);
+    cursor: pointer;
+}
+
+:where([data-view="shop-form"]) .form-check-input:checked {
+    border-color: var(--accent);
+    background-color: var(--accent);
+}
+
+:where([data-view="shop-form"]) .form-check-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+}
+
+:where([data-view="shop-form"]) .form-check-label {
+    color: var(--ink);
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+
+/* Shop List */
+
+:where([data-view="shop-list"]) .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 30px;
+}
+
+:where([data-view="shop-list"]) .product-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background-color: #ffffff;
+    color: var(--ink);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="shop-list"]) .product-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 16px rgba(0, 102, 204, 0.12);
+}
+
+:where([data-view="shop-list"]) .product-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: var(--surface);
+}
+
+:where([data-view="shop-list"]) .no-image {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+:where([data-view="shop-list"]) .product-info {
+    padding: 10px 12px 12px;
+}
+
+:where([data-view="shop-list"]) .product-name {
+    overflow: hidden;
+    margin-bottom: 4px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+:where([data-view="shop-list"]) .product-price {
+    font-size: 0.84rem;
+    font-weight: 600;
+}
+
+:where([data-view="shop-list"]) .product-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 0.75rem;
+}
+
+:where([data-view="shop-list"]) .soldout-badge {
+    padding: 3px 8px;
+    border: 1px solid rgba(222, 54, 58, 0.2);
+    border-radius: 100px;
+    background-color: rgba(222, 54, 58, 0.08);
+    color: #de363a;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   Walk
+   ========================================================= */
+
+/* Shared Walk Map Badge */
+
+:where([data-view="walk-detail"]) .map-status-badge,
+:where([data-view="walk-form"]) .map-status-badge,
+:where([data-view="walk-hit"]) .map-status-badge,
+:where([data-view="walk-main"]) .map-status-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 10;
+    padding: 8px 14px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 100px;
+    background-color: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    color: var(--ink);
+    font-size: 0.85rem;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+
+/* Walk Detail */
+
+:where([data-view="walk-detail"]) .map-status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+:where([data-view="walk-detail"]) .badge-divider {
+    color: var(--line);
+    font-size: 0.75rem;
+}
+
+:where([data-view="walk-detail"]) .badge-val {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+:where([data-view="walk-detail"]) .course-info-flat {
+    padding: 0 4px 16px;
+    margin-bottom: 8px;
+}
+
+:where([data-view="walk-detail"]) .course-user-meta {
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+:where([data-view="walk-detail"]) .tag-bar-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+:where([data-view="walk-detail"]) .tag-scroll-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    gap: 8px;
+    overflow-x: auto;
+    padding-right: 24px;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+:where([data-view="walk-detail"]) .tag-scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+:where([data-view="walk-detail"]) .tag-fade-overlay {
+    position: absolute;
+    top: 0;
+    right: 76px;
+    z-index: 2;
+    width: 32px;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 1)
+    );
+    pointer-events: none;
+}
+
+:where([data-view="walk-detail"]) .tag-actions-group {
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding-left: 8px;
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+    background-color: #ffffff;
+}
+
+:where([data-view="walk-detail"]) .tag-chip {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    height: 28px;
+    padding: 0 12px;
+    border: 1px solid transparent;
+    border-radius: 980px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="walk-detail"]) .tag-LOVE {
+    background-color: #ffe5ec;
+    color: #ff2d55;
+    border-color: #ffccd5;
+}
+
+:where([data-view="walk-detail"]) .tag-NATURE {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-color: #c8e6c9;
+}
+
+:where([data-view="walk-detail"]) .tag-CITY {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border-color: #bbdefb;
+}
+
+:where([data-view="walk-detail"]) .tag-QUIET {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+    border-color: #e1bee7;
+}
+
+:where([data-view="walk-detail"]) .tag-HOT {
+    background-color: #fff3e0;
+    color: #e65100;
+    border-color: #ffe0b2;
+}
+
+:where([data-view="walk-detail"]) .tag-NIGHT {
+    background-color: #eceff1;
+    color: #37474f;
+    border-color: #cfd8dc;
+}
+
+:where([data-view="walk-detail"]) .tag-MORNING {
+    background-color: #fffde7;
+    color: #f57f17;
+    border-color: #fff9c4;
+}
+
+:where([data-view="walk-detail"]) .tag-LONG_DISTANCE {
+    background-color: #e0f2f1;
+    color: #00695c;
+    border-color: #b2dfdb;
+}
+
+:where([data-view="walk-detail"]) .tag-SHORT_DISTANCE {
+    background-color: #f1f8e9;
+    color: #558b2f;
+    border-color: #dededd;
+}
+
+:where([data-view="walk-detail"]) .tag-PET {
+    background-color: #efebe9;
+    color: #4e342e;
+    border-color: #d7ccc8;
+}
+
+:where([data-view="walk-detail"]) .tag-FAMILY {
+    background-color: #fce4ec;
+    color: #c2185b;
+    border-color: #f8bbd0;
+}
+
+:where([data-view="walk-detail"]) .btn-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="walk-detail"]) .btn-tag:hover {
+    border-color: var(--accent);
+    background-color: #ffffff;
+    color: var(--accent);
+}
+
+:where([data-view="walk-detail"]) .review-section {
+    margin-top: 12px;
+}
+
+:where([data-view="walk-detail"]) .review-card {
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+:where([data-view="walk-detail"]) .review-empty {
+    color: var(--muted);
+}
+
+
+/* Walk Hit */
+
+:where([data-view="walk-hit"]) .course-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="walk-hit"]) .course-card.active {
+    border-color: var(--accent);
+    background-color: rgba(0, 102, 204, 0.02);
+}
+
+:where([data-view="walk-hit"]) .course-rank {
+    min-width: 32px;
+    color: var(--ink);
+    font-size: 1.3rem;
+    font-weight: 800;
+    line-height: 1;
+    text-align: center;
+}
+
+:where([data-view="walk-hit"]) .course-rank.gold {
+    color: #ffd700;
+}
+
+:where([data-view="walk-hit"]) .course-rank.silver {
+    color: #c0c0c0;
+}
+
+:where([data-view="walk-hit"]) .course-rank.bronze {
+    color: #cd7f32;
+}
+
+:where([data-view="walk-hit"]) .course-content {
+    flex: 1;
+    min-width: 0;
+}
+
+:where([data-view="walk-hit"]) .course-detail-link {
+    display: inline-block;
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+
+/* Walk Main */
+
+:where([data-view="walk-main"]) .course-card {
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="walk-main"]) .course-card.selected {
+    border-color: var(--accent);
+    background-color: #f5f9ff;
+    box-shadow: 0 4px 16px rgba(0, 102, 204, 0.12);
+}
+
+:where([data-view="walk-main"]) .course-detail-link {
+    display: inline-block;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+:where([data-view="walk-main"]) .loading {
+    padding: 40px;
+    color: var(--muted);
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 768px) {
+    :where([data-view="shop-list"]) .product-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .post-title-sub,
+    .item-title-sub,
+    .course-title-sub {
+        max-width: 100%;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .post-info-row,
+    .course-info-row {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .map-status-badge {
+        max-width: calc(100% - 32px);
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    :where([data-view="member-myPage"]) .action-grid {
+        grid-template-columns: 1fr;
+    }
+
+    :where([data-view="shop-detail"]) .product-overview-card {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}

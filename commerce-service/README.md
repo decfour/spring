@@ -41,6 +41,8 @@ Spring Boot & MySQL & Kakao Map API 기반 산책 경로 추천 및 쇼핑 서�
 
 ## Troubleshooting
 
+### 주변 코스 조회 성능 
+
 ### 동시 주문 재고 정합성
 
 * 문제: 동시 주문 시 재고 중복 차감 가능

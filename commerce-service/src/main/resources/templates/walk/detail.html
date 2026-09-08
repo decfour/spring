@@ -4,340 +4,19 @@
     <meta charset="UTF-8">
     <title>THGTE - Course Detail</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <th:block th:replace="~{common/header :: styles}"></th:block>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
-
-    <style>
-        body {
-            background-color: #ffffff;
-            color: #1d1d1f;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .main-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.8px;
-            display: flex;
-            align-items: baseline;
-            gap: 8px;
-            overflow: hidden;
-        }
-
-        .course-title-sub {
-            font-size: 1.5rem;
-            font-weight: 500;
-            color: #86868b;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 450px;
-        }
-
-        .btn-apple-outline {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 38px;
-            padding: 0 18px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 980px;
-            text-decoration: none;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-            line-height: 1;
-            cursor: pointer;
-            background-color: transparent;
-            color: #1d1d1f;
-            border: 1px solid #d2d2d7;
-        }
-
-        .btn-apple-outline:hover {
-            background-color: #f5f5f7;
-            border-color: #86868b;
-            color: #1d1d1f;
-        }
-
-        .btn-like-pill {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            height: 36px;
-            padding: 0 18px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border-radius: 980px;
-            background-color: #ffffff;
-            border: 1px solid #d2d2d7;
-            color: #1d1d1f;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .btn-like-pill:hover {
-            border-color: #ff2d55;
-            color: #ff2d55;
-            background-color: rgba(255, 45, 85, 0.04);
-        }
-
-        .dropdown-toggle-icon {
-            background: none;
-            border: none;
-            color: #86868b;
-            font-size: 1.1rem;
-            padding: 2px 10px;
-            height: 38px;
-            border-radius: 980px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-
-        .dropdown-toggle-icon:hover {
-            background-color: #f5f5f7;
-            color: #1d1d1f;
-        }
-
-        .dropdown-menu-apple {
-            border-radius: 12px;
-            border: 1px solid #e5e5e7;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-            padding: 6px;
-            min-width: 130px;
-            z-index: 1050;
-        }
-
-        .dropdown-menu-apple .dropdown-item {
-            font-size: 0.85rem;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-weight: 500;
-            color: #1d1d1f;
-        }
-
-        .dropdown-menu-apple .dropdown-item.text-danger:hover {
-            background-color: #fff2f2;
-        }
-
-        .dropdown-menu-apple .dropdown-item:hover {
-            color: #0066cc;
-            background-color: #f5f5f7;
-        }
-
-        .map-wrapper {
-            position: relative;
-            width: 100%;
-            height: 340px;
-            border-radius: 18px;
-            overflow: hidden;
-            border: 1px solid #d2d2d7;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            margin-bottom: 24px;
-        }
-
-        .map-card {
-            width: 100%;
-            height: 100%;
-        }
-
-        .map-status-badge {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            z-index: 10;
-            background-color: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #1d1d1f;
-            padding: 8px 14px;
-            border-radius: 100px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .badge-divider {
-            color: #d2d2d7;
-            font-size: 0.75rem;
-        }
-
-        .badge-val {
-            font-weight: 600;
-            color: #1d1d1f;
-        }
-
-        .course-info-flat {
-            padding: 0 4px 16px 4px;
-            margin-bottom: 8px;
-        }
-
-        .course-info-row {
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
-            align-items: center;
-        }
-
-        .info-col {
-            display: flex;
-            align-items: center;
-        }
-
-        .info-col.col-writer { justify-content: flex-start; }
-        .info-col.col-like { justify-content: center; }
-        .info-col.col-empty { justify-content: flex-end; }
-
-        .course-user-meta {
-            color: #86868b;
-            font-size: 0.88rem;
-            font-weight: 500;
-        }
-
-        .tag-bar-card {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 14px;
-            border: 1px solid #d2d2d7;
-            border-radius: 14px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-            margin-bottom: 12px;
-        }
-
-        .tag-scroll-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            overflow-x: auto;
-            white-space: nowrap;
-            padding-right: 24px;
-            scroll-behavior: smooth;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-            flex-grow: 1;
-        }
-
-        .tag-scroll-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .tag-fade-overlay {
-            position: absolute;
-            top: 0;
-            right: 76px;
-            width: 32px;
-            height: 100%;
-            background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .tag-actions-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding-left: 8px;
-            background-color: #ffffff;
-            z-index: 3;
-            border-top-right-radius: 14px;
-            border-bottom-right-radius: 14px;
-        }
-
-        .tag-chip {
-            display: inline-flex;
-            align-items: center;
-            height: 28px;
-            padding: 0 12px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            border-radius: 980px;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-
-        .tag-LOVE { background-color: #ffe5ec; color: #ff2d55; border-color: #ffccd5; }
-        .tag-NATURE { background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; }
-        .tag-CITY { background-color: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
-        .tag-QUIET { background-color: #f3e5f5; color: #7b1fa2; border-color: #e1bee7; }
-        .tag-HOT { background-color: #fff3e0; color: #e65100; border-color: #ffe0b2; }
-        .tag-NIGHT { background-color: #eceff1; color: #37474f; border-color: #cfd8dc; }
-        .tag-MORNING { background-color: #fffde7; color: #f57f17; border-color: #fff9c4; }
-        .tag-LONG_DISTANCE { background-color: #e0f2f1; color: #00695c; border-color: #b2dfdb; }
-        .tag-SHORT_DISTANCE { background-color: #f1f8e9; color: #558b2f; border-color: #dededd; }
-        .tag-PET { background-color: #efebe9; color: #4e342e; border-color: #d7ccc8; }
-        .tag-FAMILY { background-color: #fce4ec; color: #c2185b; border-color: #f8bbd0; }
-
-        .tag-icon-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 28px;
-            width: 28px;
-            padding: 0;
-            border-radius: 50%;
-            border: 1px solid #d2d2d7;
-            background-color: #ffffff;
-            color: #1d1d1f;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            flex-shrink: 0;
-        }
-
-        .tag-icon-btn:hover {
-            color: #0066cc;
-            border-color: #0066cc;
-            background-color: #ffffff;
-        }
-
-        .review-section {
-            margin-top: 12px;
-        }
-
-        .review-card {
-            padding: 20px;
-            border: 1px solid #d2d2d7;
-            border-radius: 16px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-            color: #1d1d1f;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            white-space: pre-line;
-        }
-
-        .review-empty {
-            color: #86868b;
-        }
-    </style>
 </head>
 
-<body>
+<body data-view="walk-detail">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div class="main-container">
+<div class="page">
 
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h2 class="section-title m-0">
+        <h2 class="page-title m-0">
             <span>Walking</span>
             <span class="course-title-sub" th:text="${course.title}">Course Name</span>
         </h2>
@@ -348,10 +27,10 @@
                      (course.creator != null and course.creator.id == loginMember.id) or
                      loginMember.memberType == T(com.kdj.commerce.domain.member.MemberType).ADMIN
                  )}">
-                <button class="dropdown-toggle-icon" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     •••
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-apple">
+                <ul class="dropdown-menu dropdown-menu-end menu">
                     <li>
                         <form th:action="@{/walk/course/{id}/delete(id=${course.id})}" method="post" class="m-0">
                             <button type="submit" class="dropdown-item text-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
@@ -360,7 +39,7 @@
                 </ul>
             </div>
 
-            <button type="button" id="backBtn" class="btn-apple-outline">뒤로</button>
+            <button type="button" id="backBtn" class="btn-secondary">뒤로</button>
         </div>
     </div>
 
@@ -382,7 +61,7 @@
             </div>
 
             <div class="info-col col-like">
-                <button type="button" id="likeBtn" class="btn-like-pill">
+                <button type="button" id="likeBtn" class="btn-like">
                     ❤️ <span id="likeCount" th:text="${course.likeCount}">0</span>
                 </button>
             </div>
@@ -403,20 +82,20 @@
         <div class="tag-fade-overlay"></div>
 
         <div class="tag-actions-group">
-            <button type="button" class="tag-icon-btn" data-bs-toggle="modal" data-bs-target="#allTagsModal" title="전체보기">
+            <button type="button" class="btn-tag" data-bs-toggle="modal" data-bs-target="#allTagsModal" title="전체보기">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
             </button>
 
             <div class="dropdown">
-                <button class="tag-icon-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="태그 추가">
+                <button class="btn-tag" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="태그 추가">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-apple">
+                <ul class="dropdown-menu dropdown-menu-end menu">
                     <li th:each="tagEnum : ${T(com.kdj.commerce.domain.walk.WalkTag).values()}">
                         <button type="button" class="dropdown-item"
                                 th:onclick="addTag([[${tagEnum.name()}]])"

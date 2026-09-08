@@ -4,283 +4,25 @@
     <meta charset="UTF-8">
     <title>THGTE - Walk</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <th:block th:replace="~{common/header :: styles}"></th:block>
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
-
-    <style>
-        body {
-            background-color: #ffffff;
-            color: #1d1d1f;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .main-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.8px;
-        }
-
-        .map-wrapper {
-            position: relative;
-            width: 100%;
-            height: 340px;
-            border-radius: 18px;
-            overflow: hidden;
-            border: 1px solid #d2d2d7;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            margin-bottom: 24px;
-        }
-
-        .map-card {
-            width: 100%;
-            height: 100%;
-        }
-
-        .map-status-badge {
-            position: absolute;
-            top: 16px;
-            left: 16px;
-            z-index: 10;
-            background-color: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #1d1d1f;
-            padding: 8px 14px;
-            border-radius: 100px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            pointer-events: none;
-        }
-
-        .location-btn {
-            position: absolute;
-            right: 16px;
-            bottom: 16px;
-            z-index: 10;
-            background-color: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: #1d1d1f;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            padding: 8px 16px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            border-radius: 100px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            cursor: pointer;
-        }
-
-        .location-btn:hover {
-            background-color: #ffffff;
-        }
-
-        .location-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-apple-dark,
-        .btn-apple-outline {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 38px;
-            padding: 0 18px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 980px;
-            text-decoration: none;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        .btn-apple-dark {
-            background-color: #1d1d1f;
-            color: #ffffff;
-            border: 1px solid #1d1d1f;
-        }
-
-        .btn-apple-dark:hover {
-            background-color: #434344;
-            border-color: #434344;
-            color: #ffffff;
-        }
-
-        .btn-apple-outline {
-            background-color: transparent;
-            color: #1d1d1f;
-            border: 1px solid #d2d2d7;
-        }
-
-        .btn-apple-outline:hover {
-            background-color: #f5f5f7;
-            border-color: #86868b;
-            color: #1d1d1f;
-        }
-
-        .course-section {
-            margin-top: 36px;
-        }
-
-        .course-empty {
-            padding: 40px 20px;
-            text-align: center;
-            color: #86868b;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .course-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .course-card {
-            padding: 12px 16px;
-            border: 1px solid #d2d2d7;
-            border-radius: 14px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .course-card:hover {
-            border-color: #0066cc;
-            box-shadow: 0 4px 16px rgba(0, 102, 204, 0.12);
-        }
-
-        .course-card.selected {
-            border-color: #0066cc;
-            box-shadow: 0 4px 16px rgba(0, 102, 204, 0.12);
-            background-color: #f5f9ff;
-        }
-
-        .course-name {
-            font-size: 0.98rem;
-            font-weight: 600;
-            margin-bottom: 3px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .course-detail-link {
-            display: inline-block;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .course-detail-link:hover {
-            color: #0066cc;
-        }
-
-        .course-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #86868b;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .like-count {
-            margin-left: auto;
-            color: #1d1d1f;
-            font-weight: 600;
-            background: none;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            transition: transform 0.1s ease, color 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-        }
-
-        .like-count:hover {
-            color: #0066cc;
-        }
-
-        .loading {
-            padding: 40px;
-            text-align: center;
-            color: #86868b;
-            font-size: 0.95rem;
-        }
-
-        .pagination-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            margin-top: 28px;
-        }
-
-        .page-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 34px;
-            height: 34px;
-            padding: 0 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #1d1d1f;
-            background-color: transparent;
-            border: 1px solid transparent;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        .page-btn:hover:not(.active):not(:disabled) {
-            background-color: #f5f5f7;
-            border-color: #d2d2d7;
-        }
-
-        .page-btn.active {
-            background-color: #1d1d1f;
-            color: #ffffff;
-            font-weight: 600;
-        }
-
-        .page-btn:disabled {
-            color: #d2d2d7;
-            cursor: not-allowed;
-        }
-    </style>
 </head>
 
-<body>
+<body data-view="walk-main">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div class="main-container">
+<div class="page">
 
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h2 class="section-title m-0">
+        <h2 class="page-title m-0">
             Walking
         </h2>
 
         <div class="d-flex gap-2">
-            <a th:href="@{/walk/course/hit}" class="btn-apple-outline">HIT</a>
-            <a th:href="@{/walk/course/add}" class="btn-apple-dark">등록</a>
-            <a th:href="@{/}" class="btn-apple-outline">뒤로</a>
+            <a th:href="@{/walk/course/hit}" class="btn-secondary">HIT</a>
+            <a th:href="@{/walk/course/add}" class="btn-primary">등록</a>
+            <a th:href="@{/}" class="btn-secondary">뒤로</a>
         </div>
     </div>
 
@@ -291,7 +33,7 @@
 
         <div id="map" class="map-card"></div>
 
-        <button type="button" id="locationBtn" class="location-btn">
+        <button type="button" id="locationBtn" class="btn-location">
             📍 현재 위치
         </button>
     </div>
@@ -300,7 +42,7 @@
         <div id="courseEmpty" class="course-empty" style="display: none;"></div>
         <div id="courseLoading" class="loading" style="display: none;">주변 코스를 찾는 중...</div>
         <div id="courseList" class="course-list"></div>
-        <div id="pagination" class="pagination-container"></div>
+        <div id="pagination" class="pager"></div>
     </div>
 
 </div>
@@ -541,7 +283,7 @@
                 <span>•</span>
                 <span>${formatDuration(course.duration)}</span>
 
-                <button type="button" class="like-count">
+                <button type="button" class="btn-like-count">
                     ❤️ ${course.likeCount ?? 0}
                 </button>
             </div>
@@ -562,7 +304,7 @@
         });
 
         // 추천 이벤트
-        const likeButton = card.querySelector('.like-count');
+        const likeButton = card.querySelector('.btn-like-count');
 
         likeButton.addEventListener('click', function(event) {
             event.stopPropagation();
@@ -726,7 +468,7 @@
     function createPageButton(text, disabled, onClick) {
         const button = document.createElement('button');
 
-        button.className = 'page-btn';
+        button.className = 'btn-page';
         button.innerText = text;
         button.disabled = disabled;
 

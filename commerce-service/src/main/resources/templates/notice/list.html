@@ -3,192 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>THGTE - Notice</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #ffffff;
-            color: #1d1d1f;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .main-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.8px;
-        }
-
-        .btn-apple-dark,
-        .btn-apple-outline {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            height: 38px;
-            padding: 0 18px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 980px;
-            text-decoration: none;
-            box-sizing: border-box;
-            transition: all 0.2s ease;
-            line-height: 1;
-            cursor: pointer;
-        }
-
-        .btn-apple-dark {
-            background-color: #1d1d1f;
-            color: #ffffff;
-            border: 1px solid #1d1d1f;
-        }
-
-        .btn-apple-dark:hover {
-            background-color: #434344;
-            border-color: #434344;
-            color: #ffffff;
-        }
-
-        .btn-apple-outline {
-            background-color: transparent;
-            color: #1d1d1f;
-            border: 1px solid #d2d2d7;
-        }
-
-        .btn-apple-outline:hover {
-            background-color: #f5f5f7;
-            border-color: #86868b;
-            color: #1d1d1f;
-        }
-
-        .notice-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-        }
-
-        .notice-table th {
-            padding: 12px 16px;
-            font-weight: 500;
-            color: #86868b;
-            font-size: 0.85rem;
-            border-bottom: 1px solid #d2d2d7;
-        }
-
-        .notice-table td {
-            padding: 16px;
-            border-bottom: 1px solid #e5e5e7;
-            font-size: 0.95rem;
-            vertical-align: middle;
-        }
-
-        .notice-row {
-            transition: background-color 0.2s ease;
-        }
-
-        .notice-table tbody tr.notice-row:hover {
-            background-color: #f5f5f7;
-        }
-
-        .notice-link {
-            display: block;
-            color: #1d1d1f;
-            font-weight: 600;
-            text-decoration: none;
-            letter-spacing: -0.2px;
-            transition: color 0.2s ease;
-        }
-
-        .notice-link:hover {
-            color: #0066cc;
-        }
-
-        .notice-date {
-            color: #86868b;
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-align: right;
-        }
-
-        .empty-notice {
-            padding: 40px 20px;
-            text-align: center;
-            color: #86868b;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            border: 1px solid #d2d2d7;
-            border-radius: 14px;
-            margin-top: 12px;
-        }
-
-        .pagination-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            margin-top: 28px;
-        }
-
-        .page-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 34px;
-            height: 34px;
-            padding: 0 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #1d1d1f;
-            background-color: transparent;
-            border: 1px solid transparent;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.15s ease;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        .page-btn:hover:not(.active):not(.disabled) {
-            background-color: #f5f5f7;
-            border-color: #d2d2d7;
-            color: #1d1d1f;
-        }
-
-        .page-btn.active {
-            background-color: #1d1d1f;
-            color: #ffffff;
-            font-weight: 600;
-        }
-
-        .page-btn.disabled {
-            color: #d2d2d7;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-    </style>
+    <th:block th:replace="~{common/header :: styles}"></th:block>
 </head>
-<body>
+<body data-view="notice-list">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div class="main-container">
+<div class="page">
     <div class="d-flex justify-content-between align-items-end mb-4">
-        <h2 class="section-title m-0">Notice</h2>
+        <h2 class="page-title m-0">Notice</h2>
         <div class="d-flex gap-2">
-            <a th:if="${member != null && member.memberType.name() == 'ADMIN'}" th:href="@{/notice/add}" class="btn-apple-dark">등록</a>
-            <a th:href="@{/}" class="btn-apple-outline">뒤로</a>
+            <a th:if="${member != null && member.memberType.name() == 'ADMIN'}" th:href="@{/notice/add}" class="btn-primary">등록</a>
+            <a th:href="@{/}" class="btn-secondary">뒤로</a>
         </div>
     </div>
 
-    <div th:if="${notices.isEmpty()}" class="empty-notice">
+    <div th:if="${notices.isEmpty()}" class="empty">
         공지사항이 없습니다
     </div>
 
-    <table th:if="${not notices.isEmpty()}" class="notice-table">
+    <table th:if="${not notices.isEmpty()}" class="data-table">
         <thead>
         <tr>
             <th style="width: 75%; text-align: left;">Title</th>
@@ -196,29 +30,29 @@
         </tr>
         </thead>
         <tbody>
-        <tr class="notice-row" th:each="notice : ${notices}">
+        <tr class="entry-row" th:each="notice : ${notices}">
             <td>
-                <a th:href="@{/notice/{id}(id=${notice.id})}" th:text="${notice.title}" class="notice-link">[안내] 공지사항 제목</a>
+                <a th:href="@{/notice/{id}(id=${notice.id})}" th:text="${notice.title}" class="entry-link">[안내] 공지사항 제목</a>
             </td>
-            <td th:text="${#temporals.format(notice.createdAt, 'yyyy.MM.dd')}" class="notice-date">2026.08.13</td>
+            <td th:text="${#temporals.format(notice.createdAt, 'yyyy.MM.dd')}" class="entry-date">2026.08.13</td>
         </tr>
         </tbody>
     </table>
 
-    <div th:if="${notices.totalPages > 1}" class="pagination-container">
+    <div th:if="${notices.totalPages > 1}" class="pager">
         <a th:href="@{/notice(page=${notices.number - 1})}"
-           class="page-btn"
+           class="btn-page"
            th:classappend="${notices.first} ? 'disabled' : ''">‹</a>
 
         <th:block th:each="pageNumber : ${#numbers.sequence(0, notices.totalPages - 1)}">
             <a th:href="@{/notice(page=${pageNumber})}"
                th:text="${pageNumber + 1}"
-               class="page-btn"
+               class="btn-page"
                th:classappend="${pageNumber == notices.number} ? 'active' : ''">1</a>
         </th:block>
 
         <a th:href="@{/notice(page=${notices.number + 1})}"
-           class="page-btn"
+           class="btn-page"
            th:classappend="${notices.last} ? 'disabled' : ''">›</a>
     </div>
 </div>
