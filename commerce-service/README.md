@@ -41,37 +41,17 @@ Spring Boot & MySQL & Kakao Map API 기반 산책 경로 추천 및 쇼핑 서�
 
 ## Troubleshooting
 
-### 주변 코스 조회 성능 
+### 주변 코스 조회 성능
+* 문제: 수많은 코스들 존재 시, 주변 코스 조회 과정에서의 성능, 부하 문제 발생
+* 해결: Bounding Box에 사용되는 start_lat, start_lng 에 B-Tree 인덱스를 추가
+* 결과: P95 응답 시간: 15.09초 → 98.6ms / 예상 탐색 행: 9,792개 → 675개
 
 ### 동시 주문 재고 정합성
-
 * 문제: 동시 주문 시 재고 중복 차감 가능
 * 해결: `Pessimistic Lock` 적용
-
-### 벌크 UPDATE와 영속성 컨텍스트
-
-* 문제: 벌크 연산 후 DB와 영속성 컨텍스트 상태 불일치
-* 해결: `clearAutomatically = true` 적용
+* 결과: 사용자 100명 동시 주문 상황 가정 테스트 결과 재고 정상 차감
 
 ### JPA N+1
-
-* 문제: 연관 엔티티 조회 시 추가 쿼리 발생 (예: 게시물 정보 + 게시물 작성자)
+* 문제: 연관 엔티티 조회 시 추가 쿼리 발생 (ex: 댓글 정보 + 댓글 작성자)
 * 해결: `Fetch Join` 적용
-
----
-
-## 배포
-
-```text
-Client
-  ↓
-Nginx
-  ↓
-Spring Boot
-  ↓
-MySQL
-```
-
-* AWS EC2 배포
-* Nginx Reverse Proxy 구성
-* 환경변수 기반 운영 설정
+* 결과: 불필요한 쿼리문 감소
