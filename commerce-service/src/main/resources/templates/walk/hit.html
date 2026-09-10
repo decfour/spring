@@ -86,30 +86,34 @@
             </div>
 
         </div>
-    </div>
+        <div th:if="${courses != null and courses.totalPages > 1}" class="pager"
+             th:with="endPage=${T(java.lang.Math).min(T(java.lang.Math).max(0, courses.number - 2) + 4, courses.totalPages - 1)},
+                      startPage=${T(java.lang.Math).max(0, endPage - 4)}">
 
-    <div th:if="${courses != null and courses.totalPages > 1}" class="pager">
+            <button type="button" class="btn-page"
+                    th:data-url="@{/walk/course/hit(page=${courses.number - 1})}"
+                    onclick="location.href = this.dataset.url"
+                    th:disabled="${courses.first}">
+                ‹
+            </button>
 
-        <a th:href="@{/walk/course/hit(page=${courses.number - 1})}"
-           class="btn-page"
-           th:classappend="${courses.first} ? 'disabled' : ''">
-            ‹
-        </a>
+            <th:block th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}">
+                <button type="button" class="btn-page"
+                        th:data-url="@{/walk/course/hit(page=${pageNumber})}"
+                        onclick="if (!this.classList.contains('active')) location.href = this.dataset.url"
+                        th:text="${pageNumber + 1}"
+                        th:classappend="${pageNumber == courses.number} ? 'active' : ''">
+                    1
+                </button>
+            </th:block>
 
-        <th:block th:each="pageNumber : ${#numbers.sequence(0, courses.totalPages - 1)}">
-            <a th:href="@{/walk/course/hit(page=${pageNumber})}"
-               th:text="${pageNumber + 1}"
-               class="btn-page"
-               th:classappend="${pageNumber == courses.number} ? 'active' : ''">
-                1
-            </a>
-        </th:block>
-
-        <a th:href="@{/walk/course/hit(page=${courses.number + 1})}"
-           class="btn-page"
-           th:classappend="${courses.last} ? 'disabled' : ''">
-            ›
-        </a>
+            <button type="button" class="btn-page"
+                    th:data-url="@{/walk/course/hit(page=${courses.number + 1})}"
+                    onclick="location.href = this.dataset.url"
+                    th:disabled="${courses.last}">
+                ›
+            </button>
+        </div>
     </div>
 
 </div>
@@ -128,8 +132,8 @@
 
     document.querySelectorAll('.course-card').forEach(card => {
         card.addEventListener('click', function() {
-            document.querySelectorAll('.course-card').forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
+            document.querySelectorAll('.course-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
             showCourseOnMap(this);
         });
     });

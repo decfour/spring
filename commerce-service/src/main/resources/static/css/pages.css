@@ -1011,18 +1011,6 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 12px 16px;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-:where([data-view="walk-hit"]) .course-card.active {
-    border-color: var(--accent);
-    background-color: rgba(0, 102, 204, 0.02);
 }
 
 :where([data-view="walk-hit"]) .course-rank {
@@ -1061,7 +1049,7 @@
 
 /* Walk Main */
 
-:where([data-view="walk-main"]) .course-card {
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-card {
     padding: 12px 16px;
     border: 1px solid var(--line);
     border-radius: 14px;
@@ -1071,7 +1059,7 @@
     transition: all 0.2s ease;
 }
 
-:where([data-view="walk-main"]) .course-card.selected {
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-card.selected {
     border-color: var(--accent);
     background-color: #f5f9ff;
     box-shadow: 0 4px 16px rgba(0, 102, 204, 0.12);
