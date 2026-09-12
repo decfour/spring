@@ -44,12 +44,12 @@ public class ChatRoom {
             throw new IllegalArgumentException("제목은 1~30자여야 합니다.");
         }
 
-        ChatRoom room = new ChatRoom();
-        room.walkCourse = Objects.requireNonNull(walkCourse, "산책 코스는 필수입니다.");
-        room.host = Objects.requireNonNull(host, "방장은 필수입니다.");
-        room.title = title;
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.walkCourse = Objects.requireNonNull(walkCourse, "산책 코스는 필수입니다.");
+        chatRoom.host = Objects.requireNonNull(host, "방장은 필수입니다.");
+        chatRoom.title = title;
 
-        return room;
+        return chatRoom;
     }
 
     public void close() {

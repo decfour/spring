@@ -12,72 +12,105 @@
 <main class="page">
 
     <div class="d-flex justify-content-between align-items-end mb-4">
+
         <h1 class="page-title m-0">Walking <span class="subtitle">Chat</span></h1>
+
         <div class="d-flex gap-2">
             <button type="button" class="btn-primary" data-open="create-room">등록</button>
             <a class="btn-secondary" th:href="@{/walk/course/{id}(id=${course.id})}">뒤로</a>
         </div>
+
     </div>
 
     <p th:if="${error}" th:text="${error}" class="alert alert-danger" role="alert"></p>
 
     <section class="course-summary" aria-label="산책 코스">
+
         <h2 th:text="${course.title}">코스 이름</h2>
+
         <div class="distance">
             <span th:text="${course.distance + ' m'}"></span>
             <p class="meta" th:text="${'약 ' + T(java.lang.Math).round(course.duration / 60.0) + '분'}"></p>
         </div>
+
     </section>
 
     <nav class="tabs" aria-label="채팅방 구분">
+
         <a class="tab" th:href="@{/walk/course/{id}/chat(id=${course.id})}" th:attr="aria-current=${!mine ? 'page' : null}">전체</a>
         <a class="tab" th:href="@{/walk/course/{id}/chat(id=${course.id},mine=true)}" th:attr="aria-current=${mine ? 'page' : null}">참여</a>
+
     </nav>
 
-    <section>
+    <section class="course-section">
+
         <p class="empty" th:if="${rooms.empty}" th:text="${mine ? '참여 중인 채팅방이 없습니다' : '채팅방이 없습니다'}"></p>
-        <div class="room-list">
+
+        <div class="course-list">
             <article class="room-card" th:each="room : ${rooms}"
                      th:classappend="${room.open and (room.joined or room.count < 5)} ? 'room-card-clickable' : ''">
+
                 <div class="room-body">
-                    <div class="room-top" th:if="${room.joined or room.count >= 5}">
-                        <span class="badge closed" th:if="${room.count >= 5}">정원 마감</span>
-                        <small th:if="${room.joined}">참여 중인 방</small>
+                    <h3 th:text="${room.title}" th:classappend="${room.joined} ? 'room-title-joined' : ''"></h3>
+
+                    <div class="room-meta">
+                        <span th:text="${'방장 ' + room.hostName}"></span>
+                        <span th:if="${room.count >= 5}">정원 마감</span>
                     </div>
-                    <h3 th:text="${room.title}"></h3>
-                    <div class="room-meta"><span th:text="${'방장 ' + room.hostName}"></span></div>
                 </div>
+
                 <div class="room-action">
                     <span class="people-count"><strong th:text="${room.count}"></strong> / 5명</span>
+
                     <a th:if="${room.open and room.joined}" class="room-card-link"
-                       th:attr="aria-label=${room.title + ' 대화방 열기'}"
+                       th:attr="aria-label=${room.title + ' 참여 중인 대화방 열기'}"
                        th:href="@{/walk/course/{courseId}/chat/{roomId}(courseId=${course.id},roomId=${room.id})}"></a>
-                    <form th:if="${room.open and !room.joined and room.count < 5}" method="post"
-                          th:action="@{/walk/course/{courseId}/chat/{roomId}/join(courseId=${course.id},roomId=${room.id})}">
-                        <button class="room-card-link" type="submit" th:attr="aria-label=${room.title + ' 참여하고 대화방 열기'}"></button>
-                    </form>
+
+                    <th:block th:if="${room.open and !room.joined and room.count < 5}">
+                        <button class="room-card-link" type="button"
+                                th:attr="aria-label=${room.title + ' 참여하기'},data-open=${'join-room-' + room.id}"
+                                aria-haspopup="dialog"></button>
+
+                        <dialog th:id="${'join-room-' + room.id}" th:attr="aria-labelledby=${'join-title-' + room.id}">
+                            <div class="dialog-heading"><h2 th:id="${'join-title-' + room.id}">참여할까요?</h2></div>
+                            <p class="intro" th:text="${room.title}"></p>
+                            <form method="post" class="dialog-actions"
+                                  th:action="@{/walk/course/{courseId}/chat/{roomId}/join(courseId=${course.id},roomId=${room.id})}">
+                                <button type="button" class="btn-secondary" data-close autofocus>취소</button>
+                                <button type="submit" class="btn-primary">참여</button>
+                            </form>
+                        </dialog>
+                    </th:block>
                 </div>
+
             </article>
         </div>
+
         <nav class="pager" th:if="${rooms.totalPages > 1}" aria-label="채팅방 페이지"
              th:with="endPage=${T(java.lang.Math).min(T(java.lang.Math).max(0, rooms.number - 2) + 4, rooms.totalPages - 1)},startPage=${T(java.lang.Math).max(0, endPage - 4)}">
             <a class="btn-page" th:classappend="${rooms.first} ? 'disabled' : ''" th:attr="aria-disabled=${rooms.first}"
                th:href="${rooms.first} ? null : @{/walk/course/{id}/chat(id=${course.id},mine=${mine},page=${rooms.number - 1})}" aria-label="이전 페이지">‹</a>
+
             <a class="btn-page" th:each="number : ${#numbers.sequence(startPage,endPage)}" th:text="${number + 1}"
                th:classappend="${number == rooms.number} ? 'active' : ''" th:attr="aria-current=${number == rooms.number ? 'page' : null}"
                th:href="@{/walk/course/{id}/chat(id=${course.id},mine=${mine},page=${number})}"></a>
+
             <a class="btn-page" th:classappend="${rooms.last} ? 'disabled' : ''" th:attr="aria-disabled=${rooms.last}"
                th:href="${rooms.last} ? null : @{/walk/course/{id}/chat(id=${course.id},mine=${mine},page=${rooms.number + 1})}" aria-label="다음 페이지">›</a>
         </nav>
+
     </section>
 
 </main>
 <dialog id="create-room" aria-labelledby="create-title">
+
     <div class="dialog-heading"><h2 id="create-title">방 만들기</h2><button class="icon-close" type="button" data-close aria-label="닫기">×</button></div>
+
     <form id="create-form" method="post" th:action="@{/walk/course/{id}/chat(id=${course.id})}">
         <div class="field-group"><label class="field-label" for="room-name">채팅방 이름</label><input class="field" id="room-name" name="title" th:value="${draftTitle}" maxlength="30" placeholder="제목을 입력하세요" required><div class="field-help"></div></div>
         <div class="dialog-actions"><button type="button" class="btn-secondary" data-close>취소</button><button class="btn-primary" type="submit">만들기</button></div>
     </form>
+
 </dialog>
 
 </body>

@@ -5,6 +5,7 @@ import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberRepository;
 import com.kdj.commerce.domain.walk.WalkCourse;
 import com.kdj.commerce.domain.walk.WalkCourseRepository;
+import com.kdj.commerce.web.dto.chat.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,87 +24,102 @@ public class ChatRoomService {
     private final WalkCourseRepository walkCourseRepository;
     private final MemberRepository memberRepository;
 
-    @Transactional
-    public Long create(Long walkCourseId, Long memberId, String title) {
-        Member host = findMember(memberId);
-        WalkCourse course = walkCourseRepository.findById(walkCourseId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 산책 코스입니다."));
-
-        ChatRoom room = chatRoomRepository.save(ChatRoom.create(course, host, title));
-
-        chatMemberRepository.save(ChatMember.create(room, host));
-
-        return room.getId();
+    public ChatCourseResponse findCourse(Long courseId) {
+        return ChatCourseResponse.from(findWalkCourse(courseId));
     }
 
-    // 잠금을 기다린 후에도 최신 참여 인원으로 판단하도록 READ_COMMITTED를 사용한다.
+    public Page<ChatRoomResponse> findRooms(
+            Long courseId,
+            Long memberId,
+            boolean mine,
+            Pageable pageable
+    ) {
+        Page<ChatRoom> chatRooms = mine
+                ? chatRoomRepository.findJoinedRooms(courseId, memberId, pageable)
+                : chatRoomRepository.findByWalkCourseIdAndStatusOrderByCreatedAtDescIdDesc(
+                        courseId, ChatRoomStatus.OPEN, pageable
+                );
+
+        return chatRooms.map(chatRoom -> {
+            long count = chatMemberRepository.countByChatRoomId(chatRoom.getId());
+            boolean joined = chatMemberRepository.existsByChatRoomIdAndMemberId(chatRoom.getId(), memberId);
+
+            return ChatRoomResponse.from(chatRoom, count, joined);
+        });
+    }
+
+    public ChatRoomDetailResponse findDetail(Long courseId, Long roomId, Long memberId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(roomId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+
+        validateCourse(chatRoom, courseId);
+        validateOpen(chatRoom);
+        validateParticipant(roomId, memberId);
+
+        List<ChatMemberResponse> participants = chatMemberRepository
+                .findByChatRoomIdOrderByJoinedAtAscIdAsc(roomId)
+                .stream()
+                .map(ChatMemberResponse::from)
+                .toList();
+
+        return new ChatRoomDetailResponse(
+                ChatCourseResponse.from(chatRoom.getWalkCourse()),
+                ChatRoomResponse.from(chatRoom, participants.size(), true),
+                participants
+        );
+    }
+
+    @Transactional
+    public Long save(Long courseId, Long memberId, String title) {
+        Member host = findMember(memberId);
+        WalkCourse walkCourse = findWalkCourse(courseId);
+        ChatRoom chatRoom = ChatRoom.create(walkCourse, host, title);
+
+        chatRoomRepository.save(chatRoom);
+        chatMemberRepository.save(ChatMember.create(chatRoom, host));
+
+        return chatRoom.getId();
+    }
+
+    // 잠금을 기다린 뒤 최신 참여 인원을 조회해야 하므로 READ_COMMITTED를 사용
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public void join(Long chatRoomId, Long memberId) {
+    public void join(Long courseId, Long roomId, Long memberId) {
         Member member = findMember(memberId);
-        ChatRoom room = findRoomForUpdate(chatRoomId);
+        ChatRoom chatRoom = findChatRoomWithLock(roomId);
 
-        requireOpen(room);
+        validateCourse(chatRoom, courseId);
+        validateOpen(chatRoom);
 
-        if (chatMemberRepository.existsByChatRoomIdAndMemberId(chatRoomId, memberId)) {
+        if (chatMemberRepository.existsByChatRoomIdAndMemberId(roomId, memberId)) {
             throw new IllegalStateException("이미 참여 중인 채팅방입니다.");
         }
-        if (chatMemberRepository.countByChatRoomId(chatRoomId) >= ChatRoom.MAX_PARTICIPANTS) {
+
+        if (chatMemberRepository.countByChatRoomId(roomId) >= ChatRoom.MAX_PARTICIPANTS) {
             throw new IllegalStateException("채팅방은 최대 5명까지 참여할 수 있습니다.");
         }
 
-        chatMemberRepository.save(ChatMember.create(room, member));
+        chatMemberRepository.save(ChatMember.create(chatRoom, member));
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public void leave(Long chatRoomId, Long memberId) {
-        findMember(memberId);
-        ChatRoom room = findRoomForUpdate(chatRoomId);
+    public void leave(Long courseId, Long roomId, Long memberId) {
+        ChatRoom chatRoom = findChatRoomWithLock(roomId);
 
-        requireOpen(room);
-        requireParticipant(chatRoomId, memberId);
+        validateCourse(chatRoom, courseId);
+        validateOpen(chatRoom);
+        validateParticipant(roomId, memberId);
 
-        if (room.getHost().getId().equals(memberId)) {
-            room.close();
-            chatMemberRepository.deleteByChatRoomId(chatRoomId);
+        if (chatRoom.getHost().getId().equals(memberId)) {
+            chatRoom.close();
+            chatMemberRepository.deleteByChatRoomId(roomId);
         } else {
-            chatMemberRepository.deleteByChatRoomIdAndMemberId(chatRoomId, memberId);
+            chatMemberRepository.deleteByChatRoomIdAndMemberId(roomId, memberId);
         }
     }
 
-    public Page<ChatRoom> findByWalkCourseId(Long walkCourseId, Pageable pageable) {
-        return chatRoomRepository
-                .findByWalkCourseIdOrderByCreatedAtDescIdDesc(walkCourseId, pageable);
-    }
-
-    public Page<ChatRoom> findByWalkCourseIdAndStatus(
-            Long walkCourseId, ChatRoomStatus status, Pageable pageable) {
-
-        return chatRoomRepository
-                .findByWalkCourseIdAndStatusOrderByCreatedAtDescIdDesc(
-                walkCourseId, status, pageable
-                );
-    }
-
-    public Page<ChatRoom> findJoinedRooms(Long walkCourseId, Long memberId, Pageable pageable) {
-        findMember(memberId);
-
-        return chatRoomRepository.findJoinedRooms(walkCourseId, memberId, pageable);
-    }
-
-    public ChatRoom findById(Long chatRoomId, Long memberId) {
-        ChatRoom room = chatRoomRepository.findById(chatRoomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
-
-        requireOpen(room);
-        requireParticipant(chatRoomId, memberId);
-
-        return room;
-    }
-
-    public List<ChatMember> findParticipants(Long chatRoomId, Long memberId) {
-        findById(chatRoomId, memberId);
-
-        return chatMemberRepository.findByChatRoomIdOrderByJoinedAtAscIdAsc(chatRoomId);
+    private WalkCourse findWalkCourse(Long courseId) {
+        return walkCourseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 산책 코스입니다."));
     }
 
     private Member findMember(Long memberId) {
@@ -115,19 +131,25 @@ public class ChatRoomService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
     }
 
-    private ChatRoom findRoomForUpdate(Long chatRoomId) {
-        return chatRoomRepository.findByIdForUpdate(chatRoomId)
+    private ChatRoom findChatRoomWithLock(Long roomId) {
+        return chatRoomRepository.findByIdWithLock(roomId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
     }
 
-    private void requireOpen(ChatRoom room) {
-        if (room.getStatus() != ChatRoomStatus.OPEN) {
+    private void validateCourse(ChatRoom chatRoom, Long courseId) {
+        if (!chatRoom.getWalkCourse().getId().equals(courseId)) {
+            throw new IllegalArgumentException("해당 코스의 채팅방이 아닙니다.");
+        }
+    }
+
+    private void validateOpen(ChatRoom chatRoom) {
+        if (chatRoom.getStatus() != ChatRoomStatus.OPEN) {
             throw new IllegalStateException("종료된 채팅방입니다.");
         }
     }
 
-    private void requireParticipant(Long chatRoomId, Long memberId) {
-        if (memberId == null || !chatMemberRepository.existsByChatRoomIdAndMemberId(chatRoomId, memberId)) {
+    private void validateParticipant(Long roomId, Long memberId) {
+        if (memberId == null || !chatMemberRepository.existsByChatRoomIdAndMemberId(roomId, memberId)) {
             throw new IllegalStateException("채팅방 참여자만 접근할 수 있습니다.");
         }
     }

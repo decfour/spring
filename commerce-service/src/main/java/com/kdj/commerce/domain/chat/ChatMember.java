@@ -32,10 +32,10 @@ public class ChatMember {
     private LocalDateTime joinedAt = LocalDateTime.now();
 
     public static ChatMember create(ChatRoom chatRoom, Member member) {
-        ChatMember participant = new ChatMember();
-        participant.chatRoom = Objects.requireNonNull(chatRoom, "채팅방은 필수입니다.");
-        participant.member = Objects.requireNonNull(member, "참여자는 필수입니다.");
+        ChatMember chatMember = new ChatMember();
+        chatMember.chatRoom = Objects.requireNonNull(chatRoom, "채팅방은 필수입니다.");
+        chatMember.member = Objects.requireNonNull(member, "참여자는 필수입니다.");
 
-        return participant;
+        return chatMember;
     }
 }

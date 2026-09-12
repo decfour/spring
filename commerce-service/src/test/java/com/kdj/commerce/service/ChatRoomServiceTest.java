@@ -46,7 +46,7 @@ class ChatRoomServiceTest {
         when(courseRepository.findById(10L)).thenReturn(Optional.of(course));
         when(roomRepository.save(any(ChatRoom.class))).thenAnswer(call -> call.getArgument(0));
 
-        service.create(10L, 1L, "함께 걸어요");
+        service.save(10L, 1L, "함께 걸어요");
 
         ArgumentCaptor<ChatMember> saved = ArgumentCaptor.forClass(ChatMember.class);
         verify(participantRepository).save(saved.capture());
@@ -56,15 +56,16 @@ class ChatRoomServiceTest {
     }
 
     private void prepareGuestJoin() {
+        when(course.getId()).thenReturn(100L);
         when(memberRepository.findById(2L)).thenReturn(Optional.of(guest));
-        when(roomRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(room));
+        when(roomRepository.findByIdWithLock(10L)).thenReturn(Optional.of(room));
     }
 
     @Test
     void fifthParticipantCanJoin() {
         prepareGuestJoin();
         when(participantRepository.countByChatRoomId(10L)).thenReturn(4L);
-        service.join(10L, 2L);
+        service.join(100L, 10L, 2L);
         ArgumentCaptor<ChatMember> saved = ArgumentCaptor.forClass(ChatMember.class);
         verify(participantRepository).save(saved.capture());
         assertThat(saved.getValue().getMember()).isSameAs(guest);
@@ -76,7 +77,7 @@ class ChatRoomServiceTest {
     void sixthParticipantCannotJoin() {
         prepareGuestJoin();
         when(participantRepository.countByChatRoomId(10L)).thenReturn(5L);
-        assertThatThrownBy(() -> service.join(10L, 2L))
+        assertThatThrownBy(() -> service.join(100L, 10L, 2L))
                 .isInstanceOf(IllegalStateException.class).hasMessageContaining("5명");
         verify(participantRepository, never()).save(any());
     }
@@ -85,7 +86,7 @@ class ChatRoomServiceTest {
     void duplicateJoinIsRejected() {
         prepareGuestJoin();
         when(participantRepository.existsByChatRoomIdAndMemberId(10L, 2L)).thenReturn(true);
-        assertThatThrownBy(() -> service.join(10L, 2L))
+        assertThatThrownBy(() -> service.join(100L, 10L, 2L))
                 .isInstanceOf(IllegalStateException.class).hasMessageContaining("이미 참여");
         verify(participantRepository, never()).save(any());
     }
@@ -94,18 +95,18 @@ class ChatRoomServiceTest {
     void closedRoomRejectsJoin() {
         prepareGuestJoin();
         room.close();
-        assertThatThrownBy(() -> service.join(10L, 2L))
+        assertThatThrownBy(() -> service.join(100L, 10L, 2L))
                 .isInstanceOf(IllegalStateException.class).hasMessageContaining("종료");
         verifyNoInteractions(participantRepository);
     }
 
     @Test
     void hostLeavingClosesRoomAndRemovesEveryone() {
-        when(memberRepository.findById(1L)).thenReturn(Optional.of(host));
+        when(course.getId()).thenReturn(100L);
         when(host.getId()).thenReturn(1L);
-        when(roomRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(room));
+        when(roomRepository.findByIdWithLock(10L)).thenReturn(Optional.of(room));
         when(participantRepository.existsByChatRoomIdAndMemberId(10L, 1L)).thenReturn(true);
-        service.leave(10L, 1L);
+        service.leave(100L, 10L, 1L);
         assertThat(room.getStatus()).isEqualTo(ChatRoomStatus.CLOSE);
         verify(participantRepository).deleteByChatRoomId(10L);
         verify(participantRepository, never()).deleteByChatRoomIdAndMemberId(any(), any());
@@ -113,10 +114,11 @@ class ChatRoomServiceTest {
 
     @Test
     void guestLeavingKeepsRoomOpen() {
-        prepareGuestJoin();
+        when(course.getId()).thenReturn(100L);
+        when(roomRepository.findByIdWithLock(10L)).thenReturn(Optional.of(room));
         when(host.getId()).thenReturn(1L);
         when(participantRepository.existsByChatRoomIdAndMemberId(10L, 2L)).thenReturn(true);
-        service.leave(10L, 2L);
+        service.leave(100L, 10L, 2L);
         assertThat(room.getStatus()).isEqualTo(ChatRoomStatus.OPEN);
         verify(participantRepository).deleteByChatRoomIdAndMemberId(10L, 2L);
         verify(participantRepository, never()).deleteByChatRoomId(any());
@@ -124,18 +126,72 @@ class ChatRoomServiceTest {
 
     @Test
     void outsiderCannotReadParticipants() {
+        when(course.getId()).thenReturn(100L);
         when(roomRepository.findById(10L)).thenReturn(Optional.of(room));
-        assertThatThrownBy(() -> service.findParticipants(10L, 2L))
+        assertThatThrownBy(() -> service.findDetail(100L, 10L, 2L))
                 .isInstanceOf(IllegalStateException.class).hasMessageContaining("참여자만");
         verify(participantRepository, never()).findByChatRoomIdOrderByJoinedAtAscIdAsc(any());
     }
 
     @Test
     void outsiderCannotLeave() {
-        prepareGuestJoin();
-        assertThatThrownBy(() -> service.leave(10L, 2L))
+        when(course.getId()).thenReturn(100L);
+        when(roomRepository.findByIdWithLock(10L)).thenReturn(Optional.of(room));
+        assertThatThrownBy(() -> service.leave(100L, 10L, 2L))
                 .isInstanceOf(IllegalStateException.class).hasMessageContaining("참여자만");
         verify(participantRepository, never()).deleteByChatRoomId(any());
         verify(participantRepository, never()).deleteByChatRoomIdAndMemberId(any(), any());
+    }
+    @Test
+    void wrongCourseCannotJoin() {
+        prepareGuestJoin();
+
+        assertThatThrownBy(() -> service.join(999L, 10L, 2L))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("해당 코스");
+
+        verifyNoInteractions(participantRepository);
+    }
+
+    @Test
+    void wrongCourseCannotCloseRoom() {
+        when(course.getId()).thenReturn(100L);
+        when(roomRepository.findByIdWithLock(10L)).thenReturn(Optional.of(room));
+
+        assertThatThrownBy(() -> service.leave(999L, 10L, 1L))
+                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("해당 코스");
+
+        assertThat(room.getStatus()).isEqualTo(ChatRoomStatus.OPEN);
+        verifyNoInteractions(participantRepository);
+    }
+
+    @Test
+    void listUsesOpenRoomsBeforePagination() {
+        var pageable = org.springframework.data.domain.PageRequest.of(0, 4);
+        when(roomRepository.findByWalkCourseIdAndStatusOrderByCreatedAtDescIdDesc(
+                100L, ChatRoomStatus.OPEN, pageable))
+                .thenReturn(org.springframework.data.domain.Page.empty(pageable));
+
+        assertThat(service.findRooms(100L, 1L, false, pageable).isEmpty()).isTrue();
+        verify(roomRepository).findByWalkCourseIdAndStatusOrderByCreatedAtDescIdDesc(
+                100L, ChatRoomStatus.OPEN, pageable);
+    }
+
+    @Test
+    void detailMapsParticipantsInsideService() {
+        when(course.getId()).thenReturn(100L);
+        when(host.getId()).thenReturn(1L);
+        when(host.getName()).thenReturn("방장");
+        when(roomRepository.findById(10L)).thenReturn(Optional.of(room));
+        when(participantRepository.existsByChatRoomIdAndMemberId(10L, 1L)).thenReturn(true);
+        when(participantRepository.findByChatRoomIdOrderByJoinedAtAscIdAsc(10L))
+                .thenReturn(java.util.List.of(ChatMember.create(room, host)));
+
+        var detail = service.findDetail(100L, 10L, 1L);
+
+        assertThat(detail.getCourse().getId()).isEqualTo(100L);
+        assertThat(detail.getRoom().getCount()).isEqualTo(1L);
+        assertThat(detail.getRoom().isJoined()).isTrue();
+        assertThat(detail.getParticipants()).extracting("name").containsExactly("방장");
+        verify(participantRepository, never()).countByChatRoomId(any());
     }
 }

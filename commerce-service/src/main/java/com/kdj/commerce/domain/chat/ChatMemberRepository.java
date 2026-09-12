@@ -3,12 +3,9 @@ package com.kdj.commerce.domain.chat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ChatMemberRepository extends JpaRepository<ChatMember, Long> {
     boolean existsByChatRoomIdAndMemberId(Long chatRoomId, Long memberId);
-
-    Optional<ChatMember> findByChatRoomIdAndMemberId(Long chatRoomId, Long memberId);
 
     long countByChatRoomId(Long chatRoomId);
 

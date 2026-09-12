@@ -8,5 +8,8 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
     Slice<ChatMessage> findByChatRoomIdOrderByIdDesc(Long chatRoomId, Pageable pageable);
 
     Slice<ChatMessage> findByChatRoomIdAndIdLessThanOrderByIdDesc(
-            Long chatRoomId, Long messageId, Pageable pageable);
+            Long chatRoomId,
+            Long messageId,
+            Pageable pageable
+    );
 }

@@ -1,26 +1,25 @@
 package com.kdj.commerce.domain.chat;
 
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
-import jakarta.persistence.LockModeType;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     // 참여와 퇴장은 같은 방의 잠금을 획득한 후 처리한다.
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select r from ChatRoom r where r.id = :id")
-    Optional<ChatRoom> findByIdForUpdate(@Param("id") Long id);
-
-    Page<ChatRoom> findByWalkCourseIdOrderByCreatedAtDescIdDesc(
-            Long walkCourseId, Pageable pageable
-    );
+    Optional<ChatRoom> findByIdWithLock(@Param("id") Long id);
 
     Page<ChatRoom> findByWalkCourseIdAndStatusOrderByCreatedAtDescIdDesc(
-            Long walkCourseId, ChatRoomStatus status, Pageable pageable
+            Long walkCourseId,
+            ChatRoomStatus status,
+            Pageable pageable
     );
 
     @Query("""
@@ -35,6 +34,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
             """)
     Page<ChatRoom> findJoinedRooms(
             @Param("walkCourseId") Long walkCourseId,
-            @Param("memberId") Long memberId, Pageable pageable
+            @Param("memberId") Long memberId,
+            Pageable pageable
     );
 }

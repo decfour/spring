@@ -39,11 +39,11 @@ public class ChatMessage {
             throw new IllegalArgumentException("메시지는 1~1000자여야 합니다.");
         }
 
-        ChatMessage message = new ChatMessage();
-        message.chatRoom = Objects.requireNonNull(chatRoom, "채팅방은 필수입니다.");
-        message.sender = Objects.requireNonNull(sender, "발신자는 필수입니다.");
-        message.content = content;
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.chatRoom = Objects.requireNonNull(chatRoom, "채팅방은 필수입니다.");
+        chatMessage.sender = Objects.requireNonNull(sender, "발신자는 필수입니다.");
+        chatMessage.content = content;
 
-        return message;
+        return chatMessage;
     }
 }

@@ -157,6 +157,7 @@
 }
 
 :where([data-chat-preview]) .room-top {
+    min-height: 24px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -187,7 +188,14 @@
 :where([data-chat-preview]) .room-card h3 {
     font-size: .98rem;
     font-weight: 600;
-    overflow-wrap: anywhere;
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+:where([data-chat-preview]) .room-title-joined {
+    color: var(--accent);
 }
 
 :where([data-chat-preview]) .room-meta {
@@ -525,4 +533,145 @@
         font-size: .85rem;
     }
 
+}
+
+/* Keep four room cards and the pager within the shared desktop page frame. */
+:where([data-chat-preview="home"]) .course-summary {
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+:where([data-chat-preview="home"]) .course-summary h2 {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+:where([data-chat-preview="home"]) .distance {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+:where([data-chat-preview="home"]) .distance .meta {
+    margin-top: 0;
+}
+:where([data-chat-preview="home"]) .tabs {
+    margin-bottom: 0;
+}
+:where([data-chat-preview="home"]) .course-section {
+    margin-top: 16px;
+}
+:where([data-chat-preview="home"]) .room-card {
+    padding: 12px 16px;
+}
+:where([data-chat-preview="home"]) .room-meta {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 10px;
+    margin-top: 3px;
+    line-height: 1.5;
+}
+:where([data-chat-preview="home"]) .room-meta > span {
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+:where([data-chat-preview="home"]) .room-meta > span:first-child {
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+@media (min-width: 769px) and (max-height: 800px) {
+    :where([data-chat-preview="home"]) .tab {
+        padding-bottom: 8px;
+    }
+    :where([data-chat-preview="home"]) .page > .d-flex:first-child {
+        margin-bottom: 12px !important;
+    }
+    :where([data-chat-preview="home"]) .course-summary {
+        padding: 8px 16px;
+        margin-bottom: 12px;
+    }
+    :where([data-chat-preview="home"]) .course-section {
+        margin-top: 12px;
+    }
+    :where([data-chat-preview="home"]) .course-list {
+        gap: 6px;
+    }
+    :where([data-chat-preview="home"]) .room-card {
+        padding: 8px 16px;
+    }
+    :where([data-chat-preview="home"]) .pager {
+        margin-top: 16px;
+    }
+}
+@media (max-width: 520px) {
+    :where([data-chat-preview="home"]) .distance {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0;
+    }
+}
+
+/* Match the height of Walk's map, three course cards, and pager.
+   A course card has 26px padding/border, a 3px gap, and two text lines. */
+@media (min-width: 769px) {
+    :where([data-chat-preview="home"]) .page {
+        --walk-card-height: calc(26px + 3px + 1.47rem + 1.275rem);
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        height: min(
+            var(--page-height),
+            calc(2.4rem + 24px + var(--map-height) + 36px
+                + var(--walk-card-height) + var(--walk-card-height) + var(--walk-card-height)
+                + 24px + 24px + 34px)
+        );
+    }
+
+    :where([data-chat-preview="home"]) .page > .d-flex:first-child {
+        flex-shrink: 0;
+        margin-bottom: 24px !important;
+    }
+
+    :where([data-chat-preview="home"]) .course-summary,
+    :where([data-chat-preview="home"]) .tabs {
+        flex-shrink: 0;
+    }
+
+    :where([data-chat-preview="home"]) .course-section {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+    }
+
+    :where([data-chat-preview="home"]) .course-list {
+        display: grid;
+        grid-template-rows: repeat(4, minmax(64px, 1fr));
+        flex: 1;
+    }
+
+    :where([data-chat-preview="home"]) .room-card {
+        padding: 8px 16px;
+        min-width: 0;
+    }
+
+    :where([data-chat-preview="home"]) .pager {
+        flex-shrink: 0;
+        margin-top: 24px;
+    }
+
+    :where([data-chat-preview="home"]) .course-section > .empty {
+        margin: 0;
+    }
+
+    :where([data-chat-preview="home"]) .course-section:not(:has(> .pager))::after {
+        content: "";
+        flex-shrink: 0;
+        height: 58px;
+    }
+
+    :where([data-chat-preview="home"]) .course-section > .empty + .course-list {
+        display: none;
+    }
 }
