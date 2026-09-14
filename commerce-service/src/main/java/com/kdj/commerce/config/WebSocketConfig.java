@@ -12,7 +12,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // 웹소캣 최초 연결
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws/chat");
+        registry
+                .addEndpoint("/ws/chat")
+                .setAllowedOrigins(
+                "http://localhost:8080",
+                "https://decfour.dev",
+                "https://www.decfour.dev"
+                );
     }
 
     // 메시지 보낼 곳
