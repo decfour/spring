@@ -6,8 +6,9 @@ const input = document.getElementById('message-content');
 const conversation = document.getElementById('conversation');
 
 // STOMP 클라이언트 생성
+const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
 const client = new StompJs.Client({
-    brokerURL: 'ws://localhost:8080/ws/chat'
+     brokerURL: `${protocol}://${location.host}/ws/chat`
 });
 
 client.onConnect = () => {
