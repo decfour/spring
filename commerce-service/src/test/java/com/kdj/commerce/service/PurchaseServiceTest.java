@@ -52,7 +52,7 @@ class PurchaseServiceTest {
     }
 
     @Test
-    @DisplayName("동시 주문 테스트")
+    @DisplayName("재고 100개에 대한 동시 주문 100건 처리 후 재고가 0이 된다")
     public void concurrencyPurchaseTest() throws InterruptedException {
         System.out.println("==================== 동시 주문 테스트 시작");
         // given    : 회원 100명, 재고 100개 이벤트 상품 DB 저장
@@ -114,7 +114,7 @@ class PurchaseServiceTest {
 
     @Test
     @Transactional
-    @DisplayName("N+1 방지 테스트")
+    @DisplayName("전체 주문 조회 후 각 주문의 회원 이름에 접근한다")
     void nPlusOneTest() {
         System.out.println("==================== N+1 방지 테스트 시작");
         // given    : 회원 10명, 각 회원별 상품 1개, 각 회원별 주문 1개 DB 저장

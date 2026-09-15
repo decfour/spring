@@ -109,13 +109,6 @@ public class PurchaseService {
         log.info("주문 취소 purchaseId={}", purchaseId);
     }
 
-    public int getTotalPrice(Long id) {
-        Purchase purchase = purchaseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
-
-        return purchase.getTotalPrice();
-    }
-
     public List<Purchase> findAll() {
         return purchaseRepository.findAll();}
 
@@ -124,7 +117,4 @@ public class PurchaseService {
         return purchaseRepository.findByMemberIdWithMember(pageable, id);
     }
 
-    public List<Purchase> findAllFetch() {
-        return purchaseRepository.findAllWithMember();
-    }
 }

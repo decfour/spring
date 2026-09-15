@@ -19,12 +19,12 @@
         </h2>
 
         <div class="d-flex gap-2">
-            <a th:href="@{/}" class="btn-secondary">뒤로</a>
+            <a th:href="@{/}" class="btn-action">뒤로</a>
         </div>
     </div>
 
     <div class="account-section">
-        <div class="profile-card">
+        <div class="surface-card profile-card">
             <div class="profile-row">
                 <span class="profile-label">이름</span>
                 <span class="profile-value" th:text="${member.name}">홍길동</span>
@@ -44,16 +44,16 @@
         </div>
 
         <div class="action-grid">
-            <a th:href="@{/member/my-course}" class="action-card">
+            <a th:href="@{/member/my-course}" class="surface-card action-card">
                 내 코스
             </a>
-            <a th:href="@{/member/my-item}" class="action-card">
+            <a th:href="@{/member/my-item}" class="surface-card action-card">
                 내 상품
             </a>
-            <a th:href="@{/member/my-review}" class="action-card">
+            <a th:href="@{/member/my-review}" class="surface-card action-card">
                 내 후기
             </a>
-            <a th:href="@{/member/my-order}" class="action-card">
+            <a th:href="@{/member/my-order}" class="surface-card action-card">
                 내 주문
             </a>
         </div>

@@ -135,11 +135,18 @@ public class WalkController {
 
     @PostMapping("/course/{id}/like")
     @ResponseBody
-    public int like(
+    public ResponseEntity<?> like(
             @Login Member loginMember,
             @PathVariable Long id
     ) {
-        return walkCourseService.increaseLikeCount(id, loginMember);
+        if (loginMember == null) {
+            return ResponseEntity.status(401).build();
+        }
+        try {
+            return ResponseEntity.ok(walkCourseService.increaseLikeCount(id, loginMember));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).body(Map.of("message", "이미 추천했습니다"));
+        }
     }
 
     @PostMapping("/course/{id}/tag")

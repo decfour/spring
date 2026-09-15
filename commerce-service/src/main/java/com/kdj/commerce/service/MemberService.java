@@ -6,17 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-
-    public Optional<Member> findById(long id) {
-        return memberRepository.findById(id);
-    }
 
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)

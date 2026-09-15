@@ -6,14 +6,13 @@
     --surface: #f5f5f7;
     --accent: #0066cc;
     --danger: #ff3b30;
-    --page-gap: max(48px, calc((100svh - 848px) / 2));
-    --page-height: min(800px, calc(100svh - 144px));
+    --page-gap: 48px;
     --map-height: clamp(240px, 32vh, 340px);
 }
 
 body {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto 1fr;
     min-height: 100svh;
     margin: 0;
     background: #fff;
@@ -22,15 +21,16 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Center one shared frame below the 48px header, not each page's content.
-   Long content grows downward without moving its title or being clipped. */
+/* All screens share the same header, outer spacing and minimum viewport height. */
 .page, .auth-container, .error-container {
     width: 100%;
     max-width: 800px;
     margin: var(--page-gap) auto;
     padding: 0 20px;
-    flex: none;
-    min-height: var(--page-height);
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .auth-container { max-width: 400px; }
@@ -41,7 +41,7 @@ body {
 .page > .d-flex:first-child > .d-flex { flex-wrap: wrap; }
 .nav-form { display: inline; margin: 0; }
 
-.btn-primary, .btn-secondary {
+.btn-action {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -49,22 +49,41 @@ body {
     padding: 8px 18px;
     font-size: 0.9rem;
     font-weight: 500;
-    border: 1px solid var(--ink);
+    border: 1px solid var(--line);
     border-radius: 980px;
+    background: #fff;
+    color: var(--ink);
     text-decoration: none;
     box-sizing: border-box;
     line-height: 1.25;
     cursor: pointer;
-    transition: background-color .2s, border-color .2s, color .2s;
+    transition: border-color .2s;
 }
-.btn-primary { background: var(--ink); color: #fff; }
-.btn-primary:hover { background: #434344; border-color: #434344; color: #fff; }
-.btn-secondary { background: transparent; color: var(--ink); border-color: var(--line); }
-.btn-secondary:hover { background: var(--surface); border-color: var(--muted); color: var(--ink); }
-.btn-primary:disabled, .btn-secondary:disabled { opacity: .5; cursor: not-allowed; }
-.auth-container .btn-primary { width: 100%; min-height: 44px; }
-.auth-container form > div { margin-bottom: 20px; }
+.btn-action:hover { border-color: var(--muted); }
+.btn-action:disabled { opacity: .5; cursor: not-allowed; }
+.auth-container .btn-action { width: 100%; min-height: 44px; }
+
 a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.btn-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background-color: #ffffff;
+    color: var(--ink);
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+.btn-circle:hover { border-color: var(--accent); color: var(--accent); }
+.btn-circle:focus-visible { outline-offset: 2px; }
 
 .field-label { display: block; font-size: .9rem; font-weight: 600; margin-bottom: 6px; }
 .field {
@@ -83,7 +102,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 .field.field-error, .field.is-invalid { border-color: var(--danger); }
 .field.field-error:focus, .field.is-invalid:focus { box-shadow: 0 0 0 3px rgba(255,59,48,.15); }
 textarea.field { resize: vertical; }
-.field-group { margin-bottom: 20px; }
+.field-group { margin-bottom: 16px; }
 
 .pager { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 24px; }
 .pagination { gap: 6px; flex-wrap: wrap; justify-content: center; }
@@ -117,9 +136,6 @@ textarea.field { resize: vertical; }
     gap: 16px;
     min-height: 76px;
     padding: 14px 18px;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: #fff;
     text-decoration: none;
     color: inherit;
     transition: border-color .2s;
@@ -129,14 +145,14 @@ textarea.field { resize: vertical; }
 .account-title { font-size: .98rem; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .account-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: .85rem; font-weight: 500; }
 .account-right { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-.page:has(> .pager), :where([data-view^="member-my"]) .page { display: flex; flex-direction: column; }
-:where([data-view^="member-my"]) .account-section { display: flex; flex-direction: column; flex: 1; }
-.page > .pager, .account-section > .pager { margin-top: auto; padding-top: 24px; }
+.page > *, .auth-container > *, .error-container > * { flex-shrink: 0; }
+.account-section, .page > .course-section { display: flex; flex-direction: column; flex: 1; }
+.page > .pager, .account-section > .pager, .page > .course-section > .pager { margin-top: auto; padding-top: 24px; }
 .page > table, .page > .product-grid { flex-shrink: 0; }
 .map-wrapper { position: relative; width: 100%; height: var(--map-height); border-radius: 18px; overflow: hidden; border: 1px solid var(--line); margin-bottom: 24px; }
 
 @media (max-height: 800px) and (min-width: 769px) {
-    :root { --map-height: 200px; }
+    :root { --page-gap: 24px; --map-height: 200px; }
     .account-list { gap: 6px; }
     .account-card { min-height: 60px; padding: 8px 16px; }
     .field-group { margin-bottom: 8px; }
@@ -144,11 +160,11 @@ textarea.field { resize: vertical; }
     .page .field-label { margin-bottom: 4px; }
     .page .product-image { aspect-ratio: 4 / 3; }
     .page textarea.field[rows="4"] { height: 76px; }
-    .page > form > .mt-4 { margin-top: 8px !important; }
+
     .page .data-table td { padding-top: 10px; padding-bottom: 10px; }
 }
 @media (max-width: 768px) {
-    :root { --page-gap: 32px; --page-height: 0px; }
+    :root { --page-gap: 24px; }
     .page-title { font-size: 1.6rem; }
     .global-nav { --nav-pad: 20px; --nav-gap: 12px; flex-wrap: wrap; gap: 12px; }
     .global-nav-link-group { flex-wrap: wrap; }
@@ -167,14 +183,11 @@ textarea.field { resize: vertical; }
     margin-top: 36px;
 }
 
-.post-title-sub {
+.detail-title {
+    color: var(--muted);
     font-size: 1.5rem;
     font-weight: 500;
-    color: var(--muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 450px;
+    overflow-wrap: anywhere;
 }
 
 .btn-like {
@@ -234,7 +247,7 @@ textarea.field { resize: vertical; }
     background-color: var(--surface);
 }
 
-.post-info-flat {
+.detail-meta {
     padding: 0 4px 16px 4px;
     margin-bottom: 8px;
 }
@@ -256,9 +269,9 @@ textarea.field { resize: vertical; }
     justify-content: flex-end;
 }
 
-.post-user-meta {
+.author-meta {
     color: var(--muted);
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     font-weight: 500;
 }
 
@@ -270,10 +283,6 @@ textarea.field { resize: vertical; }
 
 .post-card {
     padding: 20px;
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     color: var(--ink);
     font-size: 0.95rem;
     line-height: 1.6;
@@ -414,7 +423,7 @@ textarea.field { resize: vertical; }
 }
 
 .course-section {
-    margin-top: 36px;
+    margin-top: 24px;
 }
 
 .course-empty {
@@ -433,7 +442,6 @@ textarea.field { resize: vertical; }
 
 .course-card:hover {
     border-color: var(--accent);
-    box-shadow: 0 4px 16px rgba(0, 102, 204, 0.12);
 }
 
 .course-name {
@@ -456,24 +464,6 @@ textarea.field { resize: vertical; }
     color: var(--muted);
     font-size: 0.85rem;
     font-weight: 500;
-}
-
-.btn-like-count {
-    margin-left: auto;
-    color: var(--ink);
-    font-weight: 600;
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    transition: transform 0.1s ease, color 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-}
-
-.btn-like-count:hover {
-    color: var(--accent);
 }
 
 .global-nav {
@@ -551,3 +541,30 @@ textarea.field { resize: vertical; }
 .btn-logout:hover {
     opacity: 0.8;
 }
+
+/* Shared appearance, with layout and spacing owned by each component. */
+.surface-card {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #fff;
+}
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 24px;
+}
+.field.input-quantity { width: 80px; height: 38px; padding: 0 8px; text-align: center; }
+.menu .dropdown-item {
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: var(--ink);
+    font-size: .85rem;
+    font-weight: 500;
+}
+.menu .dropdown-item.text-danger:hover { background-color: #fff2f2; }
+:where([data-chat-preview="room"]) .chat-shell { display: flex; flex-direction: column; flex: 1; }
+:where([data-chat-preview="room"]) .conversation { height: 0; min-height: 240px; flex: 1; }
+.post-card, .review-card, .comment-content, .item-card { overflow-wrap: anywhere; }

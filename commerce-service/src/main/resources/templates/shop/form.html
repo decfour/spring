@@ -133,21 +133,21 @@
             </label>
         </div>
 
-        <div class="d-flex gap-2 justify-content-end align-items-center mt-4">
+        <div class="form-actions">
             <a th:if="${isEdit ?: false}"
                th:href="@{/shop/item/{id}(id=${item.id})}"
-               class="btn-secondary">
+               class="btn-action">
                 취소
             </a>
 
             <a th:unless="${isEdit ?: false}"
                th:href="@{/shop}"
-               class="btn-secondary">
+               class="btn-action">
                 취소
             </a>
 
             <button type="submit"
-                    class="btn-primary"
+                    class="btn-action"
                     th:text="${isEdit ?: false} ? '수정' : '등록'">
                 등록
             </button>

@@ -20,7 +20,7 @@
         </h2>
 
         <div class="d-flex gap-2">
-            <a th:href="@{/walk}" class="btn-secondary">뒤로</a>
+            <a th:href="@{/walk}" class="btn-action">뒤로</a>
         </div>
     </div>
 
@@ -40,7 +40,7 @@
         <div th:if="${courses != null and !courses.isEmpty()}" id="courseList" class="course-list">
 
             <div th:each="course, iterStat : ${courses}"
-                 class="course-card"
+                 class="surface-card course-card"
                  th:data-id="${course.id}"
                  th:data-route="${course.routeData}"
                  th:data-lat="${course.startLat}"
@@ -57,10 +57,11 @@
                 <div class="course-content">
                     <div class="course-name">
                         <a th:href="@{/walk/course/{id}(id=${course.id})}"
-                           th:text="${course.title}"
+                           title="코스 상세보기"
                            class="course-detail-link"
                            onclick="event.stopPropagation();">
-                            코스 이름
+                            <span class="course-title-text" th:text="${course.title}">코스 이름</span>
+                            <span class="course-detail-arrow" aria-hidden="true">↗</span>
                         </a>
                     </div>
 
@@ -71,18 +72,13 @@
 
                         <span>•</span>
 
-                        <span th:text="${T(java.lang.Math).round(course.duration / 60.0) + '분'}">
-                            0분
-                        </span>
-
-                        <button type="button"
-                                class="btn-like-count"
-                                th:data-id="${course.id}"
-                                onclick="likeCourse(event, this)">
-                            ❤️ <span class="like-num" th:text="${course.likeCount ?: 0}">0</span>
-                        </button>
+                        <span class="course-like-total" aria-live="polite">추천 <span class="like-num" th:text="${course.likeCount ?: 0}">0</span></span>
                     </div>
                 </div>
+            <div class="course-actions">
+                <button type="button" class="btn-circle course-like-button" th:data-id="${course.id}" onclick="likeCourse(event, this)" title="코스 추천" aria-label="코스 추천"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg></button>
+                <a th:href="@{/walk/course/{id}/chat(id=${course.id})}" onclick="event.stopPropagation();" class="btn-circle course-chat-link" title="코스 채팅 홈" aria-label="코스 채팅 홈"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/><path d="M8 11h8M8 15h5"/></svg></a>
+            </div>
             </div>
 
         </div>
@@ -182,11 +178,22 @@
 
         fetch(`/walk/course/${courseId}/like`, { method: 'POST' })
             .then(response => {
-                if (!response.ok) throw new Error('추천 실패');
+                if (response.status === 401 ||
+                    (response.redirected && new URL(response.url).pathname === '/member/sign-in')) {
+                    const returnUrl = location.pathname + location.search + location.hash;
+                    location.href = '/member/sign-in?redirectURL=' + encodeURIComponent(returnUrl);
+                    return null;
+                }
+                if (response.status === 409) {
+                    alert('이미 추천했습니다');
+                    return null;
+                }
+                if (!response.ok) throw new Error('추천 요청 실패');
                 return response.json();
             })
             .then(likeCount => {
-                const numSpan = btn.querySelector('.like-num');
+                if (likeCount === null) return;
+                const numSpan = btn.closest('.course-card').querySelector('.like-num');
                 if (numSpan) numSpan.innerText = likeCount;
             })
             .catch(error => {

@@ -21,7 +21,7 @@
             Walking <span class="subtitle">Add</span>
         </h2>
 
-        <a th:href="@{/walk}" class="btn-secondary">
+        <a th:href="@{/walk}" class="btn-action">
             뒤로
         </a>
     </div>
@@ -67,16 +67,16 @@
         <input type="hidden" id="distance" name="distance">
         <input type="hidden" id="duration" name="duration">
 
-        <div class="d-flex justify-content-end gap-2 mt-4">
+        <div class="form-actions">
             <button type="button"
                     id="resetButton"
-                    class="btn-secondary">
+                    class="btn-action">
                 초기화
             </button>
 
             <button type="submit"
                     id="submitButton"
-                    class="btn-primary"
+                    class="btn-action"
                     disabled>
                 등록
             </button>

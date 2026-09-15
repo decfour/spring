@@ -13,8 +13,8 @@
     <div class="d-flex justify-content-between align-items-end mb-4">
         <h2 class="page-title m-0">Notice</h2>
         <div class="d-flex gap-2">
-            <a th:if="${member != null && member.memberType.name() == 'ADMIN'}" th:href="@{/notice/add}" class="btn-primary">등록</a>
-            <a th:href="@{/}" class="btn-secondary">뒤로</a>
+            <a th:if="${member != null && member.memberType.name() == 'ADMIN'}" th:href="@{/notice/add}" class="btn-action">등록</a>
+            <a th:href="@{/}" class="btn-action">뒤로</a>
         </div>
     </div>
 

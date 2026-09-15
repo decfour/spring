@@ -17,7 +17,7 @@
     <div class="d-flex justify-content-between align-items-end mb-4">
         <h2 class="page-title m-0">
             <span>Shop</span>
-            <span class="item-title-sub" th:text="${item.name}">상품명</span>
+            <span class="detail-title" th:text="${item.name}">상품명</span>
         </h2>
 
         <div class="d-flex gap-2 align-items-center">
@@ -43,12 +43,12 @@
                 </ul>
             </div>
 
-            <a th:href="@{/shop/item/{itemId}/review(itemId=${item.id})}" class="btn-secondary">리뷰</a>
-            <a th:href="@{/shop}" class="btn-secondary">뒤로</a>
+            <a th:href="@{/shop/item/{itemId}/review(itemId=${item.id})}" class="btn-action">리뷰</a>
+            <a th:href="@{/shop}" class="btn-action">뒤로</a>
         </div>
     </div>
 
-    <div class="product-overview-card">
+    <div class="surface-card product-overview-card">
         <div class="img-square-wrapper">
             <img th:if="${item.storedFileName != null}" th:src="@{/images/{filename}(filename=${item.storedFileName})}" alt="상품 이미지" />
             <span th:unless="${item.storedFileName != null}" class="text-muted" style="font-size: 0.85rem;">이미지 없음</span>
@@ -81,12 +81,12 @@
     </div>
 
     <div th:if="${item.description != null and !#strings.isEmpty(#strings.trim(item.description))}"
-         class="item-card"
+         class="surface-card item-card"
          th:text="${item.description}">
         상품 설명
     </div>
 
-    <div th:if="${item.open}" class="purchase-card">
+    <div th:if="${item.open}" class="surface-card purchase-card">
         <div th:if="${item.stock > 0}" class="d-flex flex-column gap-3">
             <form th:action="@{/order/one}" method="get" class="purchase-row">
                 <input type="hidden" name="itemId" th:value="${item.id}" />
@@ -97,9 +97,9 @@
                            min="1"
                            th:max="${item.stock}"
                            value="1"
-                           class="input-quantity"
+                           class="field input-quantity"
                            required />
-                    <button type="submit" class="btn-primary">결제</button>
+                    <button type="submit" class="btn-action">결제</button>
                 </div>
             </form>
 
@@ -107,8 +107,8 @@
                 <input type="hidden" name="itemId" th:value="${item.id}" />
                 <span class="form-label-fixed">장바구니</span>
                 <div class="d-flex align-items-center gap-2">
-                    <input type="number" name="itemCount" min="1" th:max="${item.stock}" value="1" class="input-quantity" required />
-                    <button type="submit" class="btn-secondary">담기</button>
+                    <input type="number" name="itemCount" min="1" th:max="${item.stock}" value="1" class="field input-quantity" required />
+                    <button type="submit" class="btn-action">담기</button>
                 </div>
             </form>
         </div>

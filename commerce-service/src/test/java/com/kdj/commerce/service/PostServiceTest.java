@@ -43,7 +43,7 @@ class PostServiceTest {
     }
 
     @Test
-    @DisplayName("게시물 조회수 테스트")
+    @DisplayName("조회수 증가 요청 1000개가 동시에 실행돼도 누락 없이 반영된다")
     void viewCountTest() throws InterruptedException {
         Member member = Member.create(
                 "testUser",

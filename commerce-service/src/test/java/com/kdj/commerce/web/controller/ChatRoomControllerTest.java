@@ -5,6 +5,7 @@ import com.kdj.commerce.service.ChatRoomService;
 import com.kdj.commerce.web.dto.chat.*;
 import com.kdj.commerce.web.argumentresolver.Login;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.PageImpl;
@@ -55,6 +56,7 @@ class ChatRoomControllerTest {
     }
 
     @Test
+    @DisplayName("채팅방 목록에 제목 이스케이프와 정원 마감 및 페이지 이동을 표시한다")
     void homeRendersDatabaseRoomsAndPagination() throws Exception {
         when(service.findCourse(10L)).thenReturn(course);
         when(service.findRooms(eq(10L), eq(1L), eq(false), any())).thenReturn(new PageImpl<>(List.of(
@@ -71,6 +73,7 @@ class ChatRoomControllerTest {
     }
 
     @Test
+    @DisplayName("참여 중인 채팅방이 없으면 빈 목록 안내를 표시한다")
     void emptyJoinedListRenders() throws Exception {
         when(service.findCourse(10L)).thenReturn(course);
         when(service.findRooms(eq(10L), eq(1L), eq(true), any())).thenReturn(new PageImpl<>(List.of()));
@@ -79,6 +82,7 @@ class ChatRoomControllerTest {
     }
 
     @Test
+    @DisplayName("채팅방 생성 시 요청의 회원 번호 대신 로그인 회원을 사용한다")
     void createUsesAuthenticatedMemberNotSubmittedId() throws Exception {
         when(service.save(10L, 1L, "새 모임")).thenReturn(20L);
         mvc.perform(post("/walk/course/10/chat").param("title", "새 모임").param("memberId", "99"))
@@ -87,6 +91,7 @@ class ChatRoomControllerTest {
     }
 
     @Test
+    @DisplayName("정원이 찬 채팅방에 참여하면 오류 메시지와 함께 목록으로 이동한다")
     void fullRoomShowsError() throws Exception {
         doThrow(new IllegalStateException("정원이 찼습니다.")).when(service).join(10L, 20L, 1L);
         mvc.perform(post("/walk/course/10/chat/20/join"))
@@ -95,6 +100,7 @@ class ChatRoomControllerTest {
     }
 
     @Test
+    @DisplayName("다른 코스의 채팅방 참여 요청이 거부되면 목록으로 이동한다")
     void wrongCourseDoesNotJoin() throws Exception {
         doThrow(new IllegalArgumentException("다른 코스입니다.")).when(service).join(10L, 20L, 1L);
         mvc.perform(post("/walk/course/10/chat/20/join"))
@@ -103,6 +109,7 @@ class ChatRoomControllerTest {
     }
 
     @Test
+    @DisplayName("채팅방 상세에 방장 퇴장 경고와 메시지 안내 및 퇴장 경로를 표시한다")
     void roomRendersParticipantsAndHostExitWarning() throws Exception {
         when(service.findDetail(10L, 20L, 1L)).thenReturn(new ChatRoomDetailResponse(course,
                 new ChatRoomResponse(20L, "새 모임", "민서", 1L, true, 1, true),
@@ -115,6 +122,7 @@ class ChatRoomControllerTest {
     }
 
     @Test
+    @DisplayName("종료된 채팅방을 조회하면 오류 메시지와 함께 목록으로 이동한다")
     void closedRoomRedirectsToList() throws Exception {
         when(service.findDetail(10L, 20L, 1L)).thenThrow(new IllegalStateException("종료된 채팅방입니다."));
         mvc.perform(get("/walk/course/10/chat/20"))
@@ -123,6 +131,7 @@ class ChatRoomControllerTest {
     }
 
     @Test
+    @DisplayName("채팅방 퇴장 처리를 호출하고 목록으로 이동한다")
     void leaveCallsServiceAndReturnsToList() throws Exception {
         mvc.perform(post("/walk/course/10/chat/20/leave"))
                 .andExpect(redirectedUrl("/walk/course/10/chat"));
@@ -130,12 +139,14 @@ class ChatRoomControllerTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 산책 코스의 채팅방 목록은 404를 반환한다")
     void missingCourseReturnsNotFound() throws Exception {
         when(service.findCourse(10L)).thenThrow(new IllegalArgumentException("존재하지 않는 산책 코스입니다."));
         mvc.perform(get("/walk/course/10/chat")).andExpect(status().isNotFound());
     }
 
     @Test
+    @DisplayName("비로그인 사용자가 채팅방을 생성하면 로그인 화면으로 이동한다")
     void anonymousUserCannotCreate() throws Exception {
         loginMember = null;
         mvc.perform(post("/walk/course/10/chat").param("title", "새 모임"))

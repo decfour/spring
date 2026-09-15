@@ -17,7 +17,7 @@
     <div class="d-flex justify-content-between align-items-end mb-4">
         <h2 class="page-title m-0">
             <span>Talk</span>
-            <span class="post-title-sub" th:text="${post.title}">제목</span>
+            <span class="detail-title" th:text="${post.title}">제목</span>
         </h2>
 
         <div class="d-flex gap-2 align-items-center">
@@ -41,14 +41,14 @@
                 </ul>
             </div>
 
-            <a th:href="@{/community}" class="btn-secondary">뒤로</a>
+            <a th:href="@{/community}" class="btn-action">뒤로</a>
         </div>
     </div>
 
-    <div class="post-info-flat">
+    <div class="detail-meta">
         <div class="post-info-row">
             <div class="info-col col-writer">
-                <span class="post-user-meta">
+                <span class="author-meta">
                     작성자 <span class="text-dark font-weight-bold" th:text="${post.creator != null ? post.creator.name : '익명'}">사용자</span>
                     <span class="meta-divider">•</span>
                     <span th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
@@ -69,7 +69,7 @@
         </div>
     </div>
 
-    <div class="post-card" th:text="${post.content}">
+    <div class="surface-card post-card" th:text="${post.content}">
         내용
     </div>
 
@@ -78,7 +78,7 @@
             댓글 <span class="count" th:text="${comments.totalElements}">0</span>
         </div>
 
-        <div th:each="comment : ${comments.content}" class="comment-item">
+        <div th:each="comment : ${comments.content}" class="surface-card comment-item">
             <div class="comment-header-row">
                 <strong class="comment-writer" th:text="${comment.creator != null ? comment.creator.name : '익명'}">작성자</strong>
                 <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
@@ -108,12 +108,12 @@
             </div>
         </div>
 
-        <div class="comment-write-card" th:if="${loginMember != null}">
+        <div class="surface-card comment-write-card" th:if="${loginMember != null}">
             <form method="post" th:action="@{/comment/{id}/add(id=${post.id})}">
                 <input type="hidden" name="postId" th:value="${post.id}"/>
                 <textarea name="content" rows="3" class="field" placeholder="댓글을 남겨주세요"></textarea>
                 <div class="d-flex justify-content-end mt-3">
-                    <button class="btn-primary" type="submit">등록</button>
+                    <button class="btn-action" type="submit">등록</button>
                 </div>
             </form>
         </div>

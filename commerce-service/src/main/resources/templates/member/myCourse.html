@@ -19,7 +19,7 @@
         </h2>
 
         <div class="d-flex gap-2">
-            <a th:href="@{/member/my-page}" class="btn-secondary">마이페이지</a>
+            <a th:href="@{/member/my-page}" class="btn-action">마이페이지</a>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
 
             <a th:each="course : ${myCourses}"
                th:href="@{/walk/course/{courseId}(courseId=${course.id})}"
-               class="account-card">
+               class="surface-card account-card">
 
                 <div class="account-info">
 

@@ -18,8 +18,8 @@
         <h2 class="page-title m-0">Shop</h2>
 
         <div class="d-flex gap-2">
-            <a th:href="@{/shop/add}" class="btn-primary">등록</a>
-            <a th:href="@{/}" class="btn-secondary">뒤로</a>
+            <a th:href="@{/shop/add}" class="btn-action">등록</a>
+            <a th:href="@{/}" class="btn-action">뒤로</a>
         </div>
     </div>
 
@@ -35,7 +35,7 @@
 
         <a th:each="item : ${items}"
            th:href="@{/shop/item/{itemId}(itemId=${item.id})}"
-           class="product-card">
+           class="surface-card product-card">
 
             <!-- 이미지 -->
             <div class="product-image">

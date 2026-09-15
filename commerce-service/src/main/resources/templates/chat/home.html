@@ -16,15 +16,15 @@
         <h1 class="page-title m-0">Walking <span class="subtitle">Chat</span></h1>
 
         <div class="d-flex gap-2">
-            <button type="button" class="btn-primary" data-open="create-room">등록</button>
-            <a class="btn-secondary" th:href="@{/walk/course/{id}(id=${course.id})}">뒤로</a>
+            <button type="button" class="btn-action" data-open="create-room">등록</button>
+            <a class="btn-action" th:href="@{/walk/course/{id}(id=${course.id})}">뒤로</a>
         </div>
 
     </div>
 
     <p th:if="${error}" th:text="${error}" class="alert alert-danger" role="alert"></p>
 
-    <section class="course-summary" aria-label="산책 코스">
+    <section class="surface-card course-summary" aria-label="산책 코스">
 
         <h2 th:text="${course.title}">코스 이름</h2>
 
@@ -47,7 +47,7 @@
         <p class="empty" th:if="${rooms.empty}" th:text="${mine ? '참여 중인 채팅방이 없습니다' : '채팅방이 없습니다'}"></p>
 
         <div class="course-list">
-            <article class="room-card" th:each="room : ${rooms}"
+            <article class="surface-card room-card" th:each="room : ${rooms}"
                      th:classappend="${room.open and (room.joined or room.count < 5)} ? 'room-card-clickable' : ''">
 
                 <div class="room-body">
@@ -74,10 +74,10 @@
                         <dialog th:id="${'join-room-' + room.id}" th:attr="aria-labelledby=${'join-title-' + room.id}">
                             <div class="dialog-heading"><h2 th:id="${'join-title-' + room.id}">참여할까요?</h2></div>
                             <p class="intro" th:text="${room.title}"></p>
-                            <form method="post" class="dialog-actions"
+                            <form method="post" class="form-actions"
                                   th:action="@{/walk/course/{courseId}/chat/{roomId}/join(courseId=${course.id},roomId=${room.id})}">
-                                <button type="button" class="btn-secondary" data-close autofocus>취소</button>
-                                <button type="submit" class="btn-primary">참여</button>
+                                <button type="button" class="btn-action" data-close autofocus>취소</button>
+                                <button type="submit" class="btn-action">참여</button>
                             </form>
                         </dialog>
                     </th:block>
@@ -108,7 +108,7 @@
 
     <form id="create-form" method="post" th:action="@{/walk/course/{id}/chat(id=${course.id})}">
         <div class="field-group"><label class="field-label" for="room-name">채팅방 이름</label><input class="field" id="room-name" name="title" th:value="${draftTitle}" maxlength="30" placeholder="제목을 입력하세요" required><div class="field-help"></div></div>
-        <div class="dialog-actions"><button type="button" class="btn-secondary" data-close>취소</button><button class="btn-primary" type="submit">만들기</button></div>
+        <div class="form-actions"><button type="button" class="btn-action" data-close>취소</button><button class="btn-action" type="submit">만들기</button></div>
     </form>
 
 </dialog>

@@ -60,24 +60,24 @@
             </div>
         </div>
 
-        <div class="d-flex gap-2 justify-content-end align-items-center mt-4">
+        <div class="form-actions">
 
             <button type="button"
-                    class="btn-secondary"
+                    class="btn-action"
                     th:if="${isEdit ?: false}"
                     th:onclick="|location.href='@{/notice/{id}(id=${noticeForm.id})}'|">
                 취소
             </button>
 
             <button type="button"
-                    class="btn-secondary"
+                    class="btn-action"
                     th:unless="${isEdit ?: false}"
                     th:onclick="|location.href='@{/notice}'|">
                 취소
             </button>
 
             <button type="submit"
-                    class="btn-primary"
+                    class="btn-action"
                     th:text="${isEdit ?: false} ? '수정' : '등록'">
                 등록
             </button>

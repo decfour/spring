@@ -76,8 +76,7 @@ public class SecurityConfig {
                                 "/images/**",
                                 "/webjars/**",
                                 "/*.ico",
-                                "/error",
-                                "/images/**"
+                                "/error"
                         ).permitAll()
 
                         .anyRequest().authenticated()

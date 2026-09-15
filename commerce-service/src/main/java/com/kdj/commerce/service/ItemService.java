@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,10 +31,6 @@ public class ItemService {
 
     public Page<Item> findActive(Pageable pageable) {
         return itemRepository.findByDeletedFalse(pageable);
-    }
-
-    public List<Item> findAll() {
-        return itemRepository.findAll();
     }
 
     @Transactional

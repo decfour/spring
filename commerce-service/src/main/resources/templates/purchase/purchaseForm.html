@@ -18,7 +18,7 @@
             Purchase <span class="subtitle">Add</span>
         </h2>
 
-        <a th:href="@{/shop}" class="btn-secondary">
+        <a th:href="@{/shop}" class="btn-action">
             뒤로
         </a>
     </div>
@@ -31,7 +31,7 @@
 
         <div class="sub-section-title">주문 상품 정보</div>
 
-        <div th:each="purchaseItem : ${purchaseItems}" class="item-card">
+        <div th:each="purchaseItem : ${purchaseItems}" class="surface-card item-card">
             <div class="item-row">
                 <div>
                     <span th:text="${purchaseItem.itemName}" class="fw-semibold">상품명</span>
@@ -82,12 +82,12 @@
                 </span>
             </div>
 
-            <div class="d-flex justify-content-end gap-2 mt-4">
-                <a th:href="@{/shop}" class="btn-secondary">
+            <div class="form-actions">
+                <a th:href="@{/shop}" class="btn-action">
                     취소
                 </a>
 
-                <button type="submit" class="btn-primary">
+                <button type="submit" class="btn-action">
                     주문
                 </button>
             </div>

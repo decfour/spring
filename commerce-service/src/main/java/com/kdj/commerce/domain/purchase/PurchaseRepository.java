@@ -7,19 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
-    List<Purchase> findAll();
-
-    @Query("""
-                select o 
-                from Purchase o 
-                join fetch o.member
-                """)
-    List<Purchase> findAllWithMember();
-
     @Query(
             value = """
                     select o

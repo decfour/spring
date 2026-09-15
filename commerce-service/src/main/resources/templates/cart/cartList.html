@@ -13,7 +13,7 @@
 <div class="page">
     <div class="d-flex justify-content-between align-items-end mb-4">
         <h2 class="page-title m-0">Cart</h2>
-        <a th:href="@{/shop}" class="btn-secondary">상점</a>
+        <a th:href="@{/shop}" class="btn-action">상점</a>
     </div>
 
     <div th:if="${#lists.isEmpty(cartItems)}" class="empty">
@@ -55,9 +55,9 @@
                 <span style="color: #86868b; font-size: 0.95rem; font-weight: 500;">총 결제 금액</span>
                 <span style="font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px;" th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원'">0원</span>
             </div>
-            <div class="d-flex justify-content-end gap-2 mt-4">
+            <div class="form-actions">
                 <form th:action="@{/order/cart}" method="get" class="m-0">
-                    <button type="submit" class="btn-primary">전체 주문</button>
+                    <button type="submit" class="btn-action">전체 주문</button>
                 </form>
             </div>
         </div>

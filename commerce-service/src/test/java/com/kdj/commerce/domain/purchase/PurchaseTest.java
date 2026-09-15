@@ -2,6 +2,7 @@ package com.kdj.commerce.domain.purchase;
 
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.member.Member;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.*;
 
 class PurchaseTest {
     @Test
+    @DisplayName("주문 생성 시 상품과 금액을 설정하고 중복 취소 시 재고를 한 번만 복구한다")
     void creationLinksItemsAndCancellationRestoresStockOnlyOnce() {
         Item firstItem = mock(Item.class);
         Item secondItem = mock(Item.class);

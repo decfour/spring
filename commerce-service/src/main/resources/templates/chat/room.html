@@ -28,20 +28,20 @@
         <div class="d-flex gap-2">
             <button
                     type="button"
-                    class="btn-secondary"
+                    class="btn-action"
                     data-open="leave-room">퇴장
             </button>
 
             <a
                     th:href="@{/walk/course/{id}/chat(id=${course.id})}"
-                    class="btn-secondary">뒤로
+                    class="btn-action">뒤로
             </a>
         </div>
     </div>
 
     <section
             id="chat-room"
-            class="chat-shell"
+            class="surface-card chat-shell"
             th:attr="data-room-id=${room.id}"
             aria-label="채팅방">
         <header class="chat-room-header">
@@ -53,7 +53,7 @@
 
             <button
                     type="button"
-                    class="btn-secondary"
+                    class="btn-action"
                     data-open="participants">참여자
                     <span th:text="${participants.size() + ' / 5'}"></span>
             </button>
@@ -81,7 +81,7 @@
 
                 <button
                         id="send-message"
-                        class="btn-primary"
+                        class="btn-action"
                         type="submit">전송
                 </button>
             </div>
@@ -129,9 +129,9 @@
 
     </div>
 
-    <div class="dialog-actions">
+    <div class="form-actions">
         <button
-                class="btn-secondary"
+                class="btn-action"
                 data-close>
             닫기
         </button>
@@ -162,18 +162,18 @@
                 courseId=${course.id},
                 roomId=${room.id}
             )}"
-            class="dialog-actions">
+            class="form-actions">
 
         <button
                 type="button"
-                class="btn-secondary"
+                class="btn-action"
                 data-close>
             취소
         </button>
 
         <button
                 type="submit"
-                class="btn-primary">
+                class="btn-action">
             퇴장
         </button>
 

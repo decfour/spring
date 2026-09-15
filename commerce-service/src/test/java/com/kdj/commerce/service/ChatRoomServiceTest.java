@@ -6,6 +6,7 @@ import com.kdj.commerce.domain.member.MemberRepository;
 import com.kdj.commerce.domain.walk.WalkCourse;
 import com.kdj.commerce.domain.walk.WalkCourseRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -41,6 +42,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("채팅방 생성 시 방장을 참여자로 등록한다")
     void createRegistersHost() {
         when(memberRepository.findById(1L)).thenReturn(Optional.of(host));
         when(courseRepository.findById(10L)).thenReturn(Optional.of(course));
@@ -62,6 +64,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("참여자가 4명이면 다섯 번째 회원이 참여할 수 있다")
     void fifthParticipantCanJoin() {
         prepareGuestJoin();
         when(participantRepository.countByChatRoomId(10L)).thenReturn(4L);
@@ -74,6 +77,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("참여자가 5명이면 추가 참여를 거부한다")
     void sixthParticipantCannotJoin() {
         prepareGuestJoin();
         when(participantRepository.countByChatRoomId(10L)).thenReturn(5L);
@@ -83,6 +87,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("이미 참여한 회원의 중복 참여를 거부한다")
     void duplicateJoinIsRejected() {
         prepareGuestJoin();
         when(participantRepository.existsByChatRoomIdAndMemberId(10L, 2L)).thenReturn(true);
@@ -92,6 +97,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("종료된 채팅방의 참여를 거부한다")
     void closedRoomRejectsJoin() {
         prepareGuestJoin();
         room.close();
@@ -101,6 +107,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("방장이 퇴장하면 채팅방을 종료하고 모든 참여자를 삭제한다")
     void hostLeavingClosesRoomAndRemovesEveryone() {
         when(course.getId()).thenReturn(100L);
         when(host.getId()).thenReturn(1L);
@@ -113,6 +120,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("일반 참여자가 퇴장하면 해당 참여자만 삭제하고 채팅방을 유지한다")
     void guestLeavingKeepsRoomOpen() {
         when(course.getId()).thenReturn(100L);
         when(roomRepository.findByIdWithLock(10L)).thenReturn(Optional.of(room));
@@ -125,6 +133,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("참여하지 않은 회원은 채팅방 상세와 참여자를 조회할 수 없다")
     void outsiderCannotReadParticipants() {
         when(course.getId()).thenReturn(100L);
         when(roomRepository.findById(10L)).thenReturn(Optional.of(room));
@@ -134,6 +143,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("참여하지 않은 회원의 퇴장 요청을 거부한다")
     void outsiderCannotLeave() {
         when(course.getId()).thenReturn(100L);
         when(roomRepository.findByIdWithLock(10L)).thenReturn(Optional.of(room));
@@ -143,6 +153,7 @@ class ChatRoomServiceTest {
         verify(participantRepository, never()).deleteByChatRoomIdAndMemberId(any(), any());
     }
     @Test
+    @DisplayName("다른 산책 코스의 채팅방에는 참여할 수 없다")
     void wrongCourseCannotJoin() {
         prepareGuestJoin();
 
@@ -153,6 +164,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("다른 산책 코스로 퇴장을 요청하면 채팅방을 종료하지 않는다")
     void wrongCourseCannotCloseRoom() {
         when(course.getId()).thenReturn(100L);
         when(roomRepository.findByIdWithLock(10L)).thenReturn(Optional.of(room));
@@ -165,6 +177,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("열린 채팅방만 대상으로 페이지 조회를 수행한다")
     void listUsesOpenRoomsBeforePagination() {
         var pageable = org.springframework.data.domain.PageRequest.of(0, 4);
         when(roomRepository.findByWalkCourseIdAndStatusOrderByCreatedAtDescIdDesc(
@@ -177,6 +190,7 @@ class ChatRoomServiceTest {
     }
 
     @Test
+    @DisplayName("채팅방 상세 응답에 코스와 참여자 정보를 포함한다")
     void detailMapsParticipantsInsideService() {
         when(course.getId()).thenReturn(100L);
         when(host.getId()).thenReturn(1L);

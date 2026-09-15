@@ -89,15 +89,6 @@ public class WalkCourseService {
     }
 
     @Transactional
-    public Long update(Long id, String title, String content) {
-        WalkCourse walkCourse = walkCourseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("찾을 수 없습니다 id=" + id));
-        walkCourse.update(title, content);
-
-        return walkCourse.getId();
-    }
-
-    @Transactional
     public void delete(Long id) {
         WalkCourse walkCourse = walkCourseRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("찾을 수 없습니다 id=" + id));
