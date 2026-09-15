@@ -107,7 +107,7 @@
     <div class="dialog-heading"><h2 id="create-title">방 만들기</h2><button class="icon-close" type="button" data-close aria-label="닫기">×</button></div>
 
     <form id="create-form" method="post" th:action="@{/walk/course/{id}/chat(id=${course.id})}">
-        <div class="field-group"><label class="field-label" for="room-name">채팅방 이름</label><input class="field" id="room-name" name="title" th:value="${draftTitle}" maxlength="30" placeholder="제목을 입력하세요" required><div class="field-help"></div></div>
+        <div class="field-group"><label class="field-label" for="room-name">채팅방 이름</label><input class="field" id="room-name" name="title" th:value="${draftTitle}" maxlength="30" placeholder="제목을 입력하세요" required></div>
         <div class="form-actions"><button type="button" class="btn-action" data-close>취소</button><button class="btn-action" type="submit">만들기</button></div>
     </form>
 

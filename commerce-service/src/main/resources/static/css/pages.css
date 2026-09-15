@@ -206,16 +206,6 @@
     margin-top: 20px;
 }
 
-:where([data-view="community-detail"]) .comments-empty {
-    padding: 32px 0;
-    margin-bottom: 12px;
-    border: 1px dashed var(--line);
-    border-radius: 14px;
-    color: var(--muted);
-    font-size: 0.9rem;
-    text-align: center;
-}
-
 
 /* =========================================================
    Member

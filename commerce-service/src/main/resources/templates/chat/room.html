@@ -42,7 +42,7 @@
     <section
             id="chat-room"
             class="surface-card chat-shell"
-            th:attr="data-room-id=${room.id}"
+            th:attr="data-room-id=${room.id}, data-course-id=${course.id}, data-member-id=${memberId}"
             aria-label="채팅방">
         <header class="chat-room-header">
             <div>
@@ -97,36 +97,18 @@
 
     <div class="dialog-heading">
         <h2 id="participants-title">
-            함께 걷는 사람들
+            참여자
         </h2>
-
-        <button
-                class="icon-close"
-                data-close
-                aria-label="닫기">
-            ×
-        </button>
     </div>
 
     <div
             class="participant"
             th:each="participant : ${participants}">
-
-        <span
-                class="avatar"
-                th:text="${#strings.substring(participant.name,0,1)}">
-        </span>
-
         <span th:text="${participant.name}"></span>
 
         <small th:if="${participant.id == room.hostId}">
             방장
         </small>
-
-        <small th:if="${participant.id == memberId}">
-            나
-        </small>
-
     </div>
 
     <div class="form-actions">

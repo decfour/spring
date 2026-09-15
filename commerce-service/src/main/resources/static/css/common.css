@@ -565,6 +565,4 @@ textarea.field { resize: vertical; }
     font-weight: 500;
 }
 .menu .dropdown-item.text-danger:hover { background-color: #fff2f2; }
-:where([data-chat-preview="room"]) .chat-shell { display: flex; flex-direction: column; flex: 1; }
-:where([data-chat-preview="room"]) .conversation { height: 0; min-height: 240px; flex: 1; }
 .post-card, .review-card, .comment-content, .item-card { overflow-wrap: anywhere; }
