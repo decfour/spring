@@ -14,7 +14,7 @@
 
 <div class="page">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">
             Walking
         </h2>
@@ -26,12 +26,12 @@
         </div>
     </div>
 
-    <div class="map-wrapper">
-        <div class="map-status-badge" id="status">
+    <div class="map-frame">
+        <div class="map-status" id="status">
             📍 지도를 클릭하거나 현재 위치를 확인하세요
         </div>
 
-        <div id="map" class="map-card"></div>
+        <div id="map" class="map-canvas"></div>
 
         <button type="button" id="locationBtn" class="btn-location">
             📍 현재 위치
@@ -274,30 +274,30 @@
         card.innerHTML = `
             <div class="course-content">
                 <div class="course-name">
-                    <a href="/walk/course/${course.id}" class="course-detail-link" title="코스 상세보기">
-                        <span class="course-title-text">${escapeHtml(course.title)}</span>
-                        <span class="course-detail-arrow" aria-hidden="true">↗</span>
+                    <a href="/walk/course/${course.id}" class="course-link" title="코스 상세보기">
+                        <span class="course-title">${escapeHtml(course.title)}</span>
+                        <span class="course-arrow" aria-hidden="true">↗</span>
                     </a>
                 </div>
                 <div class="course-info">
                     <span>${formatDistance(course.distance)}</span>
                     <span>•</span>
-                    <span class="course-like-total" aria-live="polite">추천 <span class="like-num">${course.likeCount ?? 0}</span></span>
+                    <span class="course-likes" aria-live="polite">추천 <span class="like-num">${course.likeCount ?? 0}</span></span>
                 </div>
             </div>
             <div class="course-actions">
-                <button type="button" class="btn-circle course-like-button" title="코스 추천" aria-label="코스 추천"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg></button>
-                <a href="/walk/course/${course.id}/chat" class="btn-circle course-chat-link" title="코스 채팅 홈" aria-label="코스 채팅 홈"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/><path d="M8 11h8M8 15h5"/></svg></a>
+                <button type="button" class="btn-circle course-like" title="코스 추천" aria-label="코스 추천"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg></button>
+                <a href="/walk/course/${course.id}/chat" class="btn-circle course-chat" title="코스 채팅 홈" aria-label="코스 채팅 홈"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/><path d="M8 11h8M8 15h5"/></svg></a>
             </div>
         `;
         // 코스 상세 페이지 이동 이벤트
-        const courseName = card.querySelector('.course-detail-link');
+        const courseName = card.querySelector('.course-link');
 
         courseName.addEventListener('click', function(event) {
             event.stopPropagation();
         });
 
-        card.querySelector('.course-chat-link').addEventListener('click', event => event.stopPropagation());
+        card.querySelector('.course-chat').addEventListener('click', event => event.stopPropagation());
 
         // 코스 선택 이벤트
         card.addEventListener('click', function() {
@@ -305,7 +305,7 @@
         });
 
         // 추천 이벤트
-        const likeButton = card.querySelector('.course-like-button');
+        const likeButton = card.querySelector('.course-like');
 
         likeButton.addEventListener('click', function(event) {
             event.stopPropagation();

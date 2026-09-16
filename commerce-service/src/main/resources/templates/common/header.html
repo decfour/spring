@@ -11,25 +11,25 @@
 </head>
 <body>
 
-<div th:fragment="mainHeader" class="global-nav">
+<div th:fragment="mainHeader" class="site-nav">
 
     <div>
-        <a href="/" class="global-nav-logo">The Hitchhiker's Guide to Earth</a>
+        <a href="/" class="site-logo">The Hitchhiker's Guide to Earth</a>
     </div>
 
-    <div class="global-nav-menu-set">
+    <div class="site-menu">
 
-        <span th:if="${#authentication == null or #authentication.principal == 'anonymousUser'}" class="global-nav-link-group">
-            <a href="/member/sign-in" class="global-nav-link">Sign In</a>
-            <a href="/member/sign-on" class="global-nav-link">Sign On</a>
+        <span th:if="${#authentication == null or #authentication.principal == 'anonymousUser'}" class="site-links">
+            <a href="/member/sign-in" class="site-link">Sign In</a>
+            <a href="/member/sign-on" class="site-link">Sign On</a>
         </span>
 
-        <span th:if="${#authentication != null and #authentication.principal != 'anonymousUser'}" class="global-nav-link-group">
+        <span th:if="${#authentication != null and #authentication.principal != 'anonymousUser'}" class="site-links">
             <a th:href="@{/member/my-page}"
                th:text="${#authentication.name}"
-               class="global-nav-user-link">User Email</a>
+               class="site-user">User Email</a>
 
-            <a href="/cart" class="global-nav-link">Cart</a>
+            <a href="/cart" class="site-link">Cart</a>
 
             <form th:action="@{/member/sign-out}" method="post" class="nav-form">
                 <button type="submit" class="btn-logout">Sign Out</button>

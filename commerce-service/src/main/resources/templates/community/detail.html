@@ -14,7 +14,7 @@
 
 <div class="page">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">
             <span>Talk</span>
             <span class="detail-title" th:text="${post.title}">제목</span>
@@ -79,11 +79,11 @@
         </div>
 
         <div th:each="comment : ${comments.content}" class="surface-card comment-item">
-            <div class="comment-header-row">
+            <div class="comment-head">
                 <strong class="comment-writer" th:text="${comment.creator != null ? comment.creator.name : '익명'}">작성자</strong>
                 <span class="comment-date" th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
 
-                <div class="comment-more-wrap">
+                <div class="comment-actions">
                     <div class="dropdown"
                          th:if="${loginMember != null and (
                              (comment.creator != null and comment.creator.id == loginMember.id) or
@@ -108,7 +108,7 @@
             </div>
         </div>
 
-        <div class="surface-card comment-write-card" th:if="${loginMember != null}">
+        <div class="surface-card comment-form" th:if="${loginMember != null}">
             <form method="post" th:action="@{/comment/{id}/add(id=${post.id})}">
                 <input type="hidden" name="postId" th:value="${post.id}"/>
                 <textarea name="content" rows="3" class="field" placeholder="댓글을 남겨주세요"></textarea>
@@ -119,25 +119,7 @@
         </div>
     </div>
 
-    <div class="mt-4 d-flex justify-content-center" th:if="${comments.totalPages > 1}">
-        <ul class="pagination">
-            <li class="page-item" th:classappend="${comments.first} ? 'disabled'">
-                <a class="page-link" th:href="@{/community/post/{id}(id=${post.id}, page=${comments.number - 1})}">&lt;</a>
-            </li>
-
-            <li class="page-item"
-                th:each="pageNumber : ${#numbers.sequence(0, comments.totalPages - 1)}"
-                th:classappend="${pageNumber == comments.number} ? 'active'">
-                <a class="page-link"
-                   th:href="@{/community/post/{id}(id=${post.id}, page=${pageNumber})}"
-                   th:text="${pageNumber + 1}">1</a>
-            </li>
-
-            <li class="page-item" th:classappend="${comments.last} ? 'disabled'">
-                <a class="page-link" th:href="@{/community/post/{id}(id=${post.id}, page=${comments.number + 1})}">&gt;</a>
-            </li>
-        </ul>
-    </div>
+    <div th:replace="~{common/pagination :: pager(${comments}, @{/community/post/{id}(id=${post.id})})}"></div>
 
 </div>
 

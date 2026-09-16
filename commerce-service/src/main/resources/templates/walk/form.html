@@ -16,7 +16,7 @@
 
 <div class="page">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">
             Walking <span class="subtitle">Add</span>
         </h2>
@@ -26,12 +26,12 @@
         </a>
     </div>
 
-    <div class="map-wrapper">
-        <div class="map-status-badge" id="status">
+    <div class="map-frame">
+        <div class="map-status" id="status">
             📍 출발지를 선택하세요
         </div>
 
-        <div id="map" class="map-card"></div>
+        <div id="map" class="map-canvas"></div>
 
         <button type="button" id="locationBtn" class="btn-location">
             📍 현재 위치
@@ -69,13 +69,13 @@
 
         <div class="form-actions">
             <button type="button"
-                    id="resetButton"
+                    id="resetBtn"
                     class="btn-action">
                 초기화
             </button>
 
             <button type="submit"
-                    id="submitButton"
+                    id="submitBtn"
                     class="btn-action"
                     disabled>
                 등록
@@ -97,8 +97,8 @@
 
     const locationBtn = document.getElementById('locationBtn');
     const status = document.getElementById('status');
-    const submitButton = document.getElementById('submitButton');
-    const resetButton = document.getElementById('resetButton');
+    const submitBtn = document.getElementById('submitBtn');
+    const resetBtn = document.getElementById('resetBtn');
 
     let startMarker = null;
     let endMarker = null;
@@ -184,7 +184,7 @@
     });
 
     // 초기화 버튼 이벤트
-    resetButton.addEventListener('click', resetCourse);
+    resetBtn.addEventListener('click', resetCourse);
 
     function resetCourse() {
         if (startMarker) {
@@ -216,7 +216,7 @@
         document.getElementById('distance').value = '';
         document.getElementById('duration').value = '';
 
-        submitButton.disabled = true;
+        submitBtn.disabled = true;
         status.textContent = '📍 출발지를 선택하세요';
     }
 
@@ -264,14 +264,14 @@
             status.textContent =
                 `✅ 경로 조회 완료 (${data.distance}m / ${Math.round(data.duration / 60)}분)`;
 
-            submitButton.disabled = false;
+            submitBtn.disabled = false;
         })
         .catch(error => {
 
             console.error(error);
 
             status.textContent = '❌ 경로 조회 실패';
-            submitButton.disabled = true;
+            submitBtn.disabled = true;
         });
     }
 </script>

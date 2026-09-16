@@ -7,13 +7,10 @@ import com.kdj.commerce.domain.chat.ChatRoomRepository;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.web.dto.chat.ChatMessageResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

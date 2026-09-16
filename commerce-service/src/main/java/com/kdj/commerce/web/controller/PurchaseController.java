@@ -1,10 +1,9 @@
 package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.cart.CartItem;
-import com.kdj.commerce.domain.community.Post;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.member.Member;
-import com.kdj.commerce.domain.purchase.Purchase;
+import com.kdj.commerce.exception.PermissionDeniedException;
 import com.kdj.commerce.service.CartService;
 import com.kdj.commerce.service.ItemService;
 import com.kdj.commerce.service.PurchaseService;
@@ -98,21 +97,20 @@ public class PurchaseController {
     ) {
         if ("ONE".equals(purchaseType)) {
             purchaseService.purchase(
-                    loginMember.getId(),
+                    loginMember == null ? null : loginMember.getId(),
                     itemId,
                     quantity,
                     receiverName,
                     receiverAddress
             );
-        } else {
-            List<CartItem> cartItems = cartService.findItem(loginMember.getId());
-
+        } else if ("CART".equals(purchaseType)) {
             purchaseService.purchaseCart(
-                    loginMember.getId(),
-                    cartItems,
+                    loginMember == null ? null : loginMember.getId(),
                     receiverName,
                     receiverAddress
             );
+        } else {
+            throw new IllegalArgumentException("지원하지 않는 주문 방식입니다.");
         }
 
         return "redirect:/member/my-order";
@@ -123,21 +121,13 @@ public class PurchaseController {
             @Login Member loginMember,
             @PathVariable("id") Long id
     ) {
-        Purchase purchase = purchaseService.findById(id);
-
-        if (!isOwner(purchase, loginMember)) {
-            return "redirect:/member/my-order";
-        }
-
-        purchaseService.cancel(id);
+        purchaseService.cancel(id, loginMember == null ? null : loginMember.getId());
 
         return "redirect:/member/my-order";
     }
 
-    private boolean isOwner(Purchase purchase, Member loginMember) {
-        if (purchase == null || purchase.getMember() == null || loginMember == null) {
-            return false;
-        }
-        return purchase.getMember().equals(loginMember);
+    @ExceptionHandler(PermissionDeniedException.class)
+    public String handlePermissionDenied(PermissionDeniedException exception) {
+        return "redirect:/member/my-order";
     }
 }

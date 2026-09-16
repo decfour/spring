@@ -14,7 +14,7 @@
 <div class="page">
 
     <!-- 제목 -->
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">Shop</h2>
 
         <div class="d-flex gap-2">
@@ -93,46 +93,7 @@
     </div>
 
     <!-- 페이지네이션 -->
-    <div th:if="${items.totalPages > 1}"
-         class="pager">
-
-        <ul class="pagination mb-0">
-
-            <!-- 이전 -->
-            <li>
-                <a th:href="@{/shop(page=${items.number - 1})}"
-                   class="btn-page"
-                   th:classappend="${items.first} ? 'disabled'">
-                    ‹
-                </a>
-            </li>
-
-            <!-- 페이지 번호 -->
-            <th:block th:each="pageNumber : ${#numbers.sequence(0, items.totalPages - 1)}">
-
-                <li>
-                    <a th:href="@{/shop(page=${pageNumber})}"
-                       th:text="${pageNumber + 1}"
-                       class="btn-page"
-                       th:classappend="${pageNumber == items.number} ? 'active'">
-                        1
-                    </a>
-                </li>
-
-            </th:block>
-
-            <!-- 다음 -->
-            <li>
-                <a th:href="@{/shop(page=${items.number + 1})}"
-                   class="btn-page"
-                   th:classappend="${items.last} ? 'disabled'">
-                    ›
-                </a>
-            </li>
-
-        </ul>
-
-    </div>
+    <div th:replace="~{common/pagination :: pager(${items}, @{/shop})}"></div>
 
 </div>
 

@@ -16,7 +16,7 @@
 
 <div class="page">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">
             Talk <span class="subtitle" th:text="${isEdit ?: false} ? 'Edit' : 'Add'">Add</span>
         </h2>
@@ -29,61 +29,9 @@
                th:if="${isEdit ?: false}"
                th:field="*{id}">
 
-        <div class="field-group">
-            <label for="title" class="field-label">제목</label>
+        <th:block th:replace="~{common/writingForm :: fields('제목을 입력하세요', '내용', '내용을 입력하세요...')}"></th:block>
 
-            <input type="text"
-                   id="title"
-                   th:field="*{title}"
-                   class="field"
-                   placeholder="제목을 입력하세요"
-                   maxlength="30"
-                   th:classappend="${#fields.hasErrors('title')} ? 'field-error' : ''">
-
-            <div class="field-error-text"
-                 th:errors="*{title}">
-            </div>
-        </div>
-
-        <div class="field-group">
-            <label for="content" class="field-label">내용</label>
-
-            <textarea id="content"
-                      th:field="*{content}"
-                      rows="10"
-                      class="field"
-                      placeholder="내용을 입력하세요..."
-
-                      th:classappend="${#fields.hasErrors('content')} ? 'field-error' : ''"></textarea>
-
-            <div class="field-error-text"
-                 th:errors="*{content}">
-            </div>
-        </div>
-
-        <div class="form-actions">
-
-            <button type="button"
-                    class="btn-action"
-                    th:if="${isEdit ?: false}"
-                    th:onclick="|location.href='@{/community/post/{id}(id=${postForm.id})}'|">
-                취소
-            </button>
-
-            <button type="button"
-                    class="btn-action"
-                    th:unless="${isEdit ?: false}"
-                    th:onclick="|location.href='@{/community}'|">
-                취소
-            </button>
-
-            <button type="submit"
-                    class="btn-action"
-                    th:text="${isEdit ?: false} ? '수정' : '등록'">
-                등록
-            </button>
-
-        </div>
+        <div th:replace="~{common/writingForm :: actions(${isEdit ?: false} ? @{/community/post/{id}(id=${postForm.id})} : @{/community}, ${isEdit ?: false})}"></div>
 
     </form>
 

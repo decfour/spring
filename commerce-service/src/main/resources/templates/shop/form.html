@@ -15,7 +15,7 @@
 
 <div class="page">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">
             Shop <span class="subtitle" th:text="${isEdit ?: false} ? 'Edit' : 'Add'">Add</span>
         </h2>
@@ -35,9 +35,9 @@
                    class="field"
                    placeholder="상품명을 입력하세요"
                    maxlength="30"
-                   th:classappend="${#fields.hasErrors('name')} ? 'field-error' : ''">
+                   th:errorclass="field-error">
 
-            <div class="field-error-text" th:errors="*{name}"></div>
+            <div class="field-feedback" th:errors="*{name}"></div>
         </div>
 
         <div class="row field-group">
@@ -48,9 +48,9 @@
                        th:field="*{price}"
                        class="field"
                        placeholder="가격을 입력하세요"
-                       th:classappend="${#fields.hasErrors('price')} ? 'field-error' : ''">
+                       th:errorclass="field-error">
 
-                <div class="field-error-text" th:errors="*{price}"></div>
+                <div class="field-feedback" th:errors="*{price}"></div>
             </div>
 
             <div class="col-md-6 mt-4 mt-md-0">
@@ -60,9 +60,9 @@
                        th:field="*{stock}"
                        class="field"
                        placeholder="수량을 입력하세요"
-                       th:classappend="${#fields.hasErrors('stock')} ? 'field-error' : ''">
+                       th:errorclass="field-error">
 
-                <div class="field-error-text" th:errors="*{stock}"></div>
+                <div class="field-feedback" th:errors="*{stock}"></div>
             </div>
         </div>
 
@@ -74,9 +74,9 @@
                       class="field"
                       placeholder="상품 설명을 입력하세요..."
 
-                      th:classappend="${#fields.hasErrors('description')} ? 'field-error' : ''"></textarea>
+                      th:errorclass="field-error"></textarea>
 
-            <div class="field-error-text" th:errors="*{description}"></div>
+            <div class="field-feedback" th:errors="*{description}"></div>
         </div>
 
         <div class="field-group">
@@ -93,7 +93,7 @@
                     </label>
                 </div>
             </div>
-            <div class="field-error-text" th:errors="*{itemType}"></div>
+            <div class="field-feedback" th:errors="*{itemType}"></div>
         </div>
 
         <div class="field-group">
@@ -101,14 +101,14 @@
             <select id="deliveryType"
                     th:field="*{deliveryType}"
                     class="field select"
-                    th:classappend="${#fields.hasErrors('deliveryType')} ? 'field-error' : ''">
+                    th:errorclass="field-error">
                 <option value="">배송 방식을 선택하세요</option>
                 <option th:each="type : ${deliveryTypes}"
                         th:value="${type.name()}"
                         th:text="${type.description}">
                 </option>
             </select>
-            <div class="field-error-text" th:errors="*{deliveryType}"></div>
+            <div class="field-feedback" th:errors="*{deliveryType}"></div>
         </div>
 
         <div class="field-group">

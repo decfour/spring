@@ -13,7 +13,7 @@
 
 <div class="page">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">
             My <span class="subtitle">Product</span>
         </h2>
@@ -94,51 +94,7 @@
         </div>
 
         <!-- 페이지네이션 -->
-        <div th:if="${myItems != null and myItems.totalPages > 1}"
-             class="pager">
-
-            <nav>
-                <ul class="pagination mb-0">
-
-                    <!-- 이전 -->
-                    <li class="page-item"
-                        th:classappend="${myItems.first} ? 'disabled'">
-
-                        <a class="page-link"
-                           th:href="@{/member/my-item(page=${myItems.number - 1})}">
-                            &lsaquo;
-                        </a>
-
-                    </li>
-
-                    <!-- 페이지 번호 -->
-                    <li th:each="pageNum : ${#numbers.sequence(0, myItems.totalPages - 1)}"
-                        class="page-item"
-                        th:classappend="${pageNum == myItems.number} ? 'active'">
-
-                        <a class="page-link"
-                           th:href="@{/member/my-item(page=${pageNum})}"
-                           th:text="${pageNum + 1}">
-                            1
-                        </a>
-
-                    </li>
-
-                    <!-- 다음 -->
-                    <li class="page-item"
-                        th:classappend="${myItems.last} ? 'disabled'">
-
-                        <a class="page-link"
-                           th:href="@{/member/my-item(page=${myItems.number + 1})}">
-                            &rsaquo;
-                        </a>
-
-                    </li>
-
-                </ul>
-            </nav>
-
-        </div>
+        <div th:replace="~{common/pagination :: pager(${myItems}, @{/member/my-item})}"></div>
 
     </div>
 

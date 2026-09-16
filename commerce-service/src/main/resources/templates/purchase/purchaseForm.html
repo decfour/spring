@@ -13,7 +13,7 @@
 
 <div class="page">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">
             Purchase <span class="subtitle">Add</span>
         </h2>
@@ -29,7 +29,7 @@
         <input type="hidden" name="itemId" th:value="${itemId}">
         <input type="hidden" name="quantity" th:value="${quantity}">
 
-        <div class="sub-section-title">주문 상품 정보</div>
+        <div class="section-title">주문 상품 정보</div>
 
         <div th:each="purchaseItem : ${purchaseItems}" class="surface-card item-card">
             <div class="item-row">
@@ -48,7 +48,7 @@
             </div>
         </div>
 
-        <div class="sub-section-title">배송지 정보</div>
+        <div class="section-title">배송지 정보</div>
 
         <div class="field-group">
             <label for="receiverName" class="field-label">수령인</label>
@@ -71,16 +71,7 @@
         </div>
 
         <div class="summary-card">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <span style="color: #86868b; font-size: 0.95rem; font-weight: 500;">
-                    최종 결제 금액
-                </span>
-
-                <span style="font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px;"
-                      th:text="${#numbers.formatInteger(totalPrice, 0, 'COMMA')} + '원'">
-                    0원
-                </span>
-            </div>
+            <div th:replace="~{common/priceSummary :: total('최종 결제 금액', ${totalPrice})}"></div>
 
             <div class="form-actions">
                 <a th:href="@{/shop}" class="btn-action">

@@ -10,7 +10,7 @@
 <div th:replace="~{common/header :: mainHeader}"></div>
 
 <div class="page">
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">Review</h2>
         <div class="d-flex gap-2">
             <a th:href="@{/shop/item/{itemId}/review/add(itemId=${itemId})}" class="btn-action">등록</a>
@@ -43,22 +43,7 @@
         </tbody>
     </table>
 
-    <div th:if="${reviews.totalPages > 1}" class="pager">
-        <a th:href="@{/shop/item/{itemId}/review(itemId=${itemId}, page=${reviews.number - 1})}"
-           class="btn-page"
-           th:classappend="${reviews.first} ? 'disabled' : ''">‹</a>
-
-        <th:block th:each="pageNumber : ${#numbers.sequence(0, reviews.totalPages - 1)}">
-            <a th:href="@{/shop/item/{itemId}/review(itemId=${itemId}, page=${pageNumber})}"
-               th:text="${pageNumber + 1}"
-               class="btn-page"
-               th:classappend="${pageNumber == reviews.number} ? 'active' : ''">1</a>
-        </th:block>
-
-        <a th:href="@{/shop/item/{itemId}/review(itemId=${itemId}, page=${reviews.number + 1})}"
-           class="btn-page"
-           th:classappend="${reviews.last} ? 'disabled' : ''">›</a>
-    </div>
+    <div th:replace="~{common/pagination :: pager(${reviews}, @{/shop/item/{itemId}/review(itemId=${itemId})})}"></div>
 </div>
 
 </body>

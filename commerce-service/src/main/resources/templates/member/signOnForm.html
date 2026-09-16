@@ -9,7 +9,7 @@
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div class="auth-container">
+<div class="auth-page">
     <h2 class="page-title mb-4 text-center">Sign On</h2>
 
     <form th:action="@{/member/sign-on}" th:object="${member}" method="post">
@@ -45,7 +45,7 @@
         <button class="btn-action" type="submit">Sign On</button>
     </form>
 
-    <div class="auth-link-box">
+    <div class="auth-footer">
         <span class="text-muted">계정이 있으신가요?</span>
         <a href="/member/sign-in" class="auth-link">Sign In</a>
     </div>

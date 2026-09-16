@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Uses the enclosing form's th:object so rejected values and errors survive. -->
+<th:block th:fragment="fields(titlePlaceholder, contentLabel, contentPlaceholder)">
+    <div class="field-group">
+        <label for="title" class="field-label">제목</label>
+        <input type="text" th:field="*{title}" class="field" maxlength="30"
+               th:placeholder="${titlePlaceholder}" th:errorclass="field-error"
+               th:attr="aria-invalid=${#fields.hasErrors('title')}">
+        <div class="field-feedback" th:errors="*{title}"></div>
+    </div>
+    <div class="field-group">
+        <label for="content" class="field-label" th:text="${contentLabel}">내용</label>
+        <textarea th:field="*{content}" rows="10" class="field"
+                  th:placeholder="${contentPlaceholder}" th:errorclass="field-error"
+                  th:attr="aria-invalid=${#fields.hasErrors('content')}"></textarea>
+        <div class="field-feedback" th:errors="*{content}"></div>
+    </div>
+</th:block>
+<div th:fragment="actions(cancelUrl, editing)" class="form-actions">
+    <a th:href="${cancelUrl}" class="btn-action">취소</a>
+    <button type="submit" class="btn-action" th:text="${editing} ? '수정' : '등록'">등록</button>
+</div>
+</body>
+</html>

@@ -10,7 +10,7 @@
 <div th:replace="~{common/header :: mainHeader}"></div>
 
 <div class="page">
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">Notice</h2>
         <div class="d-flex gap-2">
             <a th:if="${member != null && member.memberType.name() == 'ADMIN'}" th:href="@{/notice/add}" class="btn-action">등록</a>
@@ -39,22 +39,7 @@
         </tbody>
     </table>
 
-    <div th:if="${notices.totalPages > 1}" class="pager">
-        <a th:href="@{/notice(page=${notices.number - 1})}"
-           class="btn-page"
-           th:classappend="${notices.first} ? 'disabled' : ''">‹</a>
-
-        <th:block th:each="pageNumber : ${#numbers.sequence(0, notices.totalPages - 1)}">
-            <a th:href="@{/notice(page=${pageNumber})}"
-               th:text="${pageNumber + 1}"
-               class="btn-page"
-               th:classappend="${pageNumber == notices.number} ? 'active' : ''">1</a>
-        </th:block>
-
-        <a th:href="@{/notice(page=${notices.number + 1})}"
-           class="btn-page"
-           th:classappend="${notices.last} ? 'disabled' : ''">›</a>
-    </div>
+    <div th:replace="~{common/pagination :: pager(${notices}, @{/notice})}"></div>
 </div>
 
 </body>

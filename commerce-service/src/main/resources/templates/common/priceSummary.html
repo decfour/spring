@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="total(label, amount)" class="summary-total">
+    <span class="summary-label" th:text="${label}">총 결제 금액</span>
+    <strong class="summary-value" th:text="${#numbers.formatInteger(amount, 0, 'COMMA')} + '원'">0원</strong>
+</div>
+</body>
+</html>

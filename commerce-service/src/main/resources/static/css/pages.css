@@ -1,13 +1,9 @@
-/* =========================================================
-   Home
-   ========================================================= */
+/* Home - 첫 화면과 이동 링크 */
 
 :where([data-view="home"]) .page {
     max-width: 680px;
-
     margin: 0 auto;
     padding: calc(var(--page-gap) + 80px) 20px 0;
-
     box-sizing: border-box;
 }
 
@@ -78,545 +74,12 @@
 }
 
 
-/* =========================================================
-   Cart
-   ========================================================= */
-
-:where([data-view="cart-cartList"]) .cart-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 8px;
-}
-
-:where([data-view="cart-cartList"]) .cart-table th {
-    padding: 14px 0;
-    font-weight: 500;
-    color: var(--muted);
-    font-size: 0.85rem;
-    border-bottom: 1px solid var(--line);
-}
-
-:where([data-view="cart-cartList"]) .cart-table td {
-    padding: 18px 0;
-    border-bottom: 1px solid #e5e5e7;
-    font-size: 0.95rem;
-    vertical-align: middle;
-}
-
-:where([data-view="cart-cartList"]) .cart-item-link {
-    color: var(--ink);
-    font-weight: 500;
-    text-decoration: none;
-    letter-spacing: -0.2px;
-    transition: color 0.2s ease;
-}
-
-:where([data-view="cart-cartList"]) .cart-item-link:hover {
-    color: var(--accent);
-}
-
-:where([data-view="cart-cartList"]) .btn-delete {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2px 8px;
-    background: none;
-    border: none;
-    border-radius: 980px;
-    color: var(--muted);
-    font-size: 1.1rem;
-    line-height: 1;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-:where([data-view="cart-cartList"]) .btn-delete:hover {
-    background-color: #fff2f2;
-    color: #de363a;
-}
-
-
-/* =========================================================
-   Community
-   ========================================================= */
-
-:where([data-view="community-detail"]) .post-info-row,
-:where([data-view="walk-detail"]) .course-info-row {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-}
-
-:where([data-view="community-detail"]) .comments-section {
-    margin-top: 32px;
-}
-
-:where([data-view="community-detail"]) .comments-header {
-    margin-bottom: 16px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: -0.4px;
-}
-
-:where([data-view="community-detail"]) .comments-header .count {
-    margin-left: 2px;
-    color: var(--accent);
-}
-
-:where([data-view="community-detail"]) .comment-item {
-    padding: 16px 20px;
-    margin-bottom: 12px;
-}
-
-:where([data-view="community-detail"]) .comment-header-row {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-:where([data-view="community-detail"]) .comment-writer {
-    color: var(--ink);
-    font-size: 0.85rem;
-    font-weight: 600;
-}
-
-:where([data-view="community-detail"]) .comment-date {
-    color: var(--muted);
-    font-size: 0.8rem;
-    text-align: center;
-}
-
-:where([data-view="community-detail"]) .comment-more-wrap {
-    display: flex;
-    justify-content: flex-end;
-    min-height: 24px;
-}
-
-:where([data-view="community-detail"]) .comment-content {
-    color: var(--ink);
-    font-size: 0.95rem;
-    line-height: 1.55;
-    white-space: pre-wrap;
-    word-break: break-word;
-}
-
-:where([data-view="community-detail"]) .comment-write-card {
-    padding: 18px;
-    margin-top: 20px;
-}
-
-
-/* =========================================================
-   Member
-   ========================================================= */
-
-/* My Course / My Review */
-
-:where([data-view="member-myCourse"]) .course-id,
-:where([data-view="member-myReview"]) .review-item-name {
-    color: var(--accent);
-    font-weight: 500;
-}
-
-
-/* My Item */
-
-:where([data-view="member-myItem"]) .soldout-badge {
-    padding: 3px 10px;
-    border: 1px solid #f8d7da;
-    border-radius: 980px;
-    background-color: #fdf2f2;
-    color: #de363a;
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-:where([data-view="member-myItem"]) .status-badge-open,
-:where([data-view="member-myPurchase"]) .status-badge-purchase {
-    padding: 3px 10px;
-    border: 1px solid var(--line);
-    border-radius: 980px;
-    background-color: var(--surface);
-    color: var(--ink);
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-:where([data-view="member-myItem"]) .status-badge-closed,
-:where([data-view="member-myPurchase"]) .status-badge-cancel {
-    padding: 3px 10px;
-    border: 1px solid #e5e5e7;
-    border-radius: 980px;
-    background-color: #ffffff;
-    color: var(--muted);
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-
-/* My Page */
-
-:where([data-view="member-myPage"]) .profile-card {
-    padding: 24px;
-    margin-bottom: 24px;
-}
-
-:where([data-view="member-myPage"]) .profile-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 0;
-    border-bottom: 1px solid #e5e5e7;
-    font-size: 0.95rem;
-}
-
-:where([data-view="member-myPage"]) .profile-row:first-child {
-    padding-top: 0;
-}
-
-:where([data-view="member-myPage"]) .profile-row:last-child {
-    padding-bottom: 0;
-    border-bottom: none;
-}
-
-:where([data-view="member-myPage"]) .profile-label {
-    color: var(--muted);
-    font-weight: 500;
-}
-
-:where([data-view="member-myPage"]) .profile-value {
-    color: var(--ink);
-    font-weight: 600;
-}
-
-:where([data-view="member-myPage"]) .type-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border: 1px solid var(--line);
-    border-radius: 980px;
-    background-color: var(--surface);
-    color: var(--ink);
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-:where([data-view="member-myPage"]) .action-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-:where([data-view="member-myPage"]) .action-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px 16px;
-    color: var(--ink);
-    font-size: 0.95rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-
-:where([data-view="member-myPage"]) .action-card:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-}
-
-
-/* My Purchase */
-
-:where([data-view="member-myPurchase"]) .purchase-count {
-    color: var(--muted);
-    font-size: 0.9rem;
-    font-weight: 400;
-}
-
-:where([data-view="member-myPurchase"]) .btn-cancel {
-    padding: 3px 12px;
-    border: 1px solid #de363a;
-    border-radius: 980px;
-    background: none;
-    color: #de363a;
-    font-size: 0.8rem;
-    font-weight: 500;
-    line-height: 1.2;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-:where([data-view="member-myPurchase"]) .btn-cancel:hover {
-    background-color: #de363a;
-    color: #ffffff;
-}
-
-
-/* =========================================================
-   Notice / Review
-   ========================================================= */
-
-/* Detail */
-
-:where([data-view="notice-detail"]) .post-info-row,
-:where([data-view="review-detail"]) .post-info-row {
-    display: flex;
-    align-items: center;
-}
-
-
-/* List */
-
-:where([data-view="notice-list"]) .entry-date,
-:where([data-view="review-list"]) .entry-date {
-    color: var(--muted);
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-align: right;
-}
-
-
-/* =========================================================
-   Purchase
-   ========================================================= */
-
-:where([data-view="purchase-purchaseForm"]) .sub-section-title {
-    margin-top: 32px;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--ink);
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-:where([data-view="purchase-purchaseForm"]) .item-card {
-    padding: 16px 20px;
-    margin-bottom: 12px;
-}
-
-:where([data-view="purchase-purchaseForm"]) .item-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.95rem;
-}
-
-
-/* =========================================================
-   Shop
-   ========================================================= */
-
-/* Shop Detail */
-
-:where([data-view="shop-detail"]) .product-overview-card {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 28px;
-    padding: 20px;
-    margin-bottom: 12px;
-}
-
-:where([data-view="shop-detail"]) .img-square-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-    border: 1px solid #e5e5e7;
-    border-radius: 14px;
-    background-color: var(--surface);
-}
-
-:where([data-view="shop-detail"]) .img-square-wrapper img,
-:where([data-view="shop-list"]) .product-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-:where([data-view="shop-detail"]) .detail-row {
-    display: flex;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--surface);
-    font-size: 0.95rem;
-}
-
-:where([data-view="shop-detail"]) .detail-row:last-child {
-    border-bottom: none;
-}
-
-:where([data-view="shop-detail"]) .detail-label {
-    width: 90px;
-    color: var(--muted);
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-:where([data-view="shop-detail"]) .detail-value {
-    flex: 1;
-    color: var(--ink);
-}
-
-:where([data-view="shop-detail"]) .status-badge {
-    display: inline-block;
-    font-weight: 600;
-}
-
-:where([data-view="shop-detail"]) .item-card {
-    min-height: 80px;
-    padding: 20px;
-    margin-bottom: 12px;
-    color: var(--ink);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    white-space: pre-wrap;
-}
-
-:where([data-view="shop-detail"]) .purchase-card {
-    padding: 20px;
-    margin-bottom: 12px;
-}
-
-:where([data-view="shop-detail"]) .purchase-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-}
-
-:where([data-view="shop-detail"]) .form-label-fixed {
-    width: 80px;
-    color: var(--ink);
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-
-/* Shop Form */
-
-:where([data-view="shop-form"]) .select {
-    appearance: none;
-    padding-right: 40px;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2386868b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    background-size: 12px 12px;
-}
-
-:where([data-view="shop-form"]) .form-check-input {
-    width: 1.1em;
-    height: 1.1em;
-    margin-top: 0.15em;
-    border-color: var(--line);
-    cursor: pointer;
-}
-
-:where([data-view="shop-form"]) .form-check-input:checked {
-    border-color: var(--accent);
-    background-color: var(--accent);
-}
-
-:where([data-view="shop-form"]) .form-check-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
-}
-
-:where([data-view="shop-form"]) .form-check-label {
-    color: var(--ink);
-    font-size: 0.95rem;
-    cursor: pointer;
-}
-
-
-/* Shop List */
-
-:where([data-view="shop-list"]) .product-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-top: 30px;
-}
-
-:where([data-view="shop-list"]) .product-card {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    color: var(--ink);
-    text-decoration: none;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
-}
-
-:where([data-view="shop-list"]) .product-card:hover {
-    border-color: var(--accent);
-}
-
-:where([data-view="shop-list"]) .product-image {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-    background-color: var(--surface);
-}
-
-:where([data-view="shop-list"]) .no-image {
-    color: var(--muted);
-    font-size: 0.8rem;
-    font-weight: 500;
-}
-
-:where([data-view="shop-list"]) .product-info {
-    padding: 10px 12px 12px;
-}
-
-:where([data-view="shop-list"]) .product-name {
-    overflow: hidden;
-    margin-bottom: 4px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-:where([data-view="shop-list"]) .product-price {
-    font-size: 0.84rem;
-    font-weight: 600;
-}
-
-:where([data-view="shop-list"]) .product-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 5px;
-    color: var(--muted);
-    font-size: 0.75rem;
-}
-
-:where([data-view="shop-list"]) .soldout-badge {
-    padding: 3px 8px;
-    border: 1px solid rgba(222, 54, 58, 0.2);
-    border-radius: 100px;
-    background-color: rgba(222, 54, 58, 0.08);
-    color: #de363a;
-    font-size: 0.75rem;
-    font-weight: 500;
-}
-
-
-/* =========================================================
-   Walk
-   ========================================================= */
-
-/* Shared Walk Map Badge */
-
-:where([data-view="walk-detail"]) .map-status-badge,
-:where([data-view="walk-form"]) .map-status-badge,
-:where([data-view="walk-hit"]) .map-status-badge,
-:where([data-view="walk-main"]) .map-status-badge {
+/* Walk - 지도 상태 표시 */
+
+:where([data-view="walk-detail"]) .map-status,
+:where([data-view="walk-form"]) .map-status,
+:where([data-view="walk-hit"]) .map-status,
+:where([data-view="walk-main"]) .map-status {
     position: absolute;
     top: 16px;
     left: 16px;
@@ -634,10 +97,123 @@
     pointer-events: none;
 }
 
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-link:hover,
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-link:hover .course-arrow {
+    color: var(--accent);
+}
 
-/* Walk Detail */
+@media (max-width: 768px) {
+    .map-status {
+        max-width: calc(100% - 32px);
+        font-size: 0.75rem;
+    }
+}
 
-:where([data-view="walk-detail"]) .map-status-badge {
+
+/* Walk - 코스 목록과 이동 버튼 */
+
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-card.selected {
+    border-color: var(--accent);
+    background-color: #f5f9ff;
+}
+
+:where([data-view="walk-main"]) .loading {
+    padding: 40px;
+    color: var(--muted);
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-content {
+    flex: 1;
+    min-width: 0;
+}
+
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-link {
+    transition: color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    gap: 6px;
+    vertical-align: top;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-arrow {
+    flex-shrink: 0;
+    color: var(--muted);
+}
+
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-likes {
+    white-space: nowrap;
+}
+
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-actions {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 8px;
+}
+
+:where([data-view="walk-main"], [data-view="walk-hit"]) .course-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+    :where([data-view="walk-main"], [data-view="walk-hit"]) .course-card {
+        gap: 10px;
+    }
+
+    :where([data-view="walk-main"], [data-view="walk-hit"]) .course-info {
+        gap: 6px;
+    }
+}
+
+
+/* Walk - 인기 코스 순위 */
+
+:where([data-view="walk-hit"]) .course-rank {
+    min-width: 32px;
+    color: var(--ink);
+    font-size: 1.3rem;
+    font-weight: 800;
+    line-height: 1;
+    text-align: center;
+}
+
+:where([data-view="walk-hit"]) .course-rank.gold {
+    color: #ffd700;
+}
+
+:where([data-view="walk-hit"]) .course-rank.silver {
+    color: #c0c0c0;
+}
+
+:where([data-view="walk-hit"]) .course-rank.bronze {
+    color: #cd7f32;
+}
+
+
+/* Walk - 코스 상세와 태그 */
+
+:where([data-view="walk-detail"]) .map-status {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -653,7 +229,7 @@
     font-weight: 600;
 }
 
-:where([data-view="walk-detail"]) .tag-bar-card {
+:where([data-view="walk-detail"]) .tag-bar {
     position: relative;
     display: flex;
     align-items: center;
@@ -665,7 +241,7 @@
     background-color: #ffffff;
 }
 
-:where([data-view="walk-detail"]) .tag-scroll-container {
+:where([data-view="walk-detail"]) .tag-list {
     display: flex;
     align-items: center;
     flex-grow: 1;
@@ -678,11 +254,11 @@
     scrollbar-width: none;
 }
 
-:where([data-view="walk-detail"]) .tag-scroll-container::-webkit-scrollbar {
+:where([data-view="walk-detail"]) .tag-list::-webkit-scrollbar {
     display: none;
 }
 
-:where([data-view="walk-detail"]) .tag-fade-overlay {
+:where([data-view="walk-detail"]) .tag-fade {
     position: absolute;
     top: 0;
     right: 76px;
@@ -690,14 +266,14 @@
     width: 32px;
     height: 100%;
     background: linear-gradient(
-        to right,
-        rgba(255, 255, 255, 0),
-        rgba(255, 255, 255, 1)
+    to right,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 1)
     );
     pointer-events: none;
 }
 
-:where([data-view="walk-detail"]) .tag-actions-group {
+:where([data-view="walk-detail"]) .tag-actions {
     z-index: 3;
     display: flex;
     align-items: center;
@@ -804,129 +380,536 @@
 }
 
 
-/* Walk Hit */
+/* Walk · Talk - 상세 정보 배치 */
 
-:where([data-view="walk-hit"]) .course-rank {
-    min-width: 32px;
+:where([data-view="community-detail"]) .post-info-row,
+:where([data-view="walk-detail"]) .course-info-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .post-info-row,
+        .course-info-row {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+}
+
+
+/* Talk - 댓글 목록과 작성 */
+
+:where([data-view="community-detail"]) .comments-section {
+    margin-top: 32px;
+}
+
+:where([data-view="community-detail"]) .comments-header {
+    margin-bottom: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+}
+
+:where([data-view="community-detail"]) .comments-header .count {
+    margin-left: 2px;
+    color: var(--accent);
+}
+
+:where([data-view="community-detail"]) .comment-item {
+    padding: 16px 20px;
+    margin-bottom: 12px;
+}
+
+:where([data-view="community-detail"]) .comment-head {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+:where([data-view="community-detail"]) .comment-writer {
     color: var(--ink);
-    font-size: 1.3rem;
-    font-weight: 800;
-    line-height: 1;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+:where([data-view="community-detail"]) .comment-date {
+    color: var(--muted);
+    font-size: 0.8rem;
     text-align: center;
 }
 
-:where([data-view="walk-hit"]) .course-rank.gold {
-    color: #ffd700;
+:where([data-view="community-detail"]) .comment-actions {
+    display: flex;
+    justify-content: flex-end;
+    min-height: 24px;
 }
 
-:where([data-view="walk-hit"]) .course-rank.silver {
-    color: #c0c0c0;
+:where([data-view="community-detail"]) .comment-content {
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
-:where([data-view="walk-hit"]) .course-rank.bronze {
-    color: #cd7f32;
+:where([data-view="community-detail"]) .comment-form {
+    padding: 18px;
+    margin-top: 20px;
 }
 
 
-/* Walk Main */
+/* Notice · Review - 목록과 상세 */
 
-:where([data-view="walk-main"], [data-view="walk-hit"]) .course-card {
+:where([data-view="member-myCourse"]) .course-id,
+:where([data-view="member-myReview"]) .review-item-name {
+    color: var(--accent);
+    font-weight: 500;
+}
+
+:where([data-view="notice-detail"]) .post-info-row,
+:where([data-view="review-detail"]) .post-info-row {
     display: flex;
     align-items: center;
-    gap: 16px;
-    padding: 12px 16px;
-    cursor: pointer;
+}
+
+:where([data-view="notice-list"]) .entry-date,
+:where([data-view="review-list"]) .entry-date {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: right;
+}
+
+
+/* Shop - 상품 목록 */
+
+:where([data-view="shop-list"]) .product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 30px;
+}
+
+:where([data-view="shop-list"]) .product-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: var(--ink);
+    text-decoration: none;
     transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-:where([data-view="walk-main"], [data-view="walk-hit"]) .course-card.selected {
+:where([data-view="shop-list"]) .product-card:hover {
     border-color: var(--accent);
-    background-color: #f5f9ff;
 }
 
-:where([data-view="walk-main"]) .loading {
-    padding: 40px;
-    color: var(--muted);
-    font-size: 0.95rem;
-    text-align: center;
-}
-
-
-/* Compact course links and actions */
-:where([data-view="walk-main"], [data-view="walk-hit"]) .course-content {
-    flex: 1;
-    min-width: 0;
-}
-:where([data-view="walk-main"], [data-view="walk-hit"]) .course-detail-link {
-    transition: color 0.2s ease;
-    display: inline-flex;
+:where([data-view="shop-list"]) .product-image {
+    display: flex;
     align-items: center;
-    max-width: 100%;
-    gap: 6px;
-    vertical-align: top;
-    color: var(--ink);
-    text-decoration: none;
-}
-:where([data-view="walk-main"], [data-view="walk-hit"]) .course-title-text {
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
+    background-color: var(--surface);
+}
+
+:where([data-view="shop-list"]) .no-image {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+:where([data-view="shop-list"]) .product-info {
+    padding: 10px 12px 12px;
+}
+
+:where([data-view="shop-list"]) .product-name {
+    overflow: hidden;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-:where([data-view="walk-main"], [data-view="walk-hit"]) .course-detail-arrow {
-    flex-shrink: 0;
-    color: var(--muted);
-}
-:where([data-view="walk-main"], [data-view="walk-hit"]) .course-detail-link:hover,
-:where([data-view="walk-main"], [data-view="walk-hit"]) .course-detail-link:hover .course-detail-arrow {
-    color: var(--accent);
-}
-:where([data-view="walk-main"], [data-view="walk-hit"]) .course-like-total {
-    white-space: nowrap;
-}
-:where([data-view="walk-main"], [data-view="walk-hit"]) .course-actions {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-    gap: 8px;
-}
-:where([data-view="walk-main"], [data-view="walk-hit"]) .course-detail-link:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
+
+:where([data-view="shop-list"]) .product-price {
+    font-size: 0.84rem;
+    font-weight: 600;
 }
 
-/* =========================================================
-   Responsive
-   ========================================================= */
+:where([data-view="shop-list"]) .product-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 0.75rem;
+}
+
+:where([data-view="shop-list"]) .soldout-badge {
+    padding: 3px 8px;
+    border: 1px solid rgba(222, 54, 58, 0.2);
+    border-radius: 100px;
+    background-color: rgba(222, 54, 58, 0.08);
+    color: #de363a;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
 
 @media (max-width: 768px) {
     :where([data-view="shop-list"]) .product-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+}
 
-    .post-info-row,
-    .course-info-row {
-        flex-wrap: wrap;
-        gap: 12px;
-    }
 
-    .map-status-badge {
-        max-width: calc(100% - 32px);
-        font-size: 0.75rem;
+/* Shop - 상품 상세 */
+
+:where([data-view="shop-detail"]) .product-overview {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 28px;
+    padding: 20px;
+    margin-bottom: 12px;
+}
+
+:where([data-view="shop-detail"]) .product-cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border: 1px solid #e5e5e7;
+    border-radius: 14px;
+    background-color: var(--surface);
+}
+
+:where([data-view="shop-detail"]) .product-cover img,
+:where([data-view="shop-list"]) .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+:where([data-view="shop-detail"]) .detail-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--surface);
+    font-size: 0.95rem;
+}
+
+:where([data-view="shop-detail"]) .detail-row:last-child {
+    border-bottom: none;
+}
+
+:where([data-view="shop-detail"]) .detail-label {
+    width: 90px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+:where([data-view="shop-detail"]) .detail-value {
+    flex: 1;
+    color: var(--ink);
+}
+
+:where([data-view="shop-detail"]) .status-badge {
+    display: inline-block;
+    font-weight: 600;
+}
+
+:where([data-view="shop-detail"]) .item-card {
+    min-height: 80px;
+    padding: 20px;
+    margin-bottom: 12px;
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+:where([data-view="shop-detail"]) .purchase-card {
+    padding: 20px;
+    margin-bottom: 12px;
+}
+
+:where([data-view="shop-detail"]) .purchase-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+:where([data-view="shop-detail"]) .form-label-fixed {
+    width: 80px;
+    color: var(--ink);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+@media (max-width: 576px) {
+    :where([data-view="shop-detail"]) .product-overview {
+        grid-template-columns: 1fr;
+        gap: 20px;
     }
+}
+
+
+/* Shop - 상품 등록과 수정 */
+
+:where([data-view="shop-form"]) .select {
+    appearance: none;
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2386868b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 12px 12px;
+}
+
+:where([data-view="shop-form"]) .form-check-input {
+    width: 1.1em;
+    height: 1.1em;
+    margin-top: 0.15em;
+    border-color: var(--line);
+    cursor: pointer;
+}
+
+:where([data-view="shop-form"]) .form-check-input:checked {
+    border-color: var(--accent);
+    background-color: var(--accent);
+}
+
+:where([data-view="shop-form"]) .form-check-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+}
+
+:where([data-view="shop-form"]) .form-check-label {
+    color: var(--ink);
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+
+/* Cart - 장바구니 목록 */
+
+:where([data-view="cart-cartList"]) .cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+}
+
+:where([data-view="cart-cartList"]) .cart-table th {
+    padding: 14px 0;
+    font-weight: 500;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--line);
+}
+
+:where([data-view="cart-cartList"]) .cart-table td {
+    padding: 18px 0;
+    border-bottom: 1px solid #e5e5e7;
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+:where([data-view="cart-cartList"]) .cart-item-link {
+    color: var(--ink);
+    font-weight: 500;
+    text-decoration: none;
+    letter-spacing: -0.2px;
+    transition: color 0.2s ease;
+}
+
+:where([data-view="cart-cartList"]) .cart-item-link:hover {
+    color: var(--accent);
+}
+
+:where([data-view="cart-cartList"]) .btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    background: none;
+    border: none;
+    border-radius: 980px;
+    color: var(--muted);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="cart-cartList"]) .btn-delete:hover {
+    background-color: #fff2f2;
+    color: #de363a;
+}
+
+
+/* Purchase - 주문서 */
+
+:where([data-view="purchase-purchaseForm"]) .section-title {
+    margin-top: 32px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--ink);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+:where([data-view="purchase-purchaseForm"]) .item-card {
+    padding: 16px 20px;
+    margin-bottom: 12px;
+}
+
+:where([data-view="purchase-purchaseForm"]) .item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.95rem;
+}
+
+
+/* Member - 내 활동과 상품 상태 */
+
+:where([data-view="member-myItem"]) .soldout-badge {
+    padding: 3px 10px;
+    border: 1px solid #f8d7da;
+    border-radius: 980px;
+    background-color: #fdf2f2;
+    color: #de363a;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+:where([data-view="member-myItem"]) .status-badge-open,
+:where([data-view="member-myPurchase"]) .status-badge-purchase {
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 980px;
+    background-color: var(--surface);
+    color: var(--ink);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+:where([data-view="member-myItem"]) .status-badge-closed,
+:where([data-view="member-myPurchase"]) .status-badge-cancel {
+    padding: 3px 10px;
+    border: 1px solid #e5e5e7;
+    border-radius: 980px;
+    background-color: #ffffff;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+
+/* Member - 내 정보 */
+
+:where([data-view="member-myPage"]) .profile-card {
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+:where([data-view="member-myPage"]) .profile-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    border-bottom: 1px solid #e5e5e7;
+    font-size: 0.95rem;
+}
+
+:where([data-view="member-myPage"]) .profile-row:first-child {
+    padding-top: 0;
+}
+
+:where([data-view="member-myPage"]) .profile-row:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+:where([data-view="member-myPage"]) .profile-label {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+:where([data-view="member-myPage"]) .profile-value {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+:where([data-view="member-myPage"]) .type-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 980px;
+    background-color: var(--surface);
+    color: var(--ink);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+:where([data-view="member-myPage"]) .action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+:where([data-view="member-myPage"]) .action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+    color: var(--ink);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+:where([data-view="member-myPage"]) .action-card:hover {
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 @media (max-width: 576px) {
     :where([data-view="member-myPage"]) .action-grid {
         grid-template-columns: 1fr;
     }
-
-    :where([data-view="shop-detail"]) .product-overview-card {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
 }
 
-@media (max-width: 480px) {
-    :where([data-view="walk-main"], [data-view="walk-hit"]) .course-card { gap: 10px; }
-    :where([data-view="walk-main"], [data-view="walk-hit"]) .course-info { gap: 6px; }
+
+/* Member - 주문 내역 */
+
+:where([data-view="member-myPurchase"]) .purchase-count {
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+:where([data-view="member-myPurchase"]) .btn-cancel {
+    padding: 3px 12px;
+    border: 1px solid #de363a;
+    border-radius: 980px;
+    background: none;
+    color: #de363a;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="member-myPurchase"]) .btn-cancel:hover {
+    background-color: #de363a;
+    color: #ffffff;
 }

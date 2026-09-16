@@ -10,7 +10,7 @@
 <div th:replace="~{common/header :: mainHeader}"></div>
 
 <div class="page">
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">Hit</h2>
 
         <div class="d-flex gap-2">
@@ -51,23 +51,7 @@
         게시글 없음
     </div>
 
-    <div th:if="${posts != null and posts.totalPages > 1}" class="pager">
-        <a th:href="@{/community/hits(page=${posts.number - 1})}"
-           class="btn-page"
-           th:classappend="${posts.first} ? 'disabled' : ''">‹</a>
-
-        <th:block th:if="${posts.totalPages > 0}"
-                  th:each="pageNumber : ${#numbers.sequence(0, posts.totalPages - 1)}">
-            <a th:href="@{/community/hits(page=${pageNumber})}"
-               th:text="${pageNumber + 1}"
-               class="btn-page"
-               th:classappend="${pageNumber == posts.number} ? 'active' : ''">1</a>
-        </th:block>
-
-        <a th:href="@{/community/hits(page=${posts.number + 1})}"
-           class="btn-page"
-           th:classappend="${posts.last} ? 'disabled' : ''">›</a>
-    </div>
+    <div th:replace="~{common/pagination :: pager(${posts}, @{/community/hits})}"></div>
 </div>
 
 </body>

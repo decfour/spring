@@ -78,12 +78,12 @@
     transition: border-color .2s;
 }
 
-:where([data-chat-preview]) .room-card-clickable:hover,
-:where([data-chat-preview]) .room-card-clickable:focus-within {
+:where([data-chat-preview]) .room-clickable:hover,
+:where([data-chat-preview]) .room-clickable:focus-within {
     border-color: var(--accent);
 }
 
-:where([data-chat-preview]) .room-card-link {
+:where([data-chat-preview]) .room-link {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -120,7 +120,7 @@
     text-overflow: ellipsis;
 }
 
-:where([data-chat-preview]) .room-title-joined {
+:where([data-chat-preview]) .room-joined {
     color: var(--accent);
 }
 
@@ -155,7 +155,7 @@
     overflow: hidden;
 }
 
-:where([data-chat-preview]) .chat-room-header {
+:where([data-chat-preview]) .chat-head {
     display: flex;
     justify-content: space-between;
     gap: 12px;
@@ -164,12 +164,12 @@
     border-bottom: 1px solid #e8e8ed;
 }
 
-:where([data-chat-preview]) .chat-room-header h2 {
+:where([data-chat-preview]) .chat-head h2 {
     font-size: 1rem;
     margin-top: 6px;
 }
 
-:where([data-chat-preview]) .chat-room-header .btn-action {
+:where([data-chat-preview]) .chat-head .btn-action {
     white-space: nowrap;
     gap: 6px;
 }
@@ -336,13 +336,13 @@
         gap: 3px;
     }
 
-    :where([data-chat-preview]) .chat-room-header,
+    :where([data-chat-preview]) .chat-head,
     :where([data-chat-preview]) .conversation,
     :where([data-chat-preview]) .composer {
         padding: 16px;
     }
 
-    :where([data-chat-preview]) .chat-room-header h2 {
+    :where([data-chat-preview]) .chat-head h2 {
         font-size: 1rem;
     }
 

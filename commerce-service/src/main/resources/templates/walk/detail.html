@@ -15,7 +15,7 @@
 
 <div class="page">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">
             <span>Walking</span>
             <span class="detail-title" th:text="${course.title}">Course Name</span>
@@ -44,13 +44,13 @@
         </div>
     </div>
 
-    <div class="map-wrapper">
-        <div class="map-status-badge">
+    <div class="map-frame">
+        <div class="map-status">
             <span>📍 거리 <span class="badge-val" id="distance">-</span></span>
             <span class="badge-divider">•</span>
             <span>⏱️ 예상 <span class="badge-val" id="duration">-</span></span>
         </div>
-        <div id="map" class="map-card"></div>
+        <div id="map" class="map-canvas"></div>
     </div>
 
     <div class="detail-meta">
@@ -71,8 +71,8 @@
         </div>
     </div>
 
-    <div class="tag-bar-card">
-        <div class="tag-scroll-container">
+    <div class="tag-bar">
+        <div class="tag-list">
             <span th:each="t : ${tags}"
                   th:class="'tag-chip tag-' + ${t.code}"
                   th:text="${t.description}">
@@ -80,10 +80,10 @@
             </span>
         </div>
 
-        <div class="tag-fade-overlay"></div>
+        <div class="tag-fade"></div>
 
-        <div class="tag-actions-group">
-            <button type="button" class="btn-circle" data-bs-toggle="modal" data-bs-target="#allTagsModal" title="전체보기">
+        <div class="tag-actions">
+            <button type="button" class="btn-circle" data-bs-toggle="modal" data-bs-target="#tagsModal" title="전체보기">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
@@ -122,11 +122,11 @@
 
 </div>
 
-<div class="modal fade" id="allTagsModal" tabindex="-1" aria-labelledby="allTagsModalLabel" aria-hidden="true">
+<div class="modal fade" id="tagsModal" tabindex="-1" aria-labelledby="tagsTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 18px; border: 1px solid #d2d2d7;">
             <div class="modal-header border-0 pb-0">
-                <h6 class="modal-title font-weight-bold" id="allTagsModalLabel">등록된 전체 태그</h6>
+                <h6 class="modal-title font-weight-bold" id="tagsTitle">등록된 전체 태그</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

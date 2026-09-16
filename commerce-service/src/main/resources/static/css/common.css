@@ -1,4 +1,5 @@
-/* Shared elements. Page-specific differences belong in pages.css. */
+/* 공통 - 색상 변수와 페이지 배치 */
+
 :root {
     --ink: #1d1d1f;
     --muted: #86868b;
@@ -21,8 +22,7 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* All screens share the same header, outer spacing and minimum viewport height. */
-.page, .auth-container, .error-container {
+.page, .auth-page, .error-page {
     width: 100%;
     max-width: 800px;
     margin: var(--page-gap) auto;
@@ -33,13 +33,68 @@ body {
     flex-direction: column;
 }
 
-.auth-container { max-width: 400px; }
-.error-container { max-width: 500px; text-align: center; }
-.page-title { font-size: 2rem; font-weight: 700; letter-spacing: -0.8px; }
-.subtitle { color: var(--muted); font-weight: 400; }
-.page > .d-flex:first-child { gap: 16px; flex-wrap: wrap; }
-.page > .d-flex:first-child > .d-flex { flex-wrap: wrap; }
-.nav-form { display: inline; margin: 0; }
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-weight: 400;
+}
+
+.page-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.page-head > .d-flex {
+    flex-wrap: wrap;
+}
+
+.page > *, .auth-page > *, .error-page > * {
+    flex-shrink: 0;
+}
+
+.account-section, .page > .course-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.page > .pager, .account-section > .pager, .page > .course-section > .pager {
+    margin-top: auto;
+    padding-top: 24px;
+}
+
+.page > table, .page > .product-grid {
+    flex-shrink: 0;
+}
+
+@media (max-height: 800px) and (min-width: 769px) {
+    :root {
+        --page-gap: 24px;
+        --map-height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --page-gap: 24px;
+    }
+
+    .page-title {
+        font-size: 1.6rem;
+    }
+}
+
+
+/* 공통 - 버튼과 카드 */
 
 .btn-action {
     display: inline-flex;
@@ -59,11 +114,20 @@ body {
     cursor: pointer;
     transition: border-color .2s;
 }
-.btn-action:hover { border-color: var(--muted); }
-.btn-action:disabled { opacity: .5; cursor: not-allowed; }
-.auth-container .btn-action { width: 100%; min-height: 44px; }
 
-a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.btn-action:hover {
+    border-color: var(--muted);
+}
+
+.btn-action:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
 
 .btn-circle {
     display: inline-flex;
@@ -82,10 +146,32 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     cursor: pointer;
     transition: border-color 0.2s ease, color 0.2s ease;
 }
-.btn-circle:hover { border-color: var(--accent); color: var(--accent); }
-.btn-circle:focus-visible { outline-offset: 2px; }
 
-.field-label { display: block; font-size: .9rem; font-weight: 600; margin-bottom: 6px; }
+.btn-circle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.btn-circle:focus-visible {
+    outline-offset: 2px;
+}
+
+.surface-card {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #fff;
+}
+
+
+/* 공통 - 입력 필드와 폼 동작 */
+
+.field-label {
+    display: block;
+    font-size: .9rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
 .field {
     width: 100%;
     border: 1px solid var(--line);
@@ -97,21 +183,84 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     outline: none;
     transition: border-color .2s, box-shadow .2s;
 }
-.field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,102,204,.15); }
-.field::placeholder { color: var(--muted); }
-.field.field-error, .field.is-invalid { border-color: var(--danger); }
-.field.field-error:focus, .field.is-invalid:focus { box-shadow: 0 0 0 3px rgba(255,59,48,.15); }
-textarea.field { resize: vertical; }
-.field-group { margin-bottom: 16px; }
 
-.pager { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 24px; }
-.pagination { gap: 6px; flex-wrap: wrap; justify-content: center; }
-.btn-page, .pagination .page-link {
+.field:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,102,204,.15);
+}
+
+.field::placeholder {
+    color: var(--muted);
+}
+
+.field.field-error, .field.is-invalid {
+    border-color: var(--danger);
+}
+
+.field.field-error:focus, .field.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(255,59,48,.15);
+}
+
+textarea.field {
+    resize: vertical;
+}
+
+.field-group {
+    margin-bottom: 16px;
+}
+
+.field-feedback {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+@media (max-height: 800px) and (min-width: 769px) {
+    .field-group {
+        margin-bottom: 8px;
+    }
+
+    .page .field {
+        padding: 6px 12px;
+    }
+
+    .page .field-label {
+        margin-bottom: 4px;
+    }
+
+    .page textarea.field[rows="4"] {
+        height: 76px;
+    }
+}
+
+
+/* 공통 - 페이지 이동과 빈 목록 */
+
+.pager {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 24px;
+}
+
+.btn-page {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    min-width: 34px;
-    height: 34px;
+    min-width: 40px;
+    height: 40px;
     padding: 0 8px;
     font-size: .85rem;
     font-weight: 500;
@@ -121,130 +270,228 @@ textarea.field { resize: vertical; }
     border-radius: 8px;
     text-decoration: none;
 }
-.pagination .page-item .page-link { border-radius: 8px; margin: 0; }
-.btn-page:hover, .pagination .page-link:hover { background: var(--surface); color: var(--accent); }
-.btn-page.active, .pagination .active .page-link { background: var(--ink); border-color: var(--ink); color: #fff; }
-.btn-page.disabled, .pagination .disabled .page-link { color: var(--muted); background: #fff; pointer-events: none; }
 
-.empty { padding: 40px 20px; text-align: center; color: var(--muted); font-size: .95rem; line-height: 1.5; border: 1px solid var(--line); border-radius: 14px; }
-.account-section { margin-top: 0; }
-.account-list { display: flex; flex-direction: column; gap: 12px; }
-.account-card {
+.btn-page:hover {
+    background: var(--surface);
+    color: var(--accent);
+}
+
+.btn-page.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+}
+
+.btn-page.disabled {
+    color: var(--muted);
+    background: #fff;
+    pointer-events: none;
+}
+
+.empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: .95rem;
+    line-height: 1.5;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+}
+
+
+/* Home - 공통 헤더와 메뉴 */
+
+.nav-form {
+    display: inline;
+    margin: 0;
+}
+
+.site-nav {
+    min-height: 48px;
+    flex-shrink: 0;
+    background-color: #1a1a1c;
+    padding: 12px var(--nav-pad, 40px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.site-logo {
+    color: var(--surface);
+    font-weight: 500;
+    font-size: 0.85rem;
+    text-decoration: none;
+    letter-spacing: -0.2px;
+    opacity: 0.9;
+    transition: opacity 0.2s;
+}
+
+.site-logo:hover {
+    opacity: 1;
+}
+
+.site-menu {
+    font-size: 0.8rem;
+    letter-spacing: -0.1px;
+}
+
+.site-links {
+    display: flex;
+    gap: var(--nav-gap, 24px);
+    align-items: center;
+}
+
+.site-link {
+    color: var(--surface);
+    text-decoration: none;
+    opacity: 0.65;
+    transition: opacity 0.2s;
+}
+
+.site-link:hover {
+    opacity: 1;
+}
+
+.site-user {
+    color: var(--muted);
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.2s, color 0.2s;
+}
+
+.site-user:hover {
+    color: var(--surface);
+}
+
+.btn-logout {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--surface);
+    opacity: 0.45;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    font-size: 0.8rem;
+}
+
+.btn-logout:hover {
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .site-nav {
+        --nav-pad: 20px;
+        --nav-gap: 12px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .site-links {
+        flex-wrap: wrap;
+    }
+}
+
+
+/* Walk - 지도와 코스 목록 */
+
+.map-frame {
+    position: relative;
+    width: 100%;
+    height: var(--map-height);
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    margin-bottom: 24px;
+}
+
+.map-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.btn-location {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--ink);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 100px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+}
+
+.btn-location:hover {
+    background-color: #ffffff;
+}
+
+.btn-location:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.course-section {
+    margin-top: 24px;
+}
+
+.course-empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.course-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.course-card:hover {
+    border-color: var(--accent);
+}
+
+.course-name {
+    font-size: 0.98rem;
+    font-weight: 600;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.course-link:hover {
+    color: var(--accent);
+}
+
+.course-info {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    min-height: 76px;
-    padding: 14px 18px;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color .2s;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 500;
 }
-.account-card:hover { border-color: var(--accent); }
-.account-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.account-title { font-size: .98rem; font-weight: 600; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.account-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: .85rem; font-weight: 500; }
-.account-right { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-.page > *, .auth-container > *, .error-container > * { flex-shrink: 0; }
-.account-section, .page > .course-section { display: flex; flex-direction: column; flex: 1; }
-.page > .pager, .account-section > .pager, .page > .course-section > .pager { margin-top: auto; padding-top: 24px; }
-.page > table, .page > .product-grid { flex-shrink: 0; }
-.map-wrapper { position: relative; width: 100%; height: var(--map-height); border-radius: 18px; overflow: hidden; border: 1px solid var(--line); margin-bottom: 24px; }
 
-@media (max-height: 800px) and (min-width: 769px) {
-    :root { --page-gap: 24px; --map-height: 200px; }
-    .account-list { gap: 6px; }
-    .account-card { min-height: 60px; padding: 8px 16px; }
-    .field-group { margin-bottom: 8px; }
-    .page .field { padding: 6px 12px; }
-    .page .field-label { margin-bottom: 4px; }
-    .page .product-image { aspect-ratio: 4 / 3; }
-    .page textarea.field[rows="4"] { height: 76px; }
 
-    .page .data-table td { padding-top: 10px; padding-bottom: 10px; }
-}
-@media (max-width: 768px) {
-    :root { --page-gap: 24px; }
-    .page-title { font-size: 1.6rem; }
-    .global-nav { --nav-pad: 20px; --nav-gap: 12px; flex-wrap: wrap; gap: 12px; }
-    .global-nav-link-group { flex-wrap: wrap; }
-    .account-card { flex-wrap: wrap; }
-    .account-right { justify-content: flex-start; }
-    .profile-value { overflow-wrap: anywhere; min-width: 0; }
-    .profile-row { gap: 16px; }
-    .page table { table-layout: fixed; overflow-wrap: anywhere; }
-    .page table th, .page table td { padding: 10px 6px; }
-}
-.summary-card {
-    padding: 24px;
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    background-color: var(--surface);
-    margin-top: 36px;
-}
+/* Talk - 게시글 목록과 상세 정보 */
 
 .detail-title {
     color: var(--muted);
     font-size: 1.5rem;
     font-weight: 500;
     overflow-wrap: anywhere;
-}
-
-.btn-like {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    height: 36px;
-    padding: 0 18px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    border-radius: 980px;
-    background-color: #ffffff;
-    border: 1px solid var(--line);
-    color: var(--ink);
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
-.btn-like:hover {
-    border-color: #ff2d55;
-    color: #ff2d55;
-    background-color: rgba(255, 45, 85, 0.04);
-}
-
-.btn-menu {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 1.1rem;
-    padding: 2px 10px;
-    height: 38px;
-    border-radius: 980px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-}
-
-.btn-menu:hover {
-    background-color: var(--surface);
-    color: var(--ink);
-}
-
-.menu {
-    border-radius: 12px;
-    border: 1px solid #e5e5e7;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-    padding: 6px;
-    min-width: 130px;
-    z-index: 1050;
-}
-
-.menu .dropdown-item:hover {
-    color: var(--accent);
-    background-color: var(--surface);
 }
 
 .detail-meta {
@@ -289,13 +536,6 @@ textarea.field { resize: vertical; }
     white-space: pre-wrap;
     min-height: 180px;
     margin-bottom: 32px;
-}
-
-.field-error-text {
-    color: var(--danger);
-    font-size: 0.85rem;
-    margin-top: 6px;
-    font-weight: 500;
 }
 
 .data-table {
@@ -359,6 +599,268 @@ textarea.field { resize: vertical; }
     text-align: center;
 }
 
+.post-card, .review-card, .comment-content, .item-card {
+    overflow-wrap: anywhere;
+}
+
+@media (max-height: 800px) and (min-width: 769px) {
+    .page .data-table td {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page table {
+        table-layout: fixed;
+        overflow-wrap: anywhere;
+    }
+
+    .page table th, .page table td {
+        padding: 10px 6px;
+    }
+}
+
+
+/* Talk - 추천과 더보기 메뉴 */
+
+.btn-like {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 36px;
+    padding: 0 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 980px;
+    background-color: #ffffff;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-like:hover {
+    border-color: #ff2d55;
+    color: #ff2d55;
+    background-color: rgba(255, 45, 85, 0.04);
+}
+
+.btn-menu {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.1rem;
+    padding: 2px 10px;
+    height: 38px;
+    border-radius: 980px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-menu:hover {
+    background-color: var(--surface);
+    color: var(--ink);
+}
+
+.menu {
+    border-radius: 12px;
+    border: 1px solid #e5e5e7;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    padding: 6px;
+    min-width: 130px;
+    z-index: 1050;
+}
+
+.menu .dropdown-item:hover {
+    color: var(--accent);
+    background-color: var(--surface);
+}
+
+.menu .dropdown-item {
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: var(--ink);
+    font-size: .85rem;
+    font-weight: 500;
+}
+
+.menu .dropdown-item.text-danger:hover {
+    background-color: #fff2f2;
+}
+
+
+/* Shop - 상품 수량 */
+
+.field.input-quantity {
+    width: 80px;
+    height: 38px;
+    padding: 0 8px;
+    text-align: center;
+}
+
+@media (max-height: 800px) and (min-width: 769px) {
+    .page .product-image {
+        aspect-ratio: 4 / 3;
+    }
+}
+
+
+/* Cart · Purchase - 주문 금액 요약 */
+
+.summary-card {
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    margin-top: 28px;
+}
+
+.summary-total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+}
+
+.summary-label {
+    color: var(--muted);
+    font-size: .95rem;
+}
+
+.summary-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+
+/* Member - 내 활동과 로그인 */
+
+.auth-page {
+    max-width: 400px;
+}
+
+.auth-page .btn-action {
+    width: 100%;
+    min-height: 44px;
+}
+
+.account-section {
+    margin-top: 0;
+}
+
+.account-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.account-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 76px;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .2s;
+}
+
+.account-card:hover {
+    border-color: var(--accent);
+}
+
+.account-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.account-title {
+    font-size: .98rem;
+    font-weight: 600;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.account-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    color: var(--muted);
+    font-size: .85rem;
+    font-weight: 500;
+}
+
+.account-right {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 0.85rem;
+}
+
+.auth-link {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-height: 800px) and (min-width: 769px) {
+    .account-list {
+        gap: 6px;
+    }
+
+    .account-card {
+        min-height: 60px;
+        padding: 8px 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .account-card {
+        flex-wrap: wrap;
+    }
+
+    .account-right {
+        justify-content: flex-start;
+    }
+
+    .profile-value {
+        overflow-wrap: anywhere;
+        min-width: 0;
+    }
+
+    .profile-row {
+        gap: 16px;
+    }
+}
+
+
+/* Error - 오류 안내 */
+
+.error-page {
+    max-width: 500px;
+    text-align: center;
+}
+
 .error-code {
     font-size: 5rem;
     font-weight: 700;
@@ -374,195 +876,3 @@ textarea.field { resize: vertical; }
     margin-bottom: 30px;
     color: var(--ink);
 }
-
-.auth-link-box {
-    text-align: center;
-    margin-top: 24px;
-    font-size: 0.85rem;
-}
-
-.auth-link {
-    color: var(--accent);
-    text-decoration: none;
-}
-
-.auth-link:hover {
-    text-decoration: underline;
-}
-
-.map-card {
-    width: 100%;
-    height: 100%;
-}
-
-.btn-location {
-    position: absolute;
-    right: 16px;
-    bottom: 16px;
-    z-index: 10;
-    background-color: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    color: var(--ink);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    padding: 8px 16px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    border-radius: 100px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    cursor: pointer;
-}
-
-.btn-location:hover {
-    background-color: #ffffff;
-}
-
-.btn-location:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.course-section {
-    margin-top: 24px;
-}
-
-.course-empty {
-    padding: 40px 20px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.95rem;
-    line-height: 1.5;
-}
-
-.course-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.course-card:hover {
-    border-color: var(--accent);
-}
-
-.course-name {
-    font-size: 0.98rem;
-    font-weight: 600;
-    margin-bottom: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.course-detail-link:hover {
-    color: var(--accent);
-}
-
-.course-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--muted);
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-.global-nav {
-    min-height: 48px;
-    flex-shrink: 0;
-    background-color: #1a1a1c;
-    padding: 12px var(--nav-pad, 40px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    box-sizing: border-box;
-    width: 100%;
-}
-
-.global-nav-logo {
-    color: var(--surface);
-    font-weight: 500;
-    font-size: 0.85rem;
-    text-decoration: none;
-    letter-spacing: -0.2px;
-    opacity: 0.9;
-    transition: opacity 0.2s;
-}
-
-.global-nav-logo:hover {
-    opacity: 1;
-}
-
-.global-nav-menu-set {
-    font-size: 0.8rem;
-    letter-spacing: -0.1px;
-}
-
-.global-nav-link-group {
-    display: flex;
-    gap: var(--nav-gap, 24px);
-    align-items: center;
-}
-
-.global-nav-link {
-    color: var(--surface);
-    text-decoration: none;
-    opacity: 0.65;
-    transition: opacity 0.2s;
-}
-
-.global-nav-link:hover {
-    opacity: 1;
-}
-
-.global-nav-user-link {
-    color: var(--muted);
-    font-weight: 500;
-    text-decoration: none;
-    transition: opacity 0.2s, color 0.2s;
-}
-
-.global-nav-user-link:hover {
-    color: var(--surface);
-}
-
-.btn-logout {
-    background: none;
-    border: none;
-    padding: 0;
-    color: var(--surface);
-    opacity: 0.45;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    font-size: 0.8rem;
-}
-
-.btn-logout:hover {
-    opacity: 0.8;
-}
-
-/* Shared appearance, with layout and spacing owned by each component. */
-.surface-card {
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: #fff;
-}
-.form-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
-    margin-top: 24px;
-}
-.field.input-quantity { width: 80px; height: 38px; padding: 0 8px; text-align: center; }
-.menu .dropdown-item {
-    padding: 6px 12px;
-    border-radius: 6px;
-    color: var(--ink);
-    font-size: .85rem;
-    font-weight: 500;
-}
-.menu .dropdown-item.text-danger:hover { background-color: #fff2f2; }
-.post-card, .review-card, .comment-content, .item-card { overflow-wrap: anywhere; }

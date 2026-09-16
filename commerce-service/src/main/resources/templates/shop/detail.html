@@ -14,7 +14,7 @@
 
 <div class="page">
 
-    <div class="d-flex justify-content-between align-items-end mb-4">
+    <div class="page-head">
         <h2 class="page-title m-0">
             <span>Shop</span>
             <span class="detail-title" th:text="${item.name}">상품명</span>
@@ -48,8 +48,8 @@
         </div>
     </div>
 
-    <div class="surface-card product-overview-card">
-        <div class="img-square-wrapper">
+    <div class="surface-card product-overview">
+        <div class="product-cover">
             <img th:if="${item.storedFileName != null}" th:src="@{/images/{filename}(filename=${item.storedFileName})}" alt="상품 이미지" />
             <span th:unless="${item.storedFileName != null}" class="text-muted" style="font-size: 0.85rem;">이미지 없음</span>
         </div>
