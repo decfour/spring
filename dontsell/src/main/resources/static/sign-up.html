@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Don't Sell - 회원가입</title>
+</head>
+<body>
+    <a href="/">홈으로</a>
+    <h1>회원가입</h1>
+
+    <form id="sign-up-form" method="post" action="/auth/sign-up">
+        <p>
+            <label for="alias">별명</label>
+            <input id="alias" name="alias" type="text" maxlength="20" autocomplete="nickname" required>
+        </p>
+        <p>
+            <label for="email">이메일</label>
+            <input id="email" name="email" type="email" maxlength="254" autocomplete="username" required>
+        </p>
+        <p>
+            <label for="password">비밀번호</label>
+            <input id="password" name="password" type="password" minlength="8" maxlength="72" autocomplete="new-password" aria-describedby="password-help" required>
+        </p>
+        <p>
+            <label for="password-confirm">비밀번호 확인</label>
+            <input id="password-confirm" name="passwordConfirm" type="password" minlength="8" maxlength="72" autocomplete="new-password" required>
+        </p>
+        <button id="sign-up-button" type="submit">회원가입</button>
+    </form>
+
+    <p id="result" role="status"></p>
+    <a href="/sign-in.html">로그인으로 이동</a>
+
+    <script src="/js/api.js"></script>
+    <script>
+        const form = document.getElementById('sign-up-form');
+        const button = document.getElementById('sign-up-button');
+        const result = document.getElementById('result');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const alias = form.elements.alias.value.trim();
+            const email = form.elements.email.value.trim();
+            const password = form.elements.password.value;
+
+            if (!alias) {
+                result.textContent = '별명을 입력해 주세요.';
+                return;
+            }
+            if (!password.trim()) {
+                result.textContent = '비밀번호는 공백만 사용할 수 없습니다.';
+                return;
+            }
+            if (new TextEncoder().encode(password).length > 72) {
+                result.textContent = '비밀번호는 UTF-8 기준 72바이트 이하여야 합니다.';
+                return;
+            }
+            if (password !== form.elements.passwordConfirm.value) {
+                result.textContent = '비밀번호 확인이 일치하지 않습니다.';
+                return;
+            }
+
+            const request = { alias: alias, email: email, password: password };
+            button.disabled = true;
+            result.textContent = '회원가입 중입니다.';
+
+            try {
+                const response = await publicAuthRequest('/auth/sign-up', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(request)
+                });
+
+                if (!response.ok) {
+                    if (response.status === 409) {
+                        result.textContent = '이미 사용 중인 이메일 또는 별명입니다.';
+                    } else if (response.status === 400) {
+                        result.textContent = '별명, 이메일, 비밀번호의 입력 조건을 확인해 주세요.';
+                    } else {
+                        result.textContent = '회원가입에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                result.textContent = data.alias + '님, 가입되었습니다. 아래 링크로 로그인해 주세요.';
+                form.reset();
+            } catch {
+                result.textContent = '서버 응답을 확인하지 못했습니다. 연결 상태를 확인해 주세요. 가입되었을 수 있으니 로그인을 시도해 보세요.';
+            } finally {
+                button.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

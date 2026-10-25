@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Don't Sell - 로그인</title>
+</head>
+<body>
+    <a href="/">홈으로</a>
+    <h1>로그인</h1>
+
+    <form id="sign-in-form" method="post" action="/auth/sign-in">
+        <p>
+            <label for="email">이메일</label>
+            <input id="email" name="email" type="email" maxlength="254" autocomplete="username" required>
+        </p>
+        <p>
+            <label for="password">비밀번호</label>
+            <input id="password" name="password" type="password" maxlength="200" autocomplete="current-password" required>
+        </p>
+        <button id="sign-in-button" type="submit">로그인</button>
+    </form>
+
+    <p id="result" role="status"></p>
+    <a href="/sign-up.html">계정이 없다면 회원가입</a>
+
+    <script src="/js/api.js"></script>
+    <script>
+        const form = document.getElementById('sign-in-form');
+        const button = document.getElementById('sign-in-button');
+        const result = document.getElementById('result');
+
+        form.addEventListener('submit', async (event) => {
+            // 기본 폼 전송을 막기
+            event.preventDefault();
+
+            const request = {
+                email: form.elements.email.value.trim(),
+                password: form.elements.password.value
+            };
+
+            // 중복 클릭 막기
+            button.disabled = true;
+            result.textContent = '로그인 중입니다.';
+
+            try {
+                const response = await publicAuthRequest('/auth/sign-in', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(request)
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        result.textContent = '이메일 또는 비밀번호가 올바르지 않습니다.';
+                    } else if (response.status === 400) {
+                        result.textContent = '이메일과 비밀번호를 확인해 주세요.';
+                    } else if (response.status === 404) {
+                        result.textContent = '로그인 API를 찾지 못했습니다. 서버를 완전히 종료한 뒤 다시 실행해 주세요.';
+                    } else {
+                        result.textContent = '로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+                    }
+
+                    return;
+                }
+
+                const data = await response.json();
+                if (typeof data.accessToken !== 'string' || !data.accessToken) {
+                    throw new Error('로그인 응답에 토큰이 없습니다.');
+                }
+
+                sessionStorage.setItem('accessToken', data.accessToken);
+                form.elements.password.value = '';
+                window.location.replace('/');
+            } catch {
+                result.textContent = '로그인 요청 또는 토큰 보관에 실패했습니다. 연결 상태와 브라우저 설정을 확인해 주세요.';
+            } finally {
+                button.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
