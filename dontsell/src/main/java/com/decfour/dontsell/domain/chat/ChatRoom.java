@@ -1,6 +1,7 @@
 package com.decfour.dontsell.domain.chat;
 
 import com.decfour.dontsell.domain.stock.Stock;
+import com.decfour.dontsell.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,6 +25,10 @@ public class ChatRoom {
     @JoinColumn(name = "stock_id", nullable = false)
     private Stock stock;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id", nullable = false, updatable = false)
+    private Member member;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -32,8 +37,9 @@ public class ChatRoom {
         createdAt = LocalDateTime.now();
     }
 
-    public ChatRoom(String name, Stock stock) {
+    public ChatRoom(String name, Stock stock, Member member) {
         this.name = name;
         this.stock = stock;
+        this.member = member;
     }
 }

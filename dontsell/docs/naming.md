@@ -16,6 +16,6 @@
 | stock | id, symbol, name, exchange |
 | holding | id, account_id, stock_id, quantity, avg_price |
 | trade | id, account_id, stock_id, type, quantity, price, executed_at |
-| chat_room | id, name, stock_id, created_at |
+| chat_room | id, name, stock_id, member_id, created_at |
 | chat_message | id, chat_room_id, member_id, content, created_at |
 | auth_session | id, member_id, token_hash, expires_at |
