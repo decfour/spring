@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SignOnForm {
+public class SignUpForm {
     @NotBlank(message = "이름은 필수입니다.")
     @Size(min = 2, max = 10, message = "이름은 2~10자여야 합니다.")
     @Pattern(
@@ -19,7 +19,10 @@ public class SignOnForm {
     private String name;
 
     @NotBlank(message = "이메일은 필수입니다.")
-    @Email(message = "올바른 이메일이 아닙니다.")
+    @Email(
+            regexp = "^[^\\s@]+@[^\\s@.]+(?:\\.[^\\s@.]+)+$",
+            message = "이메일은 user@example.com 형식으로 입력해주세요."
+    )
     @Size(max = 100)
     private String email;
 

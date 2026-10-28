@@ -9,7 +9,7 @@ import com.kdj.commerce.domain.walk.WalkCourse;
 import com.kdj.commerce.service.*;
 import com.kdj.commerce.web.argumentresolver.Login;
 import com.kdj.commerce.web.dto.member.SignInForm;
-import com.kdj.commerce.web.dto.member.SignOnForm;
+import com.kdj.commerce.web.dto.member.SignUpForm;
 import com.kdj.commerce.web.security.JwtTokenProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,20 +37,20 @@ public class MemberController {
     private final WalkCourseService walkCourseService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("/sign-on")
-    public String signOnForm(Model model) {
-        model.addAttribute("member", new SignOnForm());
+    @GetMapping("/sign-up")
+    public String signUpForm(Model model) {
+        model.addAttribute("member", new SignUpForm());
 
-        return "member/signOnForm";
+        return "member/signUpForm";
     }
 
-    @PostMapping("/sign-on")
-    public String signOn(
-            @Valid @ModelAttribute("member") SignOnForm form,
+    @PostMapping("/sign-up")
+    public String signUp(
+            @Valid @ModelAttribute("member") SignUpForm form,
             BindingResult result
     ) {
         if (result.hasErrors()) {
-            return "member/signOnForm";
+            return "member/signUpForm";
         }
 
         try {
@@ -70,7 +70,7 @@ public class MemberController {
             } else {
                 result.reject("signupError", e.getMessage());
             }
-            return "member/signOnForm";
+            return "member/signUpForm";
         }
 
         return "redirect:/";

@@ -61,7 +61,7 @@ public class SecurityConfig {
                                 "/actuator/prometheus",
 
                                 "/member/sign-in",
-                                "/member/sign-on",
+                                "/member/sign-up",
 
                                 "/walk",
                                 "/walk/course/*",

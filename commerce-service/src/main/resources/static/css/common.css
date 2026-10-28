@@ -165,6 +165,21 @@ a:focus-visible, button:focus-visible {
 
 /* 공통 - 입력 필드와 폼 동작 */
 
+.email-fields {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.email-fields .field {
+    flex: 1;
+    min-width: 0;
+}
+
+.email-separator {
+    flex-shrink: 0;
+}
+
 .field-label {
     display: block;
     font-size: .9rem;

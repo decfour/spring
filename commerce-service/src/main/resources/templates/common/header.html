@@ -21,7 +21,7 @@
 
         <span th:if="${#authentication == null or #authentication.principal == 'anonymousUser'}" class="site-links">
             <a href="/member/sign-in" class="site-link">Sign In</a>
-            <a href="/member/sign-on" class="site-link">Sign On</a>
+            <a href="/member/sign-up" class="site-link">Sign Up</a>
         </span>
 
         <span th:if="${#authentication != null and #authentication.principal != 'anonymousUser'}" class="site-links">

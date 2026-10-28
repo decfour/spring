@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>THGTE - Sign Up</title>
+    <th:block th:replace="~{common/header :: styles}"></th:block>
+</head>
+<body data-view="member-signUpForm">
+
+<div th:replace="~{common/header :: mainHeader}"></div>
+
+<div class="auth-page">
+    <h2 class="page-title mb-4 text-center">Sign Up</h2>
+
+    <form th:action="@{/member/sign-up}" th:object="${member}" method="post">
+
+        <div th:if="${#fields.hasGlobalErrors()}" class="mb-3">
+            <p class="text-danger small m-0" th:each="err : ${#fields.globalErrors()}" th:text="${err}">오류 메시지</p>
+        </div>
+
+        <div class="mb-3">
+            <label for="name" class="field-label">이름</label>
+            <input type="text" id="name" th:field="*{name}" class="field" th:errorclass="is-invalid" placeholder="Your name">
+            <div class="invalid-feedback mt-1" th:errors="*{name}">이름 오류</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="emailLocal" class="field-label">이메일</label>
+            <input type="hidden" th:field="*{email}">
+            <div class="email-fields">
+                <input type="text" id="emailLocal" class="field" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+                       required maxlength="64" pattern="[^\s@]+" autocapitalize="none" spellcheck="false"
+                       aria-label="이메일 아이디" aria-describedby="emailError" placeholder="이메일 아이디">
+                <span class="email-separator" aria-hidden="true">@</span>
+                <input type="text" id="emailDomain" class="field" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'"
+                       required maxlength="98" pattern="[^\s@.]+(?:\.[^\s@.]+)+" autocapitalize="none" spellcheck="false"
+                       aria-label="이메일 도메인" aria-describedby="emailError" title="gmail.com처럼 도메인을 입력해주세요." placeholder="gmail.com">
+            </div>
+            <div id="emailError" class="invalid-feedback mt-1" th:classappend="${#fields.hasErrors('email')} ? 'd-block'" th:errors="*{email}">이메일 오류</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="signInId" class="field-label">아이디</label>
+            <input type="text" id="signInId" th:field="*{signInId}" class="field" th:errorclass="is-invalid" placeholder="Your ID">
+            <div class="invalid-feedback mt-1" th:errors="*{signInId}">아이디 오류</div>
+        </div>
+
+        <div class="field-group">
+            <label for="password" class="field-label">비밀번호</label>
+            <input type="password" id="password" th:field="*{signInPassword}" class="field" th:errorclass="is-invalid" placeholder="Password">
+            <div class="invalid-feedback mt-1" th:errors="*{signInPassword}">비밀번호 오류</div>
+        </div>
+
+        <button class="btn-action" type="submit">Sign Up</button>
+    </form>
+
+    <div class="auth-footer">
+        <span class="text-muted">계정이 있으신가요?</span>
+        <a href="/member/sign-in" class="auth-link">Sign In</a>
+    </div>
+</div>
+
+<script>
+    const email = document.getElementById('email');
+    const emailLocal = document.getElementById('emailLocal');
+    const emailDomain = document.getElementById('emailDomain');
+    const separator = email.value.lastIndexOf('@');
+    if (separator >= 0) {
+        emailLocal.value = email.value.slice(0, separator);
+        emailDomain.value = email.value.slice(separator + 1);
+    } else {
+        emailLocal.value = email.value;
+    }
+
+    function syncEmail() {
+        email.value = emailLocal.value + '@' + emailDomain.value;
+        emailDomain.setCustomValidity(email.value.length > 100 ? '이메일은 전체 100자 이내로 입력해주세요.' : '');
+    }
+
+    emailLocal.addEventListener('input', syncEmail);
+    emailDomain.addEventListener('input', syncEmail);
+    email.form.addEventListener('submit', syncEmail);
+    syncEmail();
+</script>
+</body>
+</html>
