@@ -43,4 +43,8 @@ public class Member {
 
         return member;
     }
+
+    public void changePassword(String encodedPassword) {
+        this.signInPassword = encodedPassword;
+    }
 }
