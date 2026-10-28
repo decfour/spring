@@ -1,5 +1,10 @@
 package com.kdj.commerce.service;
 
+import com.kdj.commerce.exception.BusinessConflictException;
+import com.kdj.commerce.exception.PermissionDeniedException;
+import com.kdj.commerce.exception.AuthenticationRequiredException;
+import com.kdj.commerce.exception.ResourceNotFoundException;
+import com.kdj.commerce.exception.InvalidRequestException;
 import com.kdj.commerce.domain.chat.*;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberRepository;
@@ -12,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -50,7 +54,7 @@ public class ChatRoomService {
 
     public ChatRoomDetailResponse findDetail(Long courseId, Long roomId, Long memberId) {
         ChatRoom chatRoom = chatRoomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 채팅방입니다."));
 
         validateCourse(chatRoom, courseId);
         validateOpen(chatRoom);
@@ -91,11 +95,11 @@ public class ChatRoomService {
         validateOpen(chatRoom);
 
         if (chatMemberRepository.existsByChatRoomIdAndMemberId(roomId, memberId)) {
-            throw new IllegalStateException("이미 참여 중인 채팅방입니다.");
+            throw new BusinessConflictException("이미 참여 중인 채팅방입니다.");
         }
 
         if (chatMemberRepository.countByChatRoomId(roomId) >= ChatRoom.MAX_PARTICIPANTS) {
-            throw new IllegalStateException("채팅방은 최대 5명까지 참여할 수 있습니다.");
+            throw new BusinessConflictException("채팅방은 최대 5명까지 참여할 수 있습니다.");
         }
 
         chatMemberRepository.save(ChatMember.create(chatRoom, member));
@@ -119,38 +123,41 @@ public class ChatRoomService {
 
     private WalkCourse findWalkCourse(Long courseId) {
         return walkCourseRepository.findById(courseId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 산책 코스입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 산책 코스입니다."));
     }
 
     private Member findMember(Long memberId) {
         if (memberId == null) {
-            throw new IllegalArgumentException("로그인이 필요합니다.");
+            throw new AuthenticationRequiredException("로그인이 필요합니다.");
         }
 
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 회원입니다."));
     }
 
     private ChatRoom findChatRoomWithLock(Long roomId) {
         return chatRoomRepository.findByIdWithLock(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 채팅방입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 채팅방입니다."));
     }
 
     private void validateCourse(ChatRoom chatRoom, Long courseId) {
         if (!chatRoom.getWalkCourse().getId().equals(courseId)) {
-            throw new IllegalArgumentException("해당 코스의 채팅방이 아닙니다.");
+            throw new InvalidRequestException("해당 코스의 채팅방이 아닙니다.");
         }
     }
 
     private void validateOpen(ChatRoom chatRoom) {
         if (chatRoom.getStatus() != ChatRoomStatus.OPEN) {
-            throw new IllegalStateException("종료된 채팅방입니다.");
+            throw new BusinessConflictException("종료된 채팅방입니다.");
         }
     }
 
     private void validateParticipant(Long roomId, Long memberId) {
-        if (memberId == null || !chatMemberRepository.existsByChatRoomIdAndMemberId(roomId, memberId)) {
-            throw new IllegalStateException("채팅방 참여자만 접근할 수 있습니다.");
+        if (memberId == null) {
+            throw new AuthenticationRequiredException("로그인이 필요합니다.");
+        }
+        if (!chatMemberRepository.existsByChatRoomIdAndMemberId(roomId, memberId)) {
+            throw new PermissionDeniedException("채팅방 참여자만 접근할 수 있습니다.");
         }
     }
 }

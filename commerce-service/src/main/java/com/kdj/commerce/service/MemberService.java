@@ -1,5 +1,7 @@
 package com.kdj.commerce.service;
 
+import com.kdj.commerce.exception.DuplicateMemberException;
+import com.kdj.commerce.exception.ResourceNotFoundException;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,18 +18,18 @@ public class MemberService {
 
     public Member findByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("해당 이메일의 회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("해당 이메일의 회원이 존재하지 않습니다."));
     }
 
     @Transactional
     public void signUp(Member member) {
         memberRepository.findByEmail(member.getEmail())
                 .ifPresent(m -> {
-                    throw new IllegalStateException("사용중인 이메일입니다.");
+                    throw new DuplicateMemberException(DuplicateMemberException.Field.EMAIL, "사용중인 이메일입니다.");
                 });
         memberRepository.findBySignInId(member.getSignInId())
                 .ifPresent(m -> {
-                    throw new IllegalStateException("사용중인 아이디입니다.");
+                    throw new DuplicateMemberException(DuplicateMemberException.Field.SIGN_IN_ID, "사용중인 아이디입니다.");
                 });
         member.changePassword(passwordEncoder.encode(member.getSignInPassword()));
         memberRepository.save(member);

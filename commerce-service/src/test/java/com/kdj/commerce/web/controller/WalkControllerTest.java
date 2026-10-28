@@ -1,13 +1,12 @@
 package com.kdj.commerce.web.controller;
 
+import com.kdj.commerce.exception.BusinessConflictException;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.WalkCourseService;
 import com.kdj.commerce.service.WalkCourseTagService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -29,7 +28,7 @@ class WalkControllerTest {
     @DisplayName("이미 추천한 코스는 409 상태와 중복 추천 안내를 반환한다")
     void duplicateLikeReturnsConflict() {
         when(service.increaseLikeCount(10L, member))
-                .thenThrow(new IllegalStateException("이미 추천한 코스입니다"));
+                .thenThrow(new BusinessConflictException("이미 추천한 코스입니다"));
         var response = controller.like(member, 10L);
         assertThat(response.getStatusCode().value()).isEqualTo(409);
         assertThat(response.getBody()).isEqualTo(Map.of("message", "이미 추천했습니다"));

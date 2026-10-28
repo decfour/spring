@@ -1,5 +1,8 @@
 package com.kdj.commerce.service;
 
+import com.kdj.commerce.exception.InvalidRequestException;
+import com.kdj.commerce.exception.PermissionDeniedException;
+import com.kdj.commerce.exception.BusinessConflictException;
 import com.kdj.commerce.domain.chat.*;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberRepository;
@@ -13,9 +16,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -82,7 +83,7 @@ class ChatRoomServiceTest {
         prepareGuestJoin();
         when(participantRepository.countByChatRoomId(10L)).thenReturn(5L);
         assertThatThrownBy(() -> service.join(100L, 10L, 2L))
-                .isInstanceOf(IllegalStateException.class).hasMessageContaining("5명");
+                .isInstanceOf(BusinessConflictException.class).hasMessageContaining("5명");
         verify(participantRepository, never()).save(any());
     }
 
@@ -92,7 +93,7 @@ class ChatRoomServiceTest {
         prepareGuestJoin();
         when(participantRepository.existsByChatRoomIdAndMemberId(10L, 2L)).thenReturn(true);
         assertThatThrownBy(() -> service.join(100L, 10L, 2L))
-                .isInstanceOf(IllegalStateException.class).hasMessageContaining("이미 참여");
+                .isInstanceOf(BusinessConflictException.class).hasMessageContaining("이미 참여");
         verify(participantRepository, never()).save(any());
     }
 
@@ -102,7 +103,7 @@ class ChatRoomServiceTest {
         prepareGuestJoin();
         room.close();
         assertThatThrownBy(() -> service.join(100L, 10L, 2L))
-                .isInstanceOf(IllegalStateException.class).hasMessageContaining("종료");
+                .isInstanceOf(BusinessConflictException.class).hasMessageContaining("종료");
         verifyNoInteractions(participantRepository);
     }
 
@@ -138,7 +139,7 @@ class ChatRoomServiceTest {
         when(course.getId()).thenReturn(100L);
         when(roomRepository.findById(10L)).thenReturn(Optional.of(room));
         assertThatThrownBy(() -> service.findDetail(100L, 10L, 2L))
-                .isInstanceOf(IllegalStateException.class).hasMessageContaining("참여자만");
+                .isInstanceOf(PermissionDeniedException.class).hasMessageContaining("참여자만");
         verify(participantRepository, never()).findByChatRoomIdOrderByJoinedAtAscIdAsc(any());
     }
 
@@ -148,7 +149,7 @@ class ChatRoomServiceTest {
         when(course.getId()).thenReturn(100L);
         when(roomRepository.findByIdWithLock(10L)).thenReturn(Optional.of(room));
         assertThatThrownBy(() -> service.leave(100L, 10L, 2L))
-                .isInstanceOf(IllegalStateException.class).hasMessageContaining("참여자만");
+                .isInstanceOf(PermissionDeniedException.class).hasMessageContaining("참여자만");
         verify(participantRepository, never()).deleteByChatRoomId(any());
         verify(participantRepository, never()).deleteByChatRoomIdAndMemberId(any(), any());
     }
@@ -158,7 +159,7 @@ class ChatRoomServiceTest {
         prepareGuestJoin();
 
         assertThatThrownBy(() -> service.join(999L, 10L, 2L))
-                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("해당 코스");
+                .isInstanceOf(InvalidRequestException.class).hasMessageContaining("해당 코스");
 
         verifyNoInteractions(participantRepository);
     }
@@ -170,7 +171,7 @@ class ChatRoomServiceTest {
         when(roomRepository.findByIdWithLock(10L)).thenReturn(Optional.of(room));
 
         assertThatThrownBy(() -> service.leave(999L, 10L, 1L))
-                .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("해당 코스");
+                .isInstanceOf(InvalidRequestException.class).hasMessageContaining("해당 코스");
 
         assertThat(room.getStatus()).isEqualTo(ChatRoomStatus.OPEN);
         verifyNoInteractions(participantRepository);

@@ -1,5 +1,7 @@
 package com.kdj.commerce.service;
 
+import com.kdj.commerce.exception.BusinessConflictException;
+import com.kdj.commerce.exception.ResourceNotFoundException;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.walk.WalkCourse;
 import com.kdj.commerce.domain.walk.WalkCourseLike;
@@ -23,7 +25,7 @@ public class WalkCourseService {
 
     public WalkCourse findById(long id) {
         WalkCourse walkCourse = walkCourseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("찾을 수 없습니다"));
+                .orElseThrow(() -> new ResourceNotFoundException("찾을 수 없습니다"));
         return walkCourse;
     }
 
@@ -91,7 +93,7 @@ public class WalkCourseService {
     @Transactional
     public void delete(Long id) {
         WalkCourse walkCourse = walkCourseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("찾을 수 없습니다 id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("찾을 수 없습니다 id=" + id));
         walkCourseLikeRepository.deleteByWalkCourseId(id);
         walkCourseRepository.delete(walkCourse);
     }
@@ -99,10 +101,10 @@ public class WalkCourseService {
     @Transactional
     public int increaseLikeCount(Long courseId, Member member) {
          WalkCourse walkCourse = walkCourseRepository.findById(courseId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다 id=" + courseId));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 게시글입니다 id=" + courseId));
 
         if (walkCourseLikeRepository.existsByMemberAndWalkCourse(member, walkCourse)) {
-            throw new IllegalStateException("이미 추천한 코스입니다");
+            throw new BusinessConflictException("이미 추천한 코스입니다");
         }
 
         walkCourseLikeRepository.save(WalkCourseLike.create(member, walkCourse));
@@ -110,7 +112,7 @@ public class WalkCourseService {
         walkCourseRepository.increaseLikeCount(courseId);
 
         return walkCourseRepository.findById(courseId)
-                .orElseThrow()
+                .orElseThrow(() -> new ResourceNotFoundException("코스를 찾을 수 없습니다."))
                 .getLikeCount();
     }
 

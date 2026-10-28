@@ -1,5 +1,8 @@
 package com.kdj.commerce.service;
 
+import com.kdj.commerce.exception.InvalidRequestException;
+import com.kdj.commerce.exception.AuthenticationRequiredException;
+import com.kdj.commerce.exception.BusinessConflictException;
 import com.kdj.commerce.domain.cart.Cart;
 import com.kdj.commerce.domain.cart.CartItem;
 import com.kdj.commerce.domain.item.Item;
@@ -8,17 +11,14 @@ import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberRepository;
 import com.kdj.commerce.domain.purchase.Purchase;
 import com.kdj.commerce.domain.purchase.PurchaseRepository;
-import com.kdj.commerce.exception.PermissionDeniedException;
 import com.kdj.commerce.exception.NotEnoughStockException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -83,9 +83,9 @@ class PurchaseCreationTest {
     @Test
     void bothOrderTypesRejectMissingMemberId() {
         assertThatThrownBy(() -> service.purchase(null, 10L, 1, "name", "address"))
-                .isInstanceOf(PermissionDeniedException.class);
+                .isInstanceOf(AuthenticationRequiredException.class);
         assertThatThrownBy(() -> service.purchaseCart(null, "name", "address"))
-                .isInstanceOf(PermissionDeniedException.class);
+                .isInstanceOf(AuthenticationRequiredException.class);
         verifyNoInteractions(carts, purchases, items, members);
     }
 
@@ -95,7 +95,7 @@ class PurchaseCreationTest {
     void singleOrderRejectsInvalidQuantity(Integer quantity) {
         orderingMember();
         assertThatThrownBy(() -> service.purchase(1L, 10L, quantity, "name", "address"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidRequestException.class);
         verifyNoInteractions(items, purchases);
     }
 
@@ -103,7 +103,7 @@ class PurchaseCreationTest {
     void singleOrderRejectsMissingItemId() {
         orderingMember();
         assertThatThrownBy(() -> service.purchase(1L, null, 1, "name", "address"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidRequestException.class);
         verifyNoInteractions(items, purchases);
     }
 
@@ -112,7 +112,7 @@ class PurchaseCreationTest {
         orderingMember();
         when(carts.findItem(1L)).thenReturn(List.of());
         assertThatThrownBy(() -> service.purchaseCart(1L, "name", "address"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidRequestException.class);
         verifyNoInteractions(purchases, items);
         verify(carts, never()).clearItem(anyLong());
     }
@@ -127,9 +127,9 @@ class PurchaseCreationTest {
         when(carts.findItem(1L)).thenReturn(List.of(CartItem.create(mock(Cart.class), item, 1)));
 
         assertThatThrownBy(() -> service.purchase(1L, 10L, 1, "name", "address"))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(BusinessConflictException.class);
         assertThatThrownBy(() -> service.purchaseCart(1L, "name", "address"))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(BusinessConflictException.class);
         assertThat(item.getStock()).isEqualTo(5);
         verifyNoInteractions(purchases);
         verify(carts, never()).clearItem(anyLong());
@@ -141,7 +141,7 @@ class PurchaseCreationTest {
         Item item = sellingItem();
         when(carts.findItem(1L)).thenReturn(List.of(CartItem.create(mock(Cart.class), item, -1)));
         assertThatThrownBy(() -> service.purchaseCart(1L, "name", "address"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidRequestException.class);
         assertThat(item.getStock()).isEqualTo(5);
         verifyNoInteractions(purchases);
         verify(carts, never()).clearItem(anyLong());

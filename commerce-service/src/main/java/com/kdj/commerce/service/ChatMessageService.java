@@ -1,5 +1,6 @@
 package com.kdj.commerce.service;
 
+import com.kdj.commerce.exception.ResourceNotFoundException;
 import com.kdj.commerce.domain.chat.ChatMessage;
 import com.kdj.commerce.domain.chat.ChatMessageRepository;
 import com.kdj.commerce.domain.chat.ChatRoom;
@@ -28,7 +29,7 @@ public class ChatMessageService {
         Member sender = memberService.findByEmail(email);
 
         ChatRoom chatRoom = chatRoomRepository.findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("채팅방을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("채팅방을 찾을 수 없습니다."));
 
         ChatMessage message = ChatMessage.create(
                 chatRoom,

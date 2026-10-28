@@ -1,5 +1,9 @@
 package com.kdj.commerce.service;
 
+import com.kdj.commerce.exception.BusinessConflictException;
+import com.kdj.commerce.exception.AuthenticationRequiredException;
+import com.kdj.commerce.exception.ResourceNotFoundException;
+import com.kdj.commerce.exception.InvalidRequestException;
 import com.kdj.commerce.domain.cart.CartItem;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemRepository;
@@ -15,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +34,7 @@ public class PurchaseService {
 
     public Purchase findById(Long id) {
         Purchase purchase = purchaseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다"));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 주문입니다"));
 
         return purchase;
     }
@@ -76,7 +79,7 @@ public class PurchaseService {
         Member member = findOrderingMember(memberId);
         List<CartItem> cartItems = cartService.findItem(memberId);
         if (cartItems.isEmpty()) {
-            throw new IllegalArgumentException("장바구니가 비어 있습니다.");
+            throw new InvalidRequestException("장바구니가 비어 있습니다.");
         }
 
         List<PurchaseItem> purchaseItems = new ArrayList<>();
@@ -111,8 +114,11 @@ public class PurchaseService {
 
     @Transactional
     public void cancel(Long purchaseId, Long memberId) {
+        if (memberId == null) {
+            throw new AuthenticationRequiredException("로그인이 필요합니다.");
+        }
         Purchase purchase = purchaseRepository.findById(purchaseId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 주문입니다."));
 
         isOwner(purchase, memberId);
         purchase.cancel();
@@ -123,28 +129,28 @@ public class PurchaseService {
 
     private Member findOrderingMember(Long memberId) {
         if (memberId == null) {
-            throw new PermissionDeniedException("로그인이 필요합니다.");
+            throw new AuthenticationRequiredException("로그인이 필요합니다.");
         }
 
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 회원입니다."));
     }
 
     private void validateQuantity(Integer quantity) {
         if (quantity == null || quantity <= 0) {
-            throw new IllegalArgumentException("주문 수량은 1개 이상이어야 합니다.");
+            throw new InvalidRequestException("주문 수량은 1개 이상이어야 합니다.");
         }
     }
 
     private Item findPurchasableItem(Long itemId) {
         if (itemId == null) {
-            throw new IllegalArgumentException("주문할 상품을 선택해 주세요.");
+            throw new InvalidRequestException("주문할 상품을 선택해 주세요.");
         }
         Item item = itemRepository.findByIdWithLock(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다."));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 상품입니다."));
 
         if (item.isDeleted() || !item.isOpen()) {
-            throw new IllegalStateException("판매 중인 상품만 주문할 수 있습니다.");
+            throw new BusinessConflictException("판매 중인 상품만 주문할 수 있습니다.");
         }
 
         return item;

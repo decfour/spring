@@ -1,12 +1,12 @@
 package com.kdj.commerce.domain.chat;
 
+import com.kdj.commerce.exception.InvalidRequestException;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.walk.WalkCourse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -41,7 +41,7 @@ public class ChatRoom {
 
     public static ChatRoom create(WalkCourse walkCourse, Member host, String title) {
         if (title == null || title.isBlank() || title.length() > 30) {
-            throw new IllegalArgumentException("제목은 1~30자여야 합니다.");
+            throw new InvalidRequestException("제목은 1~30자여야 합니다.");
         }
 
         ChatRoom chatRoom = new ChatRoom();

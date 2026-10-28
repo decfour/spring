@@ -1,7 +1,9 @@
 package com.kdj.commerce.exception;
 
-public class PermissionDeniedException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+
+public class PermissionDeniedException extends BusinessException {
     public PermissionDeniedException(String message) {
-        super(message);
+        super(HttpStatus.FORBIDDEN, message);
     }
 }

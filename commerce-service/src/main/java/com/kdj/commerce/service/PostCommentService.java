@@ -1,5 +1,6 @@
 package com.kdj.commerce.service;
 
+import com.kdj.commerce.exception.ResourceNotFoundException;
 import com.kdj.commerce.domain.community.PostComment;
 import com.kdj.commerce.domain.community.PostCommentRepository;
 import com.kdj.commerce.domain.community.Post;
@@ -22,7 +23,7 @@ public class PostCommentService {
 
     public PostComment findById(Long id) {
         PostComment comment = postCommentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다 id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("댓글이 존재하지 않습니다 id=" + id));
         return comment;
     }
 
@@ -33,9 +34,9 @@ public class PostCommentService {
     @Transactional
     public Long save(Long postId, Long memberId, String content) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물이 존재하지 않습니다 id=" + postId));
+                .orElseThrow(() -> new ResourceNotFoundException("게시물이 존재하지 않습니다 id=" + postId));
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다 id=" + memberId));
+                .orElseThrow(() -> new ResourceNotFoundException("회원이 존재하지 않습니다 id=" + memberId));
 
         PostComment comment = PostComment.create(post, member, content);
 
@@ -45,7 +46,7 @@ public class PostCommentService {
     @Transactional
     public void update(Long id, PostComment updateParam) {
         PostComment comment = postCommentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다 id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("댓글이 존재하지 않습니다 id=" + id));
 
         comment.update(updateParam.getContent());
     }
@@ -53,7 +54,7 @@ public class PostCommentService {
     @Transactional
     public void delete(Long id) {
         PostComment comment = postCommentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다 id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("댓글이 존재하지 않습니다 id=" + id));
 
         postCommentRepository.delete(comment);
     }

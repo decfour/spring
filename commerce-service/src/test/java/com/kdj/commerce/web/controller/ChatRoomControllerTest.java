@@ -1,5 +1,9 @@
 package com.kdj.commerce.web.controller;
 
+import com.kdj.commerce.exception.GlobalExceptionHandler;
+import com.kdj.commerce.exception.InvalidRequestException;
+import com.kdj.commerce.exception.ResourceNotFoundException;
+import com.kdj.commerce.exception.BusinessConflictException;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.ChatRoomService;
 import com.kdj.commerce.web.dto.chat.*;
@@ -20,7 +24,6 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import java.util.List;
-
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -47,6 +50,7 @@ class ChatRoomControllerTest {
         resolver.setTemplateEngine(engine);
         resolver.setCharacterEncoding("UTF-8");
         mvc = MockMvcBuilders.standaloneSetup(new ChatRoomController(service))
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .setViewResolvers(resolver)
                 .setCustomArgumentResolvers(new HandlerMethodArgumentResolver() {
                     public boolean supportsParameter(MethodParameter p) { return p.hasParameterAnnotation(Login.class); }
@@ -93,7 +97,7 @@ class ChatRoomControllerTest {
     @Test
     @DisplayName("정원이 찬 채팅방에 참여하면 오류 메시지와 함께 목록으로 이동한다")
     void fullRoomShowsError() throws Exception {
-        doThrow(new IllegalStateException("정원이 찼습니다.")).when(service).join(10L, 20L, 1L);
+        doThrow(new BusinessConflictException("정원이 찼습니다.")).when(service).join(10L, 20L, 1L);
         mvc.perform(post("/walk/course/10/chat/20/join"))
                 .andExpect(redirectedUrl("/walk/course/10/chat"))
                 .andExpect(flash().attribute("error", "정원이 찼습니다."));
@@ -102,7 +106,7 @@ class ChatRoomControllerTest {
     @Test
     @DisplayName("다른 코스의 채팅방 참여 요청이 거부되면 목록으로 이동한다")
     void wrongCourseDoesNotJoin() throws Exception {
-        doThrow(new IllegalArgumentException("다른 코스입니다.")).when(service).join(10L, 20L, 1L);
+        doThrow(new InvalidRequestException("다른 코스입니다.")).when(service).join(10L, 20L, 1L);
         mvc.perform(post("/walk/course/10/chat/20/join"))
                 .andExpect(redirectedUrl("/walk/course/10/chat"));
         verify(service).join(10L, 20L, 1L);
@@ -117,14 +121,14 @@ class ChatRoomControllerTest {
         mvc.perform(get("/walk/course/10/chat/20"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("방장이 나가면 채팅방이 종료됩니다")))
-                .andExpect(content().string(containsString("메시지 기능 준비 중")))
+                .andExpect(content().string(containsString("메시지를 입력하세요")))
                 .andExpect(content().string(containsString("/walk/course/10/chat/20/leave")));
     }
 
     @Test
     @DisplayName("종료된 채팅방을 조회하면 오류 메시지와 함께 목록으로 이동한다")
     void closedRoomRedirectsToList() throws Exception {
-        when(service.findDetail(10L, 20L, 1L)).thenThrow(new IllegalStateException("종료된 채팅방입니다."));
+        when(service.findDetail(10L, 20L, 1L)).thenThrow(new BusinessConflictException("종료된 채팅방입니다."));
         mvc.perform(get("/walk/course/10/chat/20"))
                 .andExpect(redirectedUrl("/walk/course/10/chat"))
                 .andExpect(flash().attribute("error", "종료된 채팅방입니다."));
@@ -141,7 +145,7 @@ class ChatRoomControllerTest {
     @Test
     @DisplayName("존재하지 않는 산책 코스의 채팅방 목록은 404를 반환한다")
     void missingCourseReturnsNotFound() throws Exception {
-        when(service.findCourse(10L)).thenThrow(new IllegalArgumentException("존재하지 않는 산책 코스입니다."));
+        when(service.findCourse(10L)).thenThrow(new ResourceNotFoundException("존재하지 않는 산책 코스입니다."));
         mvc.perform(get("/walk/course/10/chat")).andExpect(status().isNotFound());
     }
 

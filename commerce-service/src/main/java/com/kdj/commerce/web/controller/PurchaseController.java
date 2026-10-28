@@ -1,9 +1,9 @@
 package com.kdj.commerce.web.controller;
 
+import com.kdj.commerce.exception.InvalidRequestException;
 import com.kdj.commerce.domain.cart.CartItem;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.member.Member;
-import com.kdj.commerce.exception.PermissionDeniedException;
 import com.kdj.commerce.service.CartService;
 import com.kdj.commerce.service.ItemService;
 import com.kdj.commerce.service.PurchaseService;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -110,7 +109,7 @@ public class PurchaseController {
                     receiverAddress
             );
         } else {
-            throw new IllegalArgumentException("지원하지 않는 주문 방식입니다.");
+            throw new InvalidRequestException("지원하지 않는 주문 방식입니다.");
         }
 
         return "redirect:/member/my-order";
@@ -126,8 +125,4 @@ public class PurchaseController {
         return "redirect:/member/my-order";
     }
 
-    @ExceptionHandler(PermissionDeniedException.class)
-    public String handlePermissionDenied(PermissionDeniedException exception) {
-        return "redirect:/member/my-order";
-    }
 }

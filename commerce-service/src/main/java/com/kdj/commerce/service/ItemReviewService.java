@@ -1,5 +1,6 @@
 package com.kdj.commerce.service;
 
+import com.kdj.commerce.exception.ResourceNotFoundException;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemRepository;
 import com.kdj.commerce.domain.member.Member;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -22,7 +22,7 @@ public class ItemReviewService {
 
     public ItemReview findById(Long id) {
         return itemReviewRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않습니다 id=" + id));
     }
 
     public Page<ItemReview> findByItemId(Long itemId, Pageable pageable) {
@@ -36,7 +36,7 @@ public class ItemReviewService {
     @Transactional
     public Long save(Long itemId, Member member, String title, String content) {
         Item item = itemRepository.findByIdWithLock(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + itemId));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않습니다 id=" + itemId));
         ItemReview review = ItemReview.create(title, content, item, member);
 
         itemReviewRepository.save(review);
@@ -47,7 +47,7 @@ public class ItemReviewService {
     @Transactional
     public void update(Long id, String title, String content) {
         ItemReview review = itemReviewRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않습니다 id=" + id));
 
         review.update(title, content);
     }
@@ -55,7 +55,7 @@ public class ItemReviewService {
     @Transactional
     public void delete(Long id) {
         ItemReview review = itemReviewRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않습니다 id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않습니다 id=" + id));
 
         itemReviewRepository.delete(review);
     }

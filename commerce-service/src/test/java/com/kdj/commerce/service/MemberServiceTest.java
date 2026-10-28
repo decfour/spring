@@ -3,13 +3,13 @@ package com.kdj.commerce.service;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberRepository;
 import com.kdj.commerce.domain.member.MemberType;
+import com.kdj.commerce.exception.DuplicateMemberException;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 class MemberServiceTest {
@@ -55,5 +55,25 @@ class MemberServiceTest {
     @Test
     void missingAccountCannotSignIn() {
         assertThat(service.signIn("missing", "password123")).isNull();
+    }
+
+    @Test
+    void duplicateEmailReportsFieldAndDoesNotSave() {
+        Member member = member("password123");
+        when(repository.findByEmail(member.getEmail())).thenReturn(Optional.of(member));
+        assertThatThrownBy(() -> service.signUp(member))
+                .isInstanceOfSatisfying(DuplicateMemberException.class,
+                        ex -> assertThat(ex.getField()).isEqualTo(DuplicateMemberException.Field.EMAIL));
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    void duplicateSignInIdReportsFieldAndDoesNotSave() {
+        Member member = member("password123");
+        when(repository.findBySignInId(member.getSignInId())).thenReturn(Optional.of(member));
+        assertThatThrownBy(() -> service.signUp(member))
+                .isInstanceOfSatisfying(DuplicateMemberException.class,
+                        ex -> assertThat(ex.getField()).isEqualTo(DuplicateMemberException.Field.SIGN_IN_ID));
+        verify(repository, never()).save(any());
     }
 }

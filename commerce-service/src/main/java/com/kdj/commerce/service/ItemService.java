@@ -1,5 +1,6 @@
 package com.kdj.commerce.service;
 
+import com.kdj.commerce.exception.ResourceNotFoundException;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemRepository;
 import com.kdj.commerce.web.dto.item.ItemForm;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 
 @Service
@@ -22,7 +22,7 @@ public class ItemService {
 
     public Item findById(Long id) {
         return itemRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("상품이 존재하지 않습니다 id=" + id));
     }
 
     public Page<Item> findByCreatorId(Pageable pageable, Long id) {
@@ -69,7 +69,7 @@ public class ItemService {
     @Transactional
     public void update(Long id, ItemForm form) {
         Item item = itemRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("상품이 존재하지 않습니다 id=" + id));
 
         String storedFileName = item.getStoredFileName();
         String originalFileName = item.getOriginalFileName();
@@ -102,7 +102,7 @@ public class ItemService {
     @Transactional
     public void delete(Long id) {
         Item item = itemRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("상품이 존재하지 않습니다 id=" + id));
 
         item.delete();
     }
@@ -110,7 +110,7 @@ public class ItemService {
     @Transactional
     public void restore(Long id) {
         Item item = itemRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다 id=" + id));
+                .orElseThrow(() -> new ResourceNotFoundException("상품이 존재하지 않습니다 id=" + id));
 
         item.restore();
     }

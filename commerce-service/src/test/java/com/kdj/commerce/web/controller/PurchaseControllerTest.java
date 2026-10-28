@@ -1,5 +1,7 @@
 package com.kdj.commerce.web.controller;
 
+import com.kdj.commerce.exception.GlobalExceptionHandler;
+import com.kdj.commerce.exception.InvalidRequestException;
 import com.kdj.commerce.exception.PermissionDeniedException;
 import com.kdj.commerce.service.CartService;
 import com.kdj.commerce.service.ItemService;
@@ -13,7 +15,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.core.MethodParameter;
 import com.kdj.commerce.domain.member.Member;
-
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,7 +29,7 @@ class PurchaseControllerTest {
 
         assertThatThrownBy(() -> controller.createPurchase(mock(Member.class), "INVALID",
                 null, null, "name", "address"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidRequestException.class);
         verifyNoInteractions(service, carts);
     }
 
@@ -47,7 +48,7 @@ class PurchaseControllerTest {
     }
 
     @Test
-    void permissionDeniedByServiceRedirectsToMyOrders() throws Exception {
+    void permissionDeniedByServiceReturnsForbidden() throws Exception {
         PurchaseService service = mock(PurchaseService.class);
         Member member = mock(Member.class);
         when(member.getId()).thenReturn(2L);
@@ -55,6 +56,7 @@ class PurchaseControllerTest {
                 .when(service).cancel(10L, 2L);
         MockMvc mvc = MockMvcBuilders.standaloneSetup(new PurchaseController(
                         service, mock(CartService.class), mock(ItemService.class)))
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .setCustomArgumentResolvers(new HandlerMethodArgumentResolver() {
                     @Override
                     public boolean supportsParameter(MethodParameter parameter) {
@@ -69,8 +71,8 @@ class PurchaseControllerTest {
                 }).build();
 
         mvc.perform(post("/order/10/cancel"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/member/my-order"));
+                .andExpect(status().isForbidden())
+                .andExpect(view().name("error/4xx"));
         verify(service).cancel(10L, 2L);
         verify(service, never()).findById(anyLong());
     }

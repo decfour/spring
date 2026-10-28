@@ -243,6 +243,10 @@
         })
         .then(response => {
             if (!response.ok) {
+                const contentType = response.headers.get('Content-Type') || '';
+                if (contentType.includes('application/json')) {
+                    return response.json().then(error => { throw new Error(error.message); });
+                }
                 return response.text().then(msg => { throw new Error(msg); });
             }
             location.reload();

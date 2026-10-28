@@ -1,6 +1,7 @@
 package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.item.Item;
+import com.kdj.commerce.exception.DuplicateMemberException;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
 import com.kdj.commerce.domain.purchase.Purchase;
@@ -62,14 +63,12 @@ public class MemberController {
                     MemberType.USER
             );
             memberService.signUp(member);
-        } catch (IllegalStateException e) {
-            if (e.getMessage().contains("이메일")) {
-                result.rejectValue("email", "duplicate", e.getMessage());
-            } else if (e.getMessage().contains("아이디")) {
-                result.rejectValue("signInId", "duplicate", e.getMessage());
-            } else {
-                result.reject("signupError", e.getMessage());
-            }
+        } catch (DuplicateMemberException e) {
+            String field = switch (e.getField()) {
+                case EMAIL -> "email";
+                case SIGN_IN_ID -> "signInId";
+            };
+            result.rejectValue(field, "duplicate", e.getMessage());
             return "member/signUpForm";
         }
 

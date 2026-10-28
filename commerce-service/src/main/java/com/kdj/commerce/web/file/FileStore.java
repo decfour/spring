@@ -1,9 +1,9 @@
 package com.kdj.commerce.web.file;
 
+import com.kdj.commerce.exception.InvalidRequestException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -45,7 +45,7 @@ public class FileStore {
         String uuid = UUID.randomUUID().toString();
 
         if (!ALLOWED.contains(ext.toLowerCase())) {
-            throw new IllegalArgumentException("지원하지 않는 파일입니다.");
+            throw new InvalidRequestException("지원하지 않는 파일입니다.");
         }
 
         return uuid + "." + ext.toLowerCase();
@@ -56,7 +56,7 @@ public class FileStore {
         int pos = originalFilename.lastIndexOf(".");
 
         if (pos == -1) {
-            throw new IllegalArgumentException("확장자가 없습니다.");
+            throw new InvalidRequestException("확장자가 없습니다.");
         }
 
         return originalFilename.substring(pos + 1);

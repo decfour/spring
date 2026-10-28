@@ -1,6 +1,7 @@
 package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.member.Member;
+import com.kdj.commerce.exception.BusinessException;
 import com.kdj.commerce.service.ChatRoomService;
 import com.kdj.commerce.web.argumentresolver.Login;
 import com.kdj.commerce.web.dto.chat.ChatCourseResponse;
@@ -9,11 +10,9 @@ import com.kdj.commerce.web.dto.chat.ChatRoomResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -34,12 +33,8 @@ public class ChatRoomController {
             return "redirect:/member/sign-in";
         }
 
-        try {
-            ChatCourseResponse course = chatRoomService.findCourse(courseId);
-            model.addAttribute("course", course);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        ChatCourseResponse course = chatRoomService.findCourse(courseId);
+        model.addAttribute("course", course);
 
         Page<ChatRoomResponse> rooms = chatRoomService.findRooms(
                 courseId,
@@ -69,7 +64,7 @@ public class ChatRoomController {
             Long roomId = chatRoomService.save(courseId, loginMember.getId(), title);
 
             return "redirect:/walk/course/" + courseId + "/chat/" + roomId;
-        } catch (IllegalArgumentException | IllegalStateException e) {
+        } catch (BusinessException e) {
             redirect.addFlashAttribute("error", e.getMessage());
             redirect.addFlashAttribute("draftTitle", title);
 
@@ -92,7 +87,7 @@ public class ChatRoomController {
             chatRoomService.join(courseId, roomId, loginMember.getId());
 
             return "redirect:/walk/course/" + courseId + "/chat/" + roomId;
-        } catch (IllegalArgumentException | IllegalStateException e) {
+        } catch (BusinessException e) {
             redirect.addFlashAttribute("error", e.getMessage());
 
             return redirectToList(courseId);
@@ -124,7 +119,7 @@ public class ChatRoomController {
             model.addAttribute("memberId", loginMember.getId());
 
             return "chat/room";
-        } catch (IllegalArgumentException | IllegalStateException e) {
+        } catch (BusinessException e) {
             redirect.addFlashAttribute("error", e.getMessage());
 
             return redirectToList(courseId);
@@ -144,7 +139,7 @@ public class ChatRoomController {
 
         try {
             chatRoomService.leave(courseId, roomId, loginMember.getId());
-        } catch (IllegalArgumentException | IllegalStateException e) {
+        } catch (BusinessException e) {
             redirect.addFlashAttribute("error", e.getMessage());
         }
 

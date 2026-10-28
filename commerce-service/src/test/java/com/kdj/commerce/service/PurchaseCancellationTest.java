@@ -1,5 +1,7 @@
 package com.kdj.commerce.service;
 
+import com.kdj.commerce.exception.ResourceNotFoundException;
+import com.kdj.commerce.exception.AuthenticationRequiredException;
 import com.kdj.commerce.domain.item.Item;
 import com.kdj.commerce.domain.item.ItemRepository;
 import com.kdj.commerce.domain.member.Member;
@@ -11,11 +13,8 @@ import com.kdj.commerce.domain.purchase.PurchaseStatus;
 import com.kdj.commerce.exception.PermissionDeniedException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -46,7 +45,6 @@ class PurchaseCancellationTest {
     }
 
     @ParameterizedTest
-    @NullSource
     @ValueSource(longs = {2L})
     void unauthorizedCallerCannotChangeOrderOrStock(Long memberId) {
         Purchase purchase = orderOwnedBy(1L);
@@ -60,9 +58,16 @@ class PurchaseCancellationTest {
     }
 
     @Test
+    void anonymousCallerCannotCancelOrLoadOrder() {
+        assertThatThrownBy(() -> service.cancel(10L, null))
+                .isInstanceOf(AuthenticationRequiredException.class);
+        verifyNoInteractions(repository, item);
+    }
+
+    @Test
     void missingOrderIsReportedSeparatelyFromPermissionDenied() {
         assertThatThrownBy(() -> service.cancel(10L, 1L))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("존재하지 않는 주문입니다.");
     }
 }

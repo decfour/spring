@@ -1,5 +1,6 @@
 package com.kdj.commerce.web.controller;
 
+import com.kdj.commerce.exception.BusinessConflictException;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
 import com.kdj.commerce.domain.walk.WalkCourse;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
 
@@ -144,7 +144,7 @@ public class WalkController {
         }
         try {
             return ResponseEntity.ok(walkCourseService.increaseLikeCount(id, loginMember));
-        } catch (IllegalStateException e) {
+        } catch (BusinessConflictException e) {
             return ResponseEntity.status(409).body(Map.of("message", "이미 추천했습니다"));
         }
     }
@@ -155,16 +155,15 @@ public class WalkController {
             @PathVariable Long id,
             @RequestBody Map<String, String> request
     ) {
+        WalkTag tag;
         try {
             String tagCode = request.get("tag");
-            WalkTag tag = WalkTag.valueOf(tagCode);
-
-            walkCourseTagService.create(id, tag);
-
-            return ResponseEntity.ok().build();
+            tag = WalkTag.valueOf(tagCode == null ? "" : tagCode);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("status", 400, "message", "올바른 태그를 선택해주세요."));
         }
+        walkCourseTagService.create(id, tag);
+        return ResponseEntity.ok().build();
     }
 
     private boolean isOwner(WalkCourse walkCourse, Member loginMember) {
