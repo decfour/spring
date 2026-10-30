@@ -41,6 +41,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/walk/course/add",
+                                "/walk/course/*/review/add",
+                                "/walk/course/*/review/*/edit",
+                                "/walk/course/*/review/*/delete",
                                 "/walk/course/*/delete",
                                 "/walk/course/route",
                                 "/walk/course/*/like",
@@ -65,6 +68,8 @@ public class SecurityConfig {
 
                                 "/walk",
                                 "/walk/course/*",
+                                "/walk/course/*/review",
+                                "/walk/course/*/review/*",
 
                                 "/shop",
                                 "/shop/item/*",
@@ -115,3 +120,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+

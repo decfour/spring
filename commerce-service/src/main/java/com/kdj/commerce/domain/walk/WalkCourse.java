@@ -50,6 +50,9 @@ public class WalkCourse {
     )
     private List<WalkCourseTag> tags = new ArrayList<>();
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<com.kdj.commerce.domain.review.WalkCourseReview> reviews = new ArrayList<>();
+
     public static WalkCourse create(
             Member creator,
             String title,
@@ -83,3 +86,4 @@ public class WalkCourse {
         this.content = content;
     }
 }
+

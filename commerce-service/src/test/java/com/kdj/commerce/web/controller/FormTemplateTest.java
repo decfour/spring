@@ -50,7 +50,7 @@ class FormTemplateTest {
     @ParameterizedTest
     @CsvSource({"shop,name", "shop,price", "shop,stock", "shop,description", "shop,deliveryType",
             "community,title", "community,content", "notice,title", "notice,content",
-            "review,title", "review,content"})
+            "review,title", "review,content", "walk-review,title", "walk-review,content"})
     void marksOnlyTheRejectedFieldAndKeepsItsErrorMessage(String view, String field) throws Exception {
         for (boolean edit : new boolean[]{false, true}) {
             String body = mvc.perform(get("/form-preview/" + view).param("error", field).param("edit", "" + edit))
@@ -67,7 +67,7 @@ class FormTemplateTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"shop", "community", "notice", "review"})
+    @ValueSource(strings = {"shop", "community", "notice", "review", "walk-review"})
     void rendersCreateAndEditFormsWithoutSpuriousErrors(String view) throws Exception {
         for (boolean edit : new boolean[]{false, true}) {
             String body = mvc.perform(get("/form-preview/" + view).param("edit", "" + edit))
@@ -91,17 +91,19 @@ class FormTemplateTest {
                 case "community" -> { var post = new PostForm(); post.setId(1L); form = post; name = "postForm"; }
                 case "notice" -> { var notice = new NoticeForm(); notice.setId(1L); form = notice; name = "noticeForm"; }
                 case "review" -> { var review = new ItemReviewForm(); review.setId(1L); form = review; name = "reviewForm"; }
+                case "walk-review" -> { var review = new com.kdj.commerce.web.dto.review.WalkCourseReviewForm(); review.setId(1L); form = review; name = "reviewForm"; }
                 default -> throw new IllegalArgumentException(view);
             }
             var errors = new BeanPropertyBindingResult(form, name);
             if (!error.isEmpty()) errors.rejectValue(error, "invalid", "Invalid " + error);
-            return new ModelAndView(view + "/form")
+            return new ModelAndView((view.equals("walk-review") ? "walk/review" : view) + "/form")
                     .addObject(name, form)
                     .addObject(BindingResult.MODEL_KEY_PREFIX + name, errors)
                     .addObject("isEdit", edit)
-                    .addObject("itemId", 10L)
+                    .addObject("itemId", 10L).addObject("courseId", 10L)
                     .addObject("itemTypes", ItemType.values())
                     .addObject("deliveryTypes", DeliveryType.values());
         }
     }
 }
+

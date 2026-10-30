@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title th:text="${isEdit ?: false} ? 'THGTE - Edit Review' : 'THGTE - Add Review'">
+        THGTE - Add Review
+    </title>
+
+    <th:block th:replace="~{common/header :: styles}"></th:block>
+</head>
+
+<body data-view="review-form">
+
+<div th:replace="~{common/header :: mainHeader}"></div>
+
+<div class="page">
+
+    <div class="page-head">
+        <h2 class="page-title m-0">
+            Review <span class="subtitle" th:text="${isEdit ?: false} ? 'Edit' : 'Add'">Add</span>
+        </h2>
+    </div>
+
+    <form th:action th:object="${reviewForm}" method="post">
+
+        <!-- 수정 모드일 때 ID 전달 -->
+        <input type="hidden"
+               th:if="${isEdit ?: false}"
+               th:field="*{id}">
+
+        <th:block th:replace="~{common/writingForm :: fields('Review title', '내용', 'Write your Review here...')}"></th:block>
+
+        <div th:replace="~{common/writingForm :: actions(${isEdit ?: false} ? @{/walk/course/{courseId}/review/{reviewId}(courseId=${courseId},reviewId=${reviewForm.id})} : @{/walk/course/{courseId}/review(courseId=${courseId})}, ${isEdit ?: false})}"></div>
+
+    </form>
+
+</div>
+
+</body>
+</html>
+

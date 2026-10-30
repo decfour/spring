@@ -40,7 +40,7 @@
             </div>
 
             <a th:href="@{/walk/course/{id}/chat(id=${course.id})}" class="btn-action">채팅</a>
-            <button type="button" id="backBtn" class="btn-action">뒤로</button>
+            <a th:href="@{/walk/course/{id}/review(id=${course.id})}" class="btn-action">리뷰</a><button type="button" id="backBtn" class="btn-action">뒤로</button>
         </div>
     </div>
 
@@ -115,7 +115,7 @@
                 리뷰
             </span>
             <span th:if="${course.content == null or course.content.isBlank()}" class="review-empty">
-                등록된 리뷰가 없습니다
+                등록된 코스 소개가 없습니다
             </span>
         </div>
     </div>
@@ -272,3 +272,4 @@
 
 </body>
 </html>
+

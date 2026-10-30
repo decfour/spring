@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>THGTE - Review</title>
+    <th:block th:replace="~{common/header :: styles}"></th:block>
+</head>
+<body data-view="review-list">
+
+<div th:replace="~{common/header :: mainHeader}"></div>
+
+<div class="page">
+    <div class="page-head">
+        <h2 class="page-title m-0">산책 후기</h2>
+        <div class="d-flex gap-2">
+            <a th:href="@{/walk/course/{courseId}/review/add(courseId=${courseId})}" class="btn-action">등록</a>
+            <a th:href="@{/walk/course/{courseId}(courseId=${courseId})}" class="btn-action">뒤로</a>
+        </div>
+    </div>
+
+    <div th:if="${reviews.isEmpty()}" class="empty">
+        후기가 없습니다
+    </div>
+
+    <table th:if="${not reviews.isEmpty()}" class="data-table">
+        <thead>
+        <tr>
+            <th style="width: 75%; text-align: left;">Title</th>
+            <th style="width: 25%; text-align: right;">Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="entry-row" th:each="review : ${reviews}">
+            <td>
+                <a th:href="@{/walk/course/{courseId}/review/{reviewId}(courseId=${courseId}, reviewId=${review.id})}" class="entry-link" th:text="${review.title}">
+                    제목
+                </a>
+            </td>
+            <td class="entry-date" th:text="${#temporals.format(review.createdAt, 'yyyy.MM.dd')}">
+                2026.06.29
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:replace="~{common/pagination :: pager(${reviews}, @{/walk/course/{courseId}/review(courseId=${courseId})})}"></div>
+</div>
+
+</body>
+</html>
+
