@@ -10,7 +10,7 @@
     <th:block th:replace="~{common/header :: styles}"></th:block>
 </head>
 
-<body data-view="notice-form">
+<body class="theme" data-view="notice-form">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -18,8 +18,9 @@
 
     <div class="page-head">
         <h2 class="page-title m-0">
-            Notice <span class="subtitle" th:text="${isEdit ?: false} ? 'Edit' : 'Add'">Add</span>
+            Talk <span class="subtitle" th:text="${isEdit ?: false} ? 'Notice Edit' : 'Notice Add'">Notice Add</span>
         </h2>
+        <a th:href="@{/community}" class="btn-action">목록</a>
     </div>
 
     <form th:action th:object="${noticeForm}" method="post">
@@ -30,7 +31,7 @@
 
         <th:block th:replace="~{common/writingForm :: fields('공지사항 제목을 입력하세요', '본문 내용', '공지사항 내용을 작성하세요...')}"></th:block>
 
-        <div th:replace="~{common/writingForm :: actions(${isEdit ?: false} ? @{/notice/{id}(id=${noticeForm.id})} : @{/notice}, ${isEdit ?: false})}"></div>
+        <div th:replace="~{common/writingForm :: actions(${isEdit ?: false} ? @{/notice/{id}(id=${noticeForm.id})} : @{/community}, ${isEdit ?: false})}"></div>
 
     </form>
 

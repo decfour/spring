@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
 
@@ -8,9 +8,10 @@
     </title>
 
     <th:block th:replace="~{common/header :: styles}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/talk.css}">
 </head>
 
-<body data-view="community-form">
+<body class="theme" data-view="community-form">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -20,6 +21,7 @@
         <h2 class="page-title m-0">
             Talk <span class="subtitle" th:text="${isEdit ?: false} ? 'Edit' : 'Add'">Add</span>
         </h2>
+        <a th:href="@{/community}" class="btn-action">목록</a>
     </div>
 
     <form th:action th:object="${postForm}" method="post">

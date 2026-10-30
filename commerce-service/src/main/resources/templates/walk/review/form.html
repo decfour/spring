@@ -1,15 +1,15 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title th:text="${isEdit ?: false} ? 'THGTE - Edit Review' : 'THGTE - Add Review'">
         THGTE - Add Review
     </title>
 
-    <th:block th:replace="~{common/header :: styles}"></th:block>
+    <th:block th:replace="~{walk/components :: styles}"></th:block>
 </head>
 
-<body data-view="review-form">
+<body class="theme walk-page" data-view="review-form">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -17,8 +17,9 @@
 
     <div class="page-head">
         <h2 class="page-title m-0">
-            Review <span class="subtitle" th:text="${isEdit ?: false} ? 'Edit' : 'Add'">Add</span>
+            산책 후기 <span class="subtitle" th:text="${isEdit ?: false} ? '수정' : '작성'">작성</span>
         </h2>
+        <a th:href="@{/walk/course/{courseId}/review(courseId=${courseId})}" class="btn-action">목록</a>
     </div>
 
     <form th:action th:object="${reviewForm}" method="post">
@@ -28,7 +29,7 @@
                th:if="${isEdit ?: false}"
                th:field="*{id}">
 
-        <th:block th:replace="~{common/writingForm :: fields('Review title', '내용', 'Write your Review here...')}"></th:block>
+        <th:block th:replace="~{common/writingForm :: fields('후기 제목을 입력하세요', '내용', '산책하며 느낀 점을 남겨주세요')}"></th:block>
 
         <div th:replace="~{common/writingForm :: actions(${isEdit ?: false} ? @{/walk/course/{courseId}/review/{reviewId}(courseId=${courseId},reviewId=${reviewForm.id})} : @{/walk/course/{courseId}/review(courseId=${courseId})}, ${isEdit ?: false})}"></div>
 

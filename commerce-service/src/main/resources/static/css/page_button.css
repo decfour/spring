@@ -1,0 +1,72 @@
+/* Shared pagination for links and dynamically created buttons. */
+.pager {
+    container-type: inline-size;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+.btn-page {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 2px solid #000;
+    border-radius: 50%;
+    background: transparent;
+    color: #000;
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color .15s ease;
+}
+
+.btn-page:hover:not(:disabled):not(.disabled):not(.active):not([aria-current="page"]) {
+    background: #0000000d;
+    color: #000;
+}
+
+.btn-page.active,
+.btn-page[aria-current="page"] {
+    background: #000;
+    color: #f7f3e8;
+}
+
+.btn-page:disabled,
+.btn-page.disabled {
+    opacity: .35;
+    cursor: default;
+    pointer-events: none;
+}
+
+.btn-page:focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-page { transition: none; }
+}
+
+@media (max-width: 360px) {
+    .pager { gap: 4px; }
+    .btn-page { width: 36px; height: 36px; }
+}
+
+/* Fit the full pager inside narrow panels without wrapping the arrows. */
+@container (max-width: 330px) {
+    .btn-page {
+        width: min(40px, calc((100cqw - 48px) / 7));
+        height: min(40px, calc((100cqw - 48px) / 7));
+    }
+}

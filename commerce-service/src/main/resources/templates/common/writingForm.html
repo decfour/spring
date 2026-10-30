@@ -20,7 +20,7 @@
 </th:block>
 <div th:fragment="actions(cancelUrl, editing)" class="form-actions">
     <a th:href="${cancelUrl}" class="btn-action">취소</a>
-    <button type="submit" class="btn-action" th:text="${editing} ? '수정' : '등록'">등록</button>
+    <button type="submit" class="btn-action btn-primary" th:text="${editing} ? '수정' : '등록'">등록</button>
 </div>
 </body>
 </html>

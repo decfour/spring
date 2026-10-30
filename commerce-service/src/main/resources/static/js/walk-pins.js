@@ -1,6 +1,9 @@
 (() => {
     const endpoint = `/walk/course/${course.id}/pins`;
     const addButton = document.getElementById('addPinBtn');
+    const pinLabel = document.getElementById('pinLabel');
+    const pinCount = document.getElementById('pinCount');
+    const pinTotal = document.getElementById('pinTotal');
     const status = document.getElementById('pinStatus');
     const info = new kakao.maps.InfoWindow({removable: true, zIndex: 10});
     const markers = new Map();
@@ -28,9 +31,11 @@
     function setPicking(value) {
         picking = value;
         addButton.setAttribute('aria-pressed', String(value));
-        addButton.textContent = value ? '위치 선택 취소' : '＋ 발견 장소 남기기';
+        pinLabel.textContent = value ? '선택' : '발견';
+        pinTotal.hidden = value;
+        addButton.setAttribute('aria-label', value ? '발견 장소 선택 취소' : '발견 장소 추가');
         map.setCursor(value ? 'crosshair' : '');
-        status.textContent = value ? '경로에서 30m 이내의 장소를 지도에서 눌러주세요.' : '핀을 누르면 이 코스의 발견 장소를 볼 수 있어요.';
+        status.textContent = value ? '경로에서 30m 이내의 장소를 지도에서 눌러주세요.' : '';
     }
 
     function clearDraft() {
@@ -42,6 +47,7 @@
         const node = document.createElement(tag);
         if (text !== undefined) node.textContent = text;
         if (className) node.className = className;
+        if (tag === 'button') node.classList.add('btn-action');
         if (className === 'walk-pin-popup') {
             for (const type of ['click', 'mousedown', 'touchstart', 'dblclick']) {
                 node.addEventListener(type, event => {
@@ -71,6 +77,7 @@
                     await request(`${endpoint}/${pin.id}`, {method: 'DELETE'});
                     marker.setMap(null);
                     markers.delete(pin.id);
+                    pinCount.textContent = markers.size;
                     info.close();
                     status.textContent = '발견 핀을 삭제했습니다.';
                 } catch (e) { error.textContent = e.message; }
@@ -86,6 +93,7 @@
         if (markers.has(pin.id)) return markers.get(pin.id);
         const marker = new kakao.maps.Marker({map, position: new kakao.maps.LatLng(pin.latitude, pin.longitude), title: pin.title});
         markers.set(pin.id, marker);
+        pinCount.textContent = markers.size;
         kakao.maps.event.addListener(marker, 'click', () => openPin(pin, marker));
         return marker;
     }
@@ -117,6 +125,7 @@
         const actions = element('div', undefined, 'walk-pin-actions');
         const save = element('button', '등록');
         save.type = 'submit';
+        save.classList.add('btn-primary');
         const cancel = element('button', '취소');
         cancel.type = 'button';
         cancel.addEventListener('click', () => { if (!loading) { info.close(); clearDraft(); setPicking(false); } });
@@ -146,7 +155,9 @@
     }
 
     addButton.setAttribute('aria-pressed', 'false');
-    addButton.addEventListener('click', () => {
+    addButton.addEventListener('click', event => {
+        event.stopPropagation();
+        kakao.maps.event.preventMap();
         if (!pinMemberLoggedIn) { login(); return; }
         info.close();
         clearDraft();
@@ -160,6 +171,6 @@
 
     request(endpoint).then(pins => {
         pins.forEach(addMarker);
-        if (!picking) status.textContent = pins.length ? `발견 장소 ${pins.length}곳 · 핀을 눌러 살펴보세요.` : '아직 발견 핀이 없어요. 첫 번째 장소를 남겨보세요.';
+        pinCount.textContent = markers.size;
     }).catch(e => { status.textContent = e.message; });
 })();

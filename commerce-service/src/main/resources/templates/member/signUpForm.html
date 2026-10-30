@@ -1,15 +1,15 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>THGTE - Sign Up</title>
     <th:block th:replace="~{common/header :: styles}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
 </head>
-<body data-view="member-signUpForm">
+<body class="theme auth" data-view="member-signUpForm">
 
-<div th:replace="~{common/header :: mainHeader}"></div>
-
-<div class="auth-page">
+<main class="auth-layout">
+<section class="auth-page panel">
     <h2 class="page-title mb-4 text-center">Sign Up</h2>
 
     <form th:action="@{/member/sign-up}" th:object="${member}" method="post">
@@ -20,8 +20,8 @@
 
         <div class="mb-3">
             <label for="name" class="field-label">이름</label>
-            <input type="text" id="name" th:field="*{name}" class="field" th:errorclass="is-invalid" placeholder="Your name">
-            <div class="invalid-feedback mt-1" th:errors="*{name}">이름 오류</div>
+            <input type="text" id="name" th:field="*{name}" class="field" th:errorclass="is-invalid" placeholder="이름" autocomplete="name">
+            <div class="field-feedback mt-1" th:errors="*{name}">이름 오류</div>
         </div>
 
         <div class="mb-3">
@@ -36,29 +36,33 @@
                        required maxlength="98" pattern="[^\s@.]+(?:\.[^\s@.]+)+" autocapitalize="none" spellcheck="false"
                        aria-label="이메일 도메인" aria-describedby="emailError" title="gmail.com처럼 도메인을 입력해주세요." placeholder="gmail.com">
             </div>
-            <div id="emailError" class="invalid-feedback mt-1" th:classappend="${#fields.hasErrors('email')} ? 'd-block'" th:errors="*{email}">이메일 오류</div>
+            <div id="emailError" class="field-feedback mt-1" th:classappend="${#fields.hasErrors('email')} ? 'd-block'" th:errors="*{email}">이메일 오류</div>
         </div>
 
         <div class="mb-3">
             <label for="signInId" class="field-label">아이디</label>
-            <input type="text" id="signInId" th:field="*{signInId}" class="field" th:errorclass="is-invalid" placeholder="Your ID">
-            <div class="invalid-feedback mt-1" th:errors="*{signInId}">아이디 오류</div>
+            <input type="text" id="signInId" th:field="*{signInId}" class="field" th:errorclass="is-invalid" placeholder="아이디" autocomplete="username">
+            <div class="field-feedback mt-1" th:errors="*{signInId}">아이디 오류</div>
         </div>
 
         <div class="field-group">
             <label for="password" class="field-label">비밀번호</label>
-            <input type="password" id="password" th:field="*{signInPassword}" class="field" th:errorclass="is-invalid" placeholder="Password">
-            <div class="invalid-feedback mt-1" th:errors="*{signInPassword}">비밀번호 오류</div>
+            <input type="password" id="password" th:field="*{signInPassword}" class="field" th:errorclass="is-invalid" placeholder="비밀번호" autocomplete="new-password">
+            <div class="field-feedback mt-1" th:errors="*{signInPassword}">비밀번호 오류</div>
         </div>
 
-        <button class="btn-action" type="submit">Sign Up</button>
+        <button class="btn-action btn-primary" type="submit">Sign Up</button>
     </form>
 
     <div class="auth-footer">
-        <span class="text-muted">계정이 있으신가요?</span>
+        <span >계정이 있으신가요?</span>
         <a href="/member/sign-in" class="auth-link">Sign In</a>
     </div>
-</div>
+    <div class="mt-3 text-center">
+        <a th:href="@{/}" class="btn-action">홈으로</a>
+    </div>
+</section>
+</main>
 
 <script>
     const email = document.getElementById('email');

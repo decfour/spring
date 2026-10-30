@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>THGTE - Add Course</title>
 
-    <th:block th:replace="~{common/header :: styles}"></th:block>
+    <th:block th:replace="~{walk/components :: styles}"></th:block>
 
     <script type="text/javascript"
             src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
 </head>
 
-<body data-view="walk-form">
+<body class="theme walk-page" data-view="walk-form">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -26,20 +26,11 @@
         </a>
     </div>
 
-    <div class="map-frame">
-        <div class="map-status" id="status">
-            📍 출발지를 선택하세요
-        </div>
-
-        <div id="map" class="map-canvas"></div>
-
-        <button type="button" id="locationBtn" class="btn-location">
-            📍 현재 위치
-        </button>
-    </div>
+    <div th:replace="~{walk/components :: map('출발지를 선택하세요', true)}"></div>
 
     <form th:action="@{/walk}" method="post">
         <div class="field-group">
+            <label class="field-label" for="title">이름</label>
             <input type="text"
                    id="title"
                    name="title"
@@ -50,6 +41,7 @@
         </div>
 
         <div class="field-group">
+            <label class="field-label" for="content">설명</label>
             <textarea id="content"
                       name="content"
                       class="field"
@@ -76,7 +68,7 @@
 
             <button type="submit"
                     id="submitBtn"
-                    class="btn-action"
+                    class="btn-action btn-primary"
                     disabled>
                 등록
             </button>
@@ -254,7 +246,7 @@
             routePolyline = new kakao.maps.Polyline({
                 path: path,
                 strokeWeight: 5,
-                strokeColor: '#0066cc',
+                strokeColor: '#1d1d1f',
                 strokeOpacity: 0.8,
                 strokeStyle: 'solid'
             });

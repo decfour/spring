@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="styles">
+        <th:block th:replace="~{common/header :: styles}"></th:block>
+        <link rel="stylesheet" th:href="@{/css/shop.css}">
+    </th:block>
+</head>
+</html>

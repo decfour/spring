@@ -9,7 +9,6 @@ import com.kdj.commerce.web.dto.notice.NoticeForm;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -31,12 +30,7 @@ public class NoticeController {
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             Model model
     ) {
-        Page<Notice> notices = noticeService.findAll(pageable);
-
-        model.addAttribute("member", loginMember);
-        model.addAttribute("notices", notices);
-
-        return "notice/list";
+        return "redirect:/community?noticePage=" + pageable.getPageNumber();
     }
 
     @GetMapping("/{id}")
@@ -61,7 +55,7 @@ public class NoticeController {
         if (!isAdmin(loginMember)) {
             log.warn("공지사항 작성 권한 없음");
 
-            return "redirect:/notice";
+            return "redirect:/community";
         }
 
         model.addAttribute("noticeForm", new NoticeForm());
@@ -79,7 +73,7 @@ public class NoticeController {
         if (!isAdmin(loginMember)) {
             log.warn("공지사항 작성 권한 없음");
 
-            return "redirect:/notice";
+            return "redirect:/community";
         }
 
         if (bindingResult.hasErrors()) {
@@ -100,7 +94,7 @@ public class NoticeController {
         if (!isAdmin(loginMember)) {
             log.warn("공지사항 수정 권한 없음");
 
-            return "redirect:/notice";
+            return "redirect:/community";
         }
 
         Notice notice = noticeService.findById(id);
@@ -127,7 +121,7 @@ public class NoticeController {
         if (!isAdmin(loginMember)) {
             log.warn("공지사항 수정 권한 없음");
 
-            return "redirect:/notice";
+            return "redirect:/community";
         }
 
         if (bindingResult.hasErrors()) {
@@ -149,12 +143,12 @@ public class NoticeController {
         if (!isAdmin(loginMember)) {
             log.warn("공지사항 삭제 권한 없음");
 
-            return "redirect:/notice";
+            return "redirect:/community";
         }
 
         noticeService.delete(id);
 
-        return "redirect:/notice";
+        return "redirect:/community";
     }
 
     private boolean isAdmin(Member loginMember) {

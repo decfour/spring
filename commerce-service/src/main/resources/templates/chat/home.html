@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>THGTE - Walking Chat</title>
-    <th:block th:replace="~{common/header :: styles}"></th:block>
-    <link rel="stylesheet" th:href="@{/chat-preview.css}">
-    <script th:src="@{/chat-preview.js}" defer></script>
+    <th:block th:replace="~{walk/components :: styles}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
+    <script th:src="@{/js/dialog.js}" defer></script>
 </head>
-<body data-chat-preview="home">
+<body class="theme walk-page chat-page">
 <div th:replace="~{common/header :: mainHeader}"></div>
 <main class="page">
 
@@ -24,7 +24,7 @@
 
     <p th:if="${error}" th:text="${error}" class="alert alert-danger" role="alert"></p>
 
-    <section class="surface-card course-summary" aria-label="산책 코스">
+    <section class="panel course-summary" aria-label="산책 코스">
 
         <h2 th:text="${course.title}">코스 이름</h2>
 
@@ -37,30 +37,31 @@
 
     <nav class="tabs" aria-label="채팅방 구분">
 
-        <a class="tab" th:href="@{/walk/course/{id}/chat(id=${course.id})}" th:attr="aria-current=${!mine ? 'page' : null}">전체</a>
-        <a class="tab" th:href="@{/walk/course/{id}/chat(id=${course.id},mine=true)}" th:attr="aria-current=${mine ? 'page' : null}">참여</a>
+        <a class="btn-action" th:href="@{/walk/course/{id}/chat(id=${course.id})}" th:attr="aria-current=${!mine ? 'page' : null}">전체</a>
+        <a class="btn-action" th:href="@{/walk/course/{id}/chat(id=${course.id},mine=true)}" th:attr="aria-current=${mine ? 'page' : null}">참여</a>
 
     </nav>
 
     <section class="course-section">
 
-        <p class="empty" th:if="${rooms.empty}" th:text="${mine ? '참여 중인 채팅방이 없습니다' : '채팅방이 없습니다'}"></p>
+        <p class="panel text-center" th:if="${rooms.empty}" th:text="${mine ? '참여 중인 채팅방이 없습니다' : '채팅방이 없습니다'}"></p>
 
         <div class="course-list">
-            <article class="surface-card room-card" th:each="room : ${rooms}"
+            <article class="panel room-card" th:each="room : ${rooms}"
                      th:classappend="${room.open and (room.joined or room.count < 5)} ? 'room-clickable' : ''">
 
                 <div class="room-body">
-                    <h3 th:text="${room.title}" th:classappend="${room.joined} ? 'room-joined' : ''"></h3>
+                    <h3 th:text="${room.title}"></h3>
 
                     <div class="room-meta">
                         <span th:text="${'방장 ' + room.hostName}"></span>
+                        <span th:if="${room.joined}">참여 중</span>
                         <span th:if="${room.count >= 5}">정원 마감</span>
                     </div>
                 </div>
 
                 <div class="room-action">
-                    <span class="people-count"><strong th:text="${room.count}"></strong> / 5명</span>
+                    <span><strong th:text="${room.count}"></strong> / 5명</span>
 
                     <a th:if="${room.open and room.joined}" class="room-link"
                        th:attr="aria-label=${room.title + ' 참여 중인 대화방 열기'}"
@@ -71,13 +72,13 @@
                                 th:attr="aria-label=${room.title + ' 참여하기'},data-open=${'join-room-' + room.id}"
                                 aria-haspopup="dialog"></button>
 
-                        <dialog th:id="${'join-room-' + room.id}" th:attr="aria-labelledby=${'join-title-' + room.id}">
+                        <dialog class="panel" th:id="${'join-room-' + room.id}" th:attr="aria-labelledby=${'join-title-' + room.id}">
                             <div class="dialog-heading"><h2 th:id="${'join-title-' + room.id}">참여할까요?</h2></div>
                             <p class="intro" th:text="${room.title}"></p>
                             <form method="post" class="form-actions"
                                   th:action="@{/walk/course/{courseId}/chat/{roomId}/join(courseId=${course.id},roomId=${room.id})}">
                                 <button type="button" class="btn-action" data-close autofocus>취소</button>
-                                <button type="submit" class="btn-action">참여</button>
+                                <button type="submit" class="btn-action btn-primary">참여</button>
                             </form>
                         </dialog>
                     </th:block>
@@ -91,13 +92,13 @@
     </section>
 
 </main>
-<dialog id="create-room" aria-labelledby="create-title">
+<dialog class="panel" id="create-room" aria-labelledby="create-title">
 
-    <div class="dialog-heading"><h2 id="create-title">방 만들기</h2><button class="icon-close" type="button" data-close aria-label="닫기">×</button></div>
+    <div class="dialog-heading"><h2 id="create-title">방 만들기</h2><button class="btn-circle" type="button" data-close aria-label="닫기">×</button></div>
 
     <form id="create-form" method="post" th:action="@{/walk/course/{id}/chat(id=${course.id})}">
         <div class="field-group"><label class="field-label" for="room-name">채팅방 이름</label><input class="field" id="room-name" name="title" th:value="${draftTitle}" maxlength="30" placeholder="제목을 입력하세요" required></div>
-        <div class="form-actions"><button type="button" class="btn-action" data-close>취소</button><button class="btn-action" type="submit">만들기</button></div>
+        <div class="form-actions"><button type="button" class="btn-action" data-close>취소</button><button class="btn-action btn-primary" type="submit">만들기</button></div>
     </form>
 
 </dialog>

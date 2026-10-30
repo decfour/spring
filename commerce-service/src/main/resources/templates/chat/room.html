@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>THGTE - Walking Chat</title>
-    <th:block th:replace="~{common/header :: styles}"></th:block>
-    <link rel="stylesheet" th:href="@{/chat-preview.css}">
-    <script th:src="@{/chat-preview.js}" defer></script>
+    <th:block th:replace="~{walk/components :: styles}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/chat.css}">
+    <script th:src="@{/js/dialog.js}" defer></script>
 
     <script
             src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.2.0/bundles/stomp.umd.min.js"
@@ -14,7 +14,7 @@
     <script th:src="@{/chat-room.js}" defer></script>
 </head>
 
-<body data-chat-preview="room">
+<body class="theme walk-page chat-page">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -41,12 +41,11 @@
 
     <section
             id="chat-room"
-            class="surface-card chat-shell"
+            class="panel chat-shell"
             th:attr="data-room-id=${room.id}, data-course-id=${course.id}, data-member-id=${memberId}"
             aria-label="채팅방">
         <header class="chat-head">
             <div>
-                <span class="badge">대화방</span>
                 <h2 th:text="${room.title}"></h2>
                 <p class="meta" th:text="${course.title}"></p>
             </div>
@@ -81,7 +80,7 @@
 
                 <button
                         id="send-message"
-                        class="btn-action"
+                        class="btn-action btn-primary"
                         type="submit">전송
                 </button>
             </div>
@@ -91,7 +90,7 @@
 
 </main>
 
-<dialog
+<dialog class="panel"
         id="participants"
         aria-labelledby="participants-title">
 
@@ -121,7 +120,7 @@
 
 </dialog>
 
-<dialog
+<dialog class="panel"
         id="leave-room"
         aria-labelledby="leave-title">
 

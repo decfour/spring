@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="'THGTE - ' + ${review?.title}">THGTE - Review Detail</title>
 
-    <th:block th:replace="~{common/header :: styles}"></th:block>
+    <th:block th:replace="~{shop/components :: styles}"></th:block>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
-<body data-view="review-detail">
+<body class="theme shop-page" data-view="review-detail">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -16,8 +16,7 @@
 
     <div class="page-head">
         <h2 class="page-title m-0">
-            <span>Review</span>
-            <span class="detail-title" th:text="${review?.title}">제목</span>
+            Shop <span class="subtitle text-break" th:text="${review?.title}">제목</span>
         </h2>
 
         <div class="d-flex gap-2 align-items-center">
@@ -45,6 +44,10 @@
         </div>
     </div>
 
+    <div class="panel post-card" th:text="${review?.content}" aria-label="리뷰 내용">
+        내용
+    </div>
+
     <div class="detail-meta">
         <div class="post-info-row">
             <span class="author-meta">
@@ -55,11 +58,8 @@
         </div>
     </div>
 
-    <div class="surface-card post-card" th:text="${review?.content}">
-        내용
-    </div>
-
 </div>
 
 </body>
 </html>
+

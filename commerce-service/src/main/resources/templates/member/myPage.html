@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>THGTE - My Page</title>
 
     <th:block th:replace="~{common/header :: styles}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/my.css}">
 </head>
 
-<body data-view="member-myPage">
+<body class="theme" data-view="member-myPage">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -24,14 +25,14 @@
     </div>
 
     <div class="account-section">
-        <div class="surface-card profile-card">
+        <div class="panel">
             <div class="profile-row">
                 <span class="profile-label">이름</span>
                 <span class="profile-value" th:text="${member.name}">홍길동</span>
             </div>
             <div class="profile-row">
                 <span class="profile-label">등급</span>
-                <span class="type-badge" th:text="${member.memberType}">USER</span>
+                <span class="profile-value" th:text="${member.memberType}">USER</span>
             </div>
             <div class="profile-row">
                 <span class="profile-label">ID</span>
@@ -44,16 +45,16 @@
         </div>
 
         <div class="action-grid">
-            <a th:href="@{/member/my-course}" class="surface-card action-card">
+            <a th:href="@{/member/my-course}" class="panel action-card">
                 내 코스
             </a>
-            <a th:href="@{/member/my-item}" class="surface-card action-card">
+            <a th:href="@{/member/my-item}" class="panel action-card">
                 내 상품
             </a>
-            <a th:href="@{/member/my-review}" class="surface-card action-card">
+            <a th:href="@{/member/my-review}" class="panel action-card">
                 내 후기
             </a>
-            <a th:href="@{/member/my-order}" class="surface-card action-card">
+            <a th:href="@{/member/my-order}" class="panel action-card">
                 내 주문
             </a>
         </div>

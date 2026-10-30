@@ -6,6 +6,7 @@ import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
 import com.kdj.commerce.service.PostCommentService;
 import com.kdj.commerce.service.PostService;
+import com.kdj.commerce.service.NoticeService;
 import com.kdj.commerce.web.argumentresolver.Login;
 import com.kdj.commerce.web.dto.community.PostForm;
 import jakarta.validation.Valid;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
@@ -27,27 +29,34 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     private final PostService postService;
     private final PostCommentService postCommentService;
+    private final NoticeService noticeService;
 
     @GetMapping
     public String list(
+            @Login Member loginMember,
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(defaultValue = "0") int noticePage,
             Model model
     ) {
         Page<Post> posts = postService.findAll(pageable);
 
         model.addAttribute("posts", posts);
+        addNotices(noticePage, loginMember, model);
 
         return "community/list";
     }
 
     @GetMapping("/hits")
     public String hitList(
+            @Login Member loginMember,
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            @RequestParam(defaultValue = "0") int noticePage,
             Model model
     ) {
         Page<Post> posts = postService.findHit(pageable);
 
         model.addAttribute("posts", posts);
+        addNotices(noticePage, loginMember, model);
 
         return "community/hit";
     }
@@ -165,6 +174,11 @@ public class PostController {
         postService.increaseLikeCount(id, loginMember);
 
         return "redirect:/community/post/" + id;
+    }
+
+    private void addNotices(int page, Member member, Model model) {
+        model.addAttribute("member", member);
+        model.addAttribute("notices", noticeService.findAll(PageRequest.of(Math.max(0, page), 3, Sort.by(Sort.Direction.DESC, "id"))));
     }
 
     private boolean isOwner(Post post, Member loginMember) {

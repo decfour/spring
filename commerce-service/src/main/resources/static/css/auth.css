@@ -1,0 +1,7 @@
+.auth { grid-template-rows: 1fr; }
+.auth-layout { display: grid; place-items: center; padding: 24px 20px; min-width: 0; }
+.auth-page.panel { width: 100%; max-width: 420px; margin: 0; padding: 24px; box-sizing: border-box; }
+.auth-page .btn-action { width: 100%; }
+.auth-footer { margin-top: 24px; text-align: center; font-size: .85rem; color: var(--muted); }
+.auth-link { color: #000; text-decoration: none; margin-left: 8px; }
+.auth-link:hover { text-decoration: underline; text-underline-offset: 4px; }

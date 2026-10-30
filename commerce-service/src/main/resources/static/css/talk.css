@@ -1,0 +1,8 @@
+.post-info-row, .comment-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.post-info-row { justify-content: space-between; }
+.comments-section { margin-top: 24px; }
+.comments-header { margin-bottom: 16px; font-size: 1.1rem; }
+.comment-writer { font-size: .9rem; }
+.comment-date { color: var(--muted); font-size: .8rem; }
+.comment-actions { margin-left: auto; }
+.comment-content { margin-top: 12px; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }

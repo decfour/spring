@@ -1,13 +1,13 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>THGTE - Shop</title>
 
-    <th:block th:replace="~{common/header :: styles}"></th:block>
+    <th:block th:replace="~{shop/components :: styles}"></th:block>
 </head>
 
-<body data-view="shop-list">
+<body class="theme shop-page" data-view="shop-list">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -25,7 +25,7 @@
 
     <!-- 상품 없음 -->
     <div th:if="${items.isEmpty()}"
-         class="empty">
+         class="panel text-center">
         등록된 상품이 없습니다
     </div>
 
@@ -35,7 +35,7 @@
 
         <a th:each="item : ${items}"
            th:href="@{/shop/item/{itemId}(itemId=${item.id})}"
-           class="surface-card product-card">
+           class="panel product-card">
 
             <!-- 이미지 -->
             <div class="product-image">
@@ -72,7 +72,7 @@
                     </span>
 
                     <span th:unless="${item.stock > 0}"
-                          class="soldout-badge">
+                          >
                         품절
                     </span>
 

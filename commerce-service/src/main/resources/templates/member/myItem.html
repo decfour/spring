@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>THGTE - My Item</title>
 
     <th:block th:replace="~{common/header :: styles}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/my.css}">
 </head>
 
-<body data-view="member-myItem">
+<body class="theme" data-view="member-myItem">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -27,7 +28,7 @@
 
         <!-- 등록한 상품이 없는 경우 -->
         <div th:if="${myItems == null or myItems.isEmpty()}"
-             class="empty">
+             class="panel text-center">
             등록된 상품이 없습니다
         </div>
 
@@ -37,7 +38,7 @@
 
             <a th:each="item : ${myItems}"
                th:href="@{/shop/item/{itemId}(itemId=${item.id})}"
-               class="surface-card account-card">
+               class="panel account-card">
 
                 <div class="account-info">
 
@@ -67,7 +68,7 @@
                         </span>
 
                         <span th:unless="${item.stock > 0}"
-                              class="soldout-badge">
+                              class="account-state">
                             품절
                         </span>
 
@@ -78,12 +79,12 @@
                 <div class="account-right">
 
                     <span th:if="${item.open}"
-                          class="status-badge-open">
+                          class="account-state">
                         판매 중
                     </span>
 
                     <span th:unless="${item.open}"
-                          class="status-badge-closed">
+                          class="account-state">
                         판매 중지
                     </span>
 

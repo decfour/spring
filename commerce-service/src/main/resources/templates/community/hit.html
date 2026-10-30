@@ -1,17 +1,18 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>THGTE - Community Hit</title>
     <th:block th:replace="~{common/header :: styles}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/board.css}">
 </head>
-<body data-view="community-hit">
+<body class="theme" data-view="community-hit">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
 <div class="page">
     <div class="page-head">
-        <h2 class="page-title m-0">Hit</h2>
+        <h2 class="page-title m-0">Talk <span class="subtitle">HIT</span></h2>
 
         <div class="d-flex gap-2">
             <a th:href="@{/community}" class="btn-action">일반</a>
@@ -20,38 +21,8 @@
         </div>
     </div>
 
-    <table th:if="${posts != null and !posts.isEmpty()}" class="data-table">
-        <thead>
-        <tr>
-            <th style="width: 50%; text-align: left;">제목</th>
-            <th style="width: 15%; text-align: center;">작성자</th>
-            <th style="width: 15%; text-align: center;">추천</th>
-            <th style="width: 20%; text-align: center;">작성일</th>
-        </tr>
-        </thead>
+    <th:block th:replace="~{community/board :: lists('/community/hits')}"></th:block>
 
-        <tbody>
-        <tr class="entry-row" th:each="post : ${posts}">
-            <td>
-                <a th:href="@{/community/post/{id}(id=${post.id})}"
-                   th:text="${post.title}"
-                   class="entry-link">제목</a>
-            </td>
-
-            <td th:text="${post.creator != null ? post.creator.name : '익명'}" class="post-writer">작성자</td>
-
-            <td th:text="${post.likeCount}" class="post-likes">0</td>
-
-            <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}" class="post-date">2026.07.24</td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div th:if="${posts == null or posts.isEmpty()}" class="empty">
-        게시글 없음
-    </div>
-
-    <div th:replace="~{common/pagination :: pager(${posts}, @{/community/hits})}"></div>
 </div>
 
 </body>

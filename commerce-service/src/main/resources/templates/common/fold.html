@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/fold.css}">
+        <script th:src="@{/js/fold.js}" defer></script>
+    </th:block>
+</head>
+<body>
+<button th:fragment="toggle(target)" type="button" class="btn-circle fold-toggle" data-fold-toggle aria-expanded="false" th:attr="aria-controls=${target}" aria-label="펼치기" title="펼치기" hidden>
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+</button>
+</body>
+</html>

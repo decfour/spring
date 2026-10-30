@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="lists(url)">
+    <section class="panel board" aria-labelledby="noticeHeading">
+        <div class="board-head">
+            <h3 id="noticeHeading">Notice</h3>
+            <a th:if="${member != null and member.memberType?.name() == 'ADMIN'}" th:href="@{/notice/add}" class="btn-action">등록</a>
+        </div>
+        <div th:if="${notices != null and !notices.empty}" class="board-list">
+            <a th:each="notice : ${notices}" th:href="@{/notice/{id}(id=${notice.id})}" class="board-entry">
+                <span class="board-title" th:text="${notice.title}">공지 제목</span>
+                <time th:text="${#temporals.format(notice.createdAt, 'yyyy.MM.dd')}">작성일</time>
+            </a>
+        </div>
+        <p th:if="${notices == null or notices.empty}" class="board-empty">공지사항이 없습니다</p>
+        <div th:if="${notices != null}" th:insert="~{common/pagination :: controls(${notices}, @{${url}(page=${posts.number},size=${posts.size})}, 'noticePage')}"></div>
+    </section>
+
+    <section class="panel board" aria-labelledby="postHeading">
+        <h3 id="postHeading" th:text="${url == '/community/hits'} ? 'HIT' : 'Talk'">Talk</h3>
+        <div th:if="${posts != null and !posts.empty}" class="board-list">
+            <a th:each="post : ${posts}" th:href="@{/community/post/{id}(id=${post.id})}" class="board-entry">
+                <span>
+                    <span class="board-title" th:text="${post.title}">제목</span>
+                    <span class="board-meta">
+                        <span th:text="${post.creator != null ? post.creator.name : '익명'}">작성자</span>
+                        <span th:text="'추천 ' + ${post.likeCount}">추천 0</span>
+                    </span>
+                </span>
+                <time th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd')}">작성일</time>
+            </a>
+        </div>
+        <p th:if="${posts == null or posts.empty}" class="board-empty">게시글이 없습니다</p>
+        <div th:if="${posts != null}" th:insert="~{common/pagination :: pager(${posts}, @{${url}(noticePage=${notices != null ? notices.number : 0},size=${posts.size})})}"></div>
+    </section>
+</th:block>
+</body>
+</html>

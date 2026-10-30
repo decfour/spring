@@ -1,0 +1,16 @@
+/* Profile and activity layout; shared theme owns panels, actions and pagers. */
+.profile-row { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: baseline; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.profile-row:first-child { padding-top: 0; }
+.profile-row:last-child { padding-bottom: 0; border-bottom: 0; }
+.profile-label { color: var(--muted); }
+.profile-value { text-align: right; overflow-wrap: anywhere; }
+.action-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.action-card.panel { margin: 0; text-align: center; color: var(--ink); text-decoration: none; }
+.action-card:hover, a.account-card:hover { background: var(--surface); }
+.account-list { display: flex; flex-direction: column; }
+.account-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; color: inherit; text-decoration: none; }
+.account-info { flex: 1 1 180px; min-width: 0; }
+.account-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.account-meta { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 6px; color: var(--muted); font-size: .85rem; }
+.account-right { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.account-state, .purchase-count { font-size: .85rem; color: var(--muted); }

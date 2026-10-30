@@ -1,0 +1,66 @@
+/* Shared action buttons; page navigation lives in page_button.css. */
+.btn-action, .btn-like, .btn-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    min-width: 64px;
+    min-height: 40px;
+    padding: 8px 18px;
+    border: 2px solid #000;
+    border-radius: 999px;
+    background: transparent;
+    color: #000;
+    font: inherit;
+    font-size: .9rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color .15s ease;
+}
+
+:is(.btn-action, .btn-like, .btn-circle):hover:not(:disabled):not([aria-disabled="true"]) {
+    background: #0000000d;
+    color: #000;
+}
+
+.btn-action.btn-primary,
+.btn-action[aria-current="page"],
+.btn-action[aria-pressed="true"] {
+    background: #000;
+    color: #f7f3e8;
+    border-color: #000;
+}
+
+.btn-action.btn-primary:hover:not(:disabled),
+.btn-action[aria-current="page"]:hover:not(:disabled),
+.btn-action[aria-pressed="true"]:hover:not(:disabled) {
+    background: #292929;
+    color: #f7f3e8;
+}
+
+.btn-circle {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0;
+}
+
+:is(.btn-action, .btn-like, .btn-circle):focus-visible {
+    outline: 2px solid #000;
+    outline-offset: 3px;
+}
+
+:is(.btn-action, .btn-like, .btn-circle):is(:disabled, [aria-disabled="true"]) {
+    opacity: .35;
+    cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-action, .btn-like, .btn-circle { transition: none; }
+}

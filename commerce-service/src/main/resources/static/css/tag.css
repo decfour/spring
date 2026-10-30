@@ -1,0 +1,26 @@
+.tag-chip {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: 30px;
+    padding: 4px 12px;
+    border: 2px solid #000;
+    border-radius: 999px;
+    background: var(--tag-color, #eee8dc);
+    color: #000;
+    font-size: .85rem;
+    line-height: 1.25;
+}
+
+.tag-chip[data-tag="NATURE"] { --tag-color: #d5e8c4; }
+.tag-chip[data-tag="CITY"] { --tag-color: #cfe3ef; }
+.tag-chip[data-tag="QUIET"] { --tag-color: #e1d8ef; }
+.tag-chip[data-tag="HOT"] { --tag-color: #ffcdb4; }
+.tag-chip[data-tag="NIGHT"] { --tag-color: #ccd0eb; }
+.tag-chip[data-tag="MORNING"] { --tag-color: #fff0b0; }
+.tag-chip[data-tag="LONG_DISTANCE"] { --tag-color: #bfe4db; }
+.tag-chip[data-tag="SHORT_DISTANCE"] { --tag-color: #e5edb8; }
+.tag-chip[data-tag="LOVE"] { --tag-color: #f5c8d7; }
+.tag-chip[data-tag="PET"] { --tag-color: #e8d3bc; }
+.tag-chip[data-tag="FAMILY"] { --tag-color: #f1d7b0; }

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>THGTE - My Review</title>
 
     <th:block th:replace="~{common/header :: styles}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/my.css}">
 </head>
 
-<body data-view="member-myReview">
+<body class="theme" data-view="member-myReview">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -26,7 +27,7 @@
     <div class="account-section">
 
         <div th:if="${myReviews == null or myReviews.isEmpty()}"
-             class="empty">
+             class="panel text-center">
             작성한 리뷰가 없습니다
         </div>
 
@@ -35,7 +36,7 @@
 
             <a th:each="review : ${myReviews}"
                th:href="@{/shop/item/{itemId}/review/{reviewId}(itemId=${review.item.id}, reviewId=${review.id})}"
-               class="surface-card account-card">
+               class="panel account-card">
 
                 <div class="account-info">
 
@@ -53,7 +54,7 @@
 
                         <span>•</span>
 
-                        <span class="review-item-name"
+                        <span
                               th:text="${review.item.name}">
                         상품명
                     </span>

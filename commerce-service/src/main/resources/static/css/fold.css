@@ -1,0 +1,13 @@
+[data-fold] { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; column-gap: 12px; }
+.fold-text {
+    grid-area: 1 / 1;
+    max-height: 7.2em;
+    overflow: hidden;
+    line-height: 1.8;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+[data-fold][data-expanded="true"] .fold-text { max-height: none; }
+.fold-toggle { grid-area: 1 / 2; }
+.fold-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+.fold-toggle[hidden] { display: none; }

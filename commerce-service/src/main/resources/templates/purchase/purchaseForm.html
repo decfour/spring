@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>THGTE - Add Purchase</title>
 
-    <th:block th:replace="~{common/header :: styles}"></th:block>
+    <th:block th:replace="~{shop/components :: styles}"></th:block>
 </head>
 
-<body data-view="purchase-purchaseForm">
+<body class="theme shop-page" data-view="purchase-purchaseForm">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -31,12 +31,12 @@
 
         <div class="section-title">주문 상품 정보</div>
 
-        <div th:each="purchaseItem : ${purchaseItems}" class="surface-card item-card">
+        <div th:each="purchaseItem : ${purchaseItems}" class="panel item-card">
             <div class="item-row">
                 <div>
                     <span th:text="${purchaseItem.itemName}" class="fw-semibold">상품명</span>
                     <span th:text="' x ' + ${purchaseItem.quantity} + '개'"
-                          style="color: #86868b; font-size: 0.88rem;">
+                         >
                         x 1개
                     </span>
                 </div>
@@ -78,7 +78,7 @@
                     취소
                 </a>
 
-                <button type="submit" class="btn-action">
+                <button type="submit" class="btn-action btn-primary">
                     주문
                 </button>
             </div>

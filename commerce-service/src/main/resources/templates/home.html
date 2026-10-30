@@ -2,8 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>DON'T PANIC!</title>
+    <title>Don't Panic!</title>
     <th:block th:replace="~{common/header :: styles}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body data-view="home">
 
@@ -11,13 +12,14 @@
 
 <div class="page">
 
-    <h1 class="main-title">DON'T PANIC!</h1>
-    <p class="main-sub">Every path has a story</p>
+    <h1 class="main-title">
+        <img class="home-title-image" th:src="@{/images/branding/title.png}"
+             alt="The Hitchhiker's Guide to Earth" width="1774" height="887">
+    </h1>
 
     <div class="nav-vertical">
         <a th:href="@{/walk}" class="link-item link-item-primary">
             <span>Walk</span>
-            <span class="link-arrow">→</span>
         </a>
 
         <a th:href="@{/community}" class="link-item link-item-secondary">
@@ -28,9 +30,6 @@
             <span>Shop</span>
         </a>
 
-        <a th:href="@{/notice}" class="link-item link-item-secondary">
-            <span>Notice</span>
-        </a>
     </div>
 </div>
 

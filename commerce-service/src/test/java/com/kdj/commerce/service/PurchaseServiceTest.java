@@ -58,7 +58,7 @@ class PurchaseServiceTest {
         // given    : 회원 100명, 재고 100개 이벤트 상품 DB 저장
         for (int i = 1; i <= 100; i++) {
             Member member = Member.create(
-                    "testUser" + i,
+                    "user" + i,
                     "testUser" + i + "@test.com",
                     "testId" + i,
                     "testPassword",
@@ -120,7 +120,7 @@ class PurchaseServiceTest {
         // given    : 회원 10명, 각 회원별 상품 1개, 각 회원별 주문 1개 DB 저장
         for (int i = 1; i <= 10; i++) {
             Member member = Member.create(
-                    "test2User" + i,
+                    "nuser" + i,
                     "test2User" + i + "@test.com",
                     "test2Id" + i,
                     "test2Password",

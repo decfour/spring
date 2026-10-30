@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>THGTE - My Course</title>
 
     <th:block th:replace="~{common/header :: styles}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/my.css}">
 </head>
 
-<body data-view="member-myCourse">
+<body class="theme" data-view="member-myCourse">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -27,7 +28,7 @@
 
         <!-- 등록한 코스가 없는 경우 -->
         <div th:if="${myCourses == null or myCourses.isEmpty()}"
-             class="empty">
+             class="panel text-center">
             등록한 산책 코스가 없습니다
         </div>
 
@@ -37,7 +38,7 @@
 
             <a th:each="course : ${myCourses}"
                th:href="@{/walk/course/{courseId}(courseId=${course.id})}"
-               class="surface-card account-card">
+               class="panel account-card">
 
                 <div class="account-info">
 
@@ -47,7 +48,7 @@
                     </div>
 
                     <div class="account-meta">
-                        <span>ID: <span class="course-id"
+                        <span>ID: <span
                                         th:text="${course.id}">1</span></span>
 
                         <span>•</span>

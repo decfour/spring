@@ -1,0 +1,16 @@
+/* Shared design tokens. */
+:root {
+    --font-body: "Gowun Dodum", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-heading: "Jua", "Gowun Dodum", sans-serif;
+    --bs-body-font-family: var(--font-body);
+    --ink: #1d1d1f;
+    --muted: #716b61;
+    --line: #d8d0c1;
+    --surface: #eee8dc;
+    --accent: #423b30;
+    --danger: #ff3b30;
+    --background: #f7f3e8;
+    --paper: #fcf9f2;
+    --frame-radius: 12px;
+    --page-gap: 48px;
+}

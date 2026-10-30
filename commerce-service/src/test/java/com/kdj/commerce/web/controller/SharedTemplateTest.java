@@ -51,7 +51,7 @@ class SharedTemplateTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"community/list", "community/hit", "community/detail", "notice/list", "review/list",
+    @ValueSource(strings = {"community/list", "community/hit", "community/detail", "review/list",
             "shop/list", "member/myItem", "member/myReview", "member/myCourse", "member/myPurchase", "walk/hit", "chat/home"})
     void paginationRendersAcrossAllConsumers(String view) throws Exception {
         String body = render(view, 0, 100);
@@ -59,7 +59,7 @@ class SharedTemplateTest {
                 .containsPattern("<span[^>]*aria-label=\"이전 페이지\"[^>]*aria-disabled=\"true\"[^>]*>‹</span>")
                 .doesNotContain("href=\"\"")
                 .doesNotContain("page=-1", "class=\"pagination");
-        assertThat(body.split("class=\"btn-page", -1).length - 1).isEqualTo(7);
+        assertThat(body.split("class=\"btn-page", -1).length - 1).isEqualTo(view.startsWith("community/") && !view.endsWith("detail") ? 14 : 7);
         if (view.equals("chat/home")) {
             assertThat(body).contains("/walk/course/7/chat?mine=true&amp;page=1");
         }
@@ -72,14 +72,14 @@ class SharedTemplateTest {
     @ParameterizedTest
     @CsvSource({"0,0", "0,1", "5,100", "9,100"})
     void paginationHandlesEmptySingleMiddleAndLastPage(int page, int total) throws Exception {
-        String body = render("notice/list", page, total);
+        String body = render("review/list", page, total);
         if (total <= 1) {
             assertThat(body).doesNotContain("class=\"pager\"");
         } else {
             assertThat(body.split("class=\"btn-page", -1).length - 1).isEqualTo(7);
             assertThat(body).contains(">" + (page + 1) + "</a>");
             if (page == 9) {
-                assertThat(body).doesNotContain("href=\"/notice?page=10\"")
+                assertThat(body).doesNotContain("href=\"/shop/item/10/review?page=10\"")
                         .containsPattern("<span[^>]*aria-label=\"다음 페이지\"[^>]*aria-disabled=\"true\"[^>]*>›</span>");
             }
         }

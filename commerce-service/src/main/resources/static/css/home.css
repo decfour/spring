@@ -1,0 +1,56 @@
+/* Home - 첫 화면과 이동 링크 */
+
+:where([data-view="home"]) .page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--page-gap) 20px;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+:where([data-view="home"]) .main-title {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 0 16px;
+}
+
+:where([data-view="home"]) .home-title-image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+:where([data-view="home"]) .nav-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+:where([data-view="home"]) .link-item {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    color: var(--ink);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+:where([data-view="home"]) .link-item:hover {
+    color: var(--accent);
+    transform: translateX(6px);
+}
+
+:where([data-view="home"]) .link-item-primary {
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+
+:where([data-view="home"]) .link-item-secondary {
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+}

@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
-<body data-view="notice-detail">
+<body class="theme" data-view="notice-detail">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -16,8 +16,7 @@
 
     <div class="page-head">
         <h2 class="page-title m-0">
-            <span>Notice</span>
-            <span class="detail-title" th:text="${notice.title}">제목</span>
+            Talk <span class="subtitle text-break" th:text="${notice.title}">제목</span>
         </h2>
 
         <div class="d-flex gap-2 align-items-center">
@@ -37,9 +36,11 @@
                 </ul>
             </div>
 
-            <a th:href="@{/notice}" class="btn-action">뒤로</a>
+            <a th:href="@{/community}" class="btn-action">뒤로</a>
         </div>
     </div>
+
+    <div class="panel post-card" th:text="${notice.content}">내용</div>
 
     <div class="detail-meta">
         <div class="post-info-row">
@@ -49,10 +50,6 @@
                 <span th:text="${#temporals.format(notice.createdAt, 'yyyy.MM.dd HH:mm')}">2026.08.17 21:28</span>
             </span>
         </div>
-    </div>
-
-    <div class="surface-card post-card" th:text="${notice.content}">
-        내용
     </div>
 
 </div>

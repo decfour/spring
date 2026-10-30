@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>THGTE - My Purchase</title>
 
     <th:block th:replace="~{common/header :: styles}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/my.css}">
 </head>
 
-<body data-view="member-myPurchase">
+<body class="theme" data-view="member-myPurchase">
 
 <div th:replace="~{common/header :: mainHeader}"></div>
 
@@ -25,13 +26,13 @@
 
     <div class="account-section">
 
-        <div th:if="${purchases == null or purchases.isEmpty()}" class="empty">
+        <div th:if="${purchases == null or purchases.isEmpty()}" class="panel text-center">
             주문 내역이 없습니다
         </div>
 
         <div th:if="${purchases != null and !purchases.isEmpty()}" class="account-list">
 
-            <div th:each="purchase : ${purchases}" class="surface-card account-card">
+            <div th:each="purchase : ${purchases}" class="panel account-card">
 
                 <div class="account-info">
 
@@ -71,12 +72,12 @@
                 <div class="account-right">
 
                 <span th:if="${purchase.status.name() == 'ORDER'}"
-                      class="status-badge-purchase">
+                      class="account-state">
                     주문 완료
                 </span>
 
                     <span th:unless="${purchase.status.name() == 'ORDER'}"
-                          class="status-badge-cancel">
+                          class="account-state">
                     주문 취소
                 </span>
 
@@ -86,7 +87,7 @@
                           class="m-0 d-inline-block">
 
                         <button type="submit"
-                                class="btn-cancel"
+                                class="btn-action"
                                 onclick="return confirm('정말 취소하시겠습니까?');">
                             취소
                         </button>

@@ -2,6 +2,8 @@ package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.walk.WalkCourse;
+import com.kdj.commerce.domain.walk.WalkCourseTag;
+import com.kdj.commerce.domain.walk.WalkTag;
 import com.kdj.commerce.service.WalkCourseService;
 import com.kdj.commerce.service.WalkCourseTagService;
 import org.junit.jupiter.api.Test;
@@ -35,11 +37,12 @@ class WalkDetailTemplateTest {
                 "[[127.0,37.5],[127.01,37.5]]", 1000, 900);
         org.springframework.test.util.ReflectionTestUtils.setField(course, "id", 10L);
         when(courses.findById(10L)).thenReturn(course);
-        when(tags.findByCourseId(10L)).thenReturn(List.of());
+        when(tags.findByCourseId(10L)).thenReturn(List.of(WalkCourseTag.create(course, WalkTag.NATURE)));
         var mvc = MockMvcBuilders.standaloneSetup(new WalkController(courses, tags)).setViewResolvers(views).build();
         String html = mvc.perform(get("/walk/course/10")).andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
-        assertThat(html).contains("id=\"addPinBtn\"", "/js/walk-pins.js", "/css/walk-pins.css", "id: 10");
+        assertThat(html).contains("id=\"addPinBtn\"", "/js/walk-pins.js", "/css/pin.css", "id: 10");
+        assertThat(html).containsPattern("<span[^>]*class=\"tag-chip\"[^>]*>\\s*자연\\s*</span>");
         Files.createDirectories(Path.of("build", "ui-pins"));
         Files.writeString(Path.of("build", "ui-pins", "walk-detail.html"), html);
     }
