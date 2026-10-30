@@ -53,6 +53,9 @@ public class WalkCourse {
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<com.kdj.commerce.domain.review.WalkCourseReview> reviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WalkCoursePin> pins = new ArrayList<>();
+
     public static WalkCourse create(
             Member creator,
             String title,

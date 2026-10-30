@@ -1,0 +1,18 @@
+.pin-toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:20px 0 12px; }
+.pin-toolbar strong { font-size:15px; }
+.pin-toolbar p { margin:5px 0 0; color:#6e6e73; font-size:13px; }
+.pin-toolbar [aria-pressed="true"] { background:#1d1d1f; color:white; }
+.pin-toolbar + .map-frame { height:440px; }
+.walk-pin-popup { box-sizing:border-box; width:min(280px, calc(100vw - 64px)); padding:16px; color:#1d1d1f; background:white; font:14px/1.5 sans-serif; white-space:normal; }
+.walk-pin-popup h3 { font-size:16px; margin:0 24px 8px 0; overflow-wrap:anywhere; }
+.walk-pin-popup p { margin:8px 0; white-space:pre-wrap; overflow-wrap:anywhere; max-height:150px; overflow-y:auto; }
+.walk-pin-popup small { color:#6e6e73; display:block; }
+.walk-pin-popup label { display:block; margin-top:8px; font-size:12px; }
+.walk-pin-popup input,.walk-pin-popup textarea { box-sizing:border-box; display:block; width:100%; padding:8px; margin-top:4px; border:1px solid #d2d2d7; border-radius:8px; font:14px sans-serif; }
+.walk-pin-popup textarea { resize:vertical; min-height:75px; max-height:130px; }
+.walk-pin-actions { display:flex; gap:8px; margin-top:12px; }
+.walk-pin-popup button { cursor:pointer; border:1px solid #d2d2d7; border-radius:8px; padding:6px 10px; background:white; color:#1d1d1f; }
+.walk-pin-popup button[type="submit"] { background:#1d1d1f; color:white; }
+.walk-pin-popup button:disabled { opacity:.5; cursor:wait; }
+.walk-pin-popup .walk-pin-error { color:#b42318; font-size:12px; margin:6px 0; }
+@media(max-width:600px) { .pin-toolbar { align-items:flex-start; flex-direction:column; gap:8px; } .pin-toolbar + .map-frame { height:420px; } }

@@ -39,6 +39,7 @@ public class SecurityConfig {
 
                 // 접근 권한 제어
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/walk/course/*/pins").permitAll()
                         .requestMatchers(
                                 "/walk/course/add",
                                 "/walk/course/*/review/add",
