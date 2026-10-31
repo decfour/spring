@@ -13,6 +13,18 @@ import static org.mockito.Mockito.*;
 
 class WalkCourseReviewControllerTest {
     @Test
+    void emptyReviewListStillIncludesCourseInformation() {
+        var course = mock(WalkCourse.class);
+        var pageable = org.springframework.data.domain.PageRequest.of(0, 10);
+        when(service.findByCourseId(10L, pageable)).thenReturn(org.springframework.data.domain.Page.empty(pageable));
+        when(service.findCourse(10L)).thenReturn(course);
+        var model = new org.springframework.ui.ExtendedModelMap();
+
+        assertThat(controller.list(10L, pageable, model)).isEqualTo("walk/review/list");
+        assertThat(model.get("course")).isSameAs(course);
+    }
+
+    @Test
     void invalidEditKeepsEditModeAndPathReviewId() throws Exception {
         reviewCreatedBy(member(1L, MemberType.USER));
         var form = new com.kdj.commerce.web.dto.review.WalkCourseReviewForm();

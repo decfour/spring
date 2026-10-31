@@ -24,16 +24,7 @@
 
     <p th:if="${error}" th:text="${error}" class="alert alert-danger" role="alert"></p>
 
-    <section class="panel course-summary" aria-label="산책 코스">
-
-        <h2 th:text="${course.title}">코스 이름</h2>
-
-        <div class="distance">
-            <span th:text="${course.distance + ' m'}"></span>
-            <p class="meta" th:text="${'약 ' + T(java.lang.Math).round(course.duration / 60.0) + '분'}"></p>
-        </div>
-
-    </section>
+    <section th:replace="~{walk/components :: summary(${course})}"></section>
 
     <nav class="tabs" aria-label="채팅방 구분">
 

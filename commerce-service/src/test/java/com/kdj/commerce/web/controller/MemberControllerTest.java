@@ -18,9 +18,7 @@ class MemberControllerTest {
         MemberService members = mock(MemberService.class);
         doThrow(new DuplicateMemberException(field, "문구를 변경해도 필드에 표시됩니다."))
                 .when(members).signUp(any(Member.class));
-        MemberController controller = new MemberController(mock(ItemReviewService.class), members,
-                mock(ItemService.class), mock(PurchaseService.class), mock(WalkCourseService.class),
-                mock(JwtTokenProvider.class));
+        MemberController controller = new MemberController(members, mock(JwtTokenProvider.class));
         SignUpForm form = new SignUpForm();
         BeanPropertyBindingResult binding = new BeanPropertyBindingResult(form, "member");
 

@@ -1,9 +1,8 @@
 /* Chat layout only; shared styles own panels, buttons, fields and pagination. */
-.chat-page :is(.course-summary h2, .room-card h3, .chat-head h2, .dialog-heading h2) { margin: 0; font-size: 1.05rem; }
+.chat-page :is(.room-card h3, .chat-head h2, .dialog-heading h2) { margin: 0; font-size: 1.05rem; }
 .chat-page .meta, .chat-page .intro { margin: 4px 0 0; color: var(--muted); font-size: .85rem; }
-.chat-page :is(.course-summary, .room-card, .chat-head, .dialog-heading) { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.course-summary h2, .room-body, .chat-head > div { min-width: 0; overflow-wrap: anywhere; }
-.distance { flex-shrink: 0; text-align: right; font-size: .85rem; }
+.chat-page :is(.room-card, .chat-head, .dialog-heading) { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.room-body, .chat-head > div { min-width: 0; overflow-wrap: anywhere; }
 .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
 .room-card { position: relative; }
 .room-card h3 { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }

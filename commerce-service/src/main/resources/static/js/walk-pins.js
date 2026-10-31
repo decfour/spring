@@ -172,5 +172,11 @@
     request(endpoint).then(pins => {
         pins.forEach(addMarker);
         pinCount.textContent = markers.size;
+        const selected = new URLSearchParams(location.search).get('pin');
+        const pin = pins.find(item => String(item.id) === selected);
+        if (pin) {
+            map.setCenter(new kakao.maps.LatLng(pin.latitude, pin.longitude));
+            openPin(pin, markers.get(pin.id));
+        }
     }).catch(e => { status.textContent = e.message; });
 })();

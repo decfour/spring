@@ -18,6 +18,8 @@
         </div>
     </div>
 
+    <section th:replace="~{walk/components :: summary(${course})}"></section>
+
     <div th:if="${reviews.isEmpty()}" class="panel text-center">
         후기가 없습니다
     </div>

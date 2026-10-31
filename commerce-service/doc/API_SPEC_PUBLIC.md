@@ -5,7 +5,7 @@
 
 본 문서는 프로젝트의 주요 API와 기능을 정리한 공개용 명세서입니다.
 
-코드 대조 기준: 2026-10-31.
+코드 대조 기준: 2026-11-01.
 
 ## 1. 공통 사항
 
@@ -32,14 +32,22 @@
 | POST | `/member/sign-out` | 로그아웃 | 필요 |
 | GET | `/member/my-page` | 마이페이지 | 필요 |
 | GET | `/member/my-course` | 내 산책 코스 조회 | 필요 |
-| GET | `/member/my-item` | 내 상품 조회 | 필요 |
-| GET | `/member/my-review` | 내 리뷰 조회 | 필요 |
+| GET | `/member/my-pin` | 내가 작성한 쪽지 조회 | 필요 |
+| GET | `/member/my-chat` | 내가 참여한 채팅방 조회 | 필요 |
+| GET | `/member/my-course-review` | 내가 작성한 코스 후기 조회 | 필요 |
+| GET | `/member/my-talk` | 내가 작성한 글·댓글 조회 | 필요 |
+| GET | `/member/my-shop` | 내 상점 활동 (기본: 등록한 상품) | 필요 |
+| GET | `/member/my-review` | 내 상품 후기 조회 | 필요 |
 | GET | `/member/my-order` | 내 주문 내역 조회 | 필요 |
 
 - 회원가입 폼 필드: `name`, `email`, `signInId`, `signInPassword`. 화면에서는 이메일을 두 칸으로 입력하지만, 서버에는 합쳐진 `email`을 전달합니다.
 - 로그인 폼 필드: `signInId`, `signInPassword`, `redirectURL`(기본 `/`). 성공하면 `Authorization` 쿠키를 발급하고 복귀 경로로 리다이렉트합니다. 검증·인증 실패 시 입력 오류가 포함된 로그인 화면을 반환합니다.
 - 로그아웃은 인증 쿠키를 만료시키고 `302 /`로 이동합니다. 별도 로그아웃 화면은 없습니다.
-- 내 코스·상품·리뷰·주문은 기본 페이지 크기 7, `id` 내림차순입니다.
+- 마이페이지는 Course·Talk·Shop 진입 메뉴를 제공합니다. 각 영역의 목록은 `myCourse.html`, `myTalk.html`, `myShop.html`에서 담당하며 공통 활동 버튼으로 전환합니다.
+- 내 활동 목록은 로그인한 회원을 기준으로 조회하며 기본 페이지 크기 7, `id` 내림차순입니다.
+- `/member/my-talk`의 `tab`은 `post`(기본, 작성한 글), `comment`(작성한 댓글)입니다. 그 외 값은 글 목록으로 처리합니다. 페이지 이동에도 선택한 탭이 유지됩니다.
+- 내 쪽지를 선택하면 `/walk/course/{courseId}?pin={pinId}`로 이동해 지도에서 해당 쪽지를 엽니다. 내 채팅은 참여 중인 방으로, 내 글·댓글은 원래 게시글로 이동합니다.
+- Shop의 장바구니 버튼은 기존 `/cart` 화면을 사용합니다.
 
 ---
 

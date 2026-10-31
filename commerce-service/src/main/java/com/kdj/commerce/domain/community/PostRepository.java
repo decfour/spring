@@ -10,6 +10,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
+
+    Page<Post> findByCreatorId(Long memberId, Pageable pageable);
+
     @Query(
             value = """
                 select p

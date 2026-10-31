@@ -7,6 +7,13 @@
     </th:block>
 </head>
 <body>
+<section th:fragment="summary(course)" class="panel course-summary" aria-label="산책 코스">
+    <h2 th:text="${course.title}">코스 이름</h2>
+    <div class="distance">
+        <span th:text="${course.distance + ' m'}"></span>
+        <p class="meta" th:text="${'약 ' + T(java.lang.Math).round(course.duration / 60.0) + '분'}"></p>
+    </div>
+</section>
 <section th:fragment="map(message, showLocation)" class="map-frame" aria-label="산책 코스 지도">
     <div class="map-status" id="status" role="status" aria-live="polite">
         <span th:if="${message != null}" th:text="${message}">지도 안내</span>

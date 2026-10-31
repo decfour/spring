@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class MyTemplateTest {
     @ParameterizedTest
-    @ValueSource(strings={"page","course","item","review","purchase","empty-course","empty-item","empty-review","empty-purchase"})
+    @ValueSource(strings={"page","course","item","review","purchase","empty-course","empty-item","empty-review","empty-purchase", "pin", "chat", "course-review", "post", "comment", "empty-pin", "empty-chat", "empty-course-review", "empty-post", "empty-comment"})
     void rendersSharedFramesAndPreservesActivityDestinations(String view) throws Exception {
         var resolver=new ClassLoaderTemplateResolver();resolver.setPrefix("templates/");resolver.setSuffix(".html");resolver.setCharacterEncoding("UTF-8");
         var engine=new SpringTemplateEngine();engine.setTemplateResolver(resolver);
@@ -33,16 +33,21 @@ class MyTemplateTest {
         String html=mvc.perform(get("/my-preview/"+view)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
         assertThat(html).contains("class=\"theme\"", "/css/my.css", "panel").doesNotContain("surface-card", "btn-cancel");
         if(view.equals("course"))assertThat(html).contains("/walk/course/10");
-        if(view.equals("item"))assertThat(html).contains("/shop/item/10", "품절", "판매 중지");
+        if(view.equals("item"))assertThat(html).contains("/shop/item/10", "품절", "판매 중지", "/member/my-shop?page=2").doesNotContain("/member/my-item");
         if(view.equals("review"))assertThat(html).contains("/shop/item/10/review/1");
         if(view.equals("purchase"))assertThat(html).contains("action=\"/order/1/cancel\"", "주문 취소").doesNotContain("action=\"/order/2/cancel\"");
+        if(view.equals("page")) assertThat(html).contains("/member/my-course", "/member/my-talk", "/member/my-shop").doesNotContain("/member/my-pin");
+        if(List.of("pin", "chat", "course-review", "post", "comment").contains(view)) {
+            assertThat(html).contains("aria-current=\"page\"", "page=2");
+            if(view.equals("comment")) assertThat(html).contains("tab=comment", "tab=comment&amp;page=");
+        }
         Files.createDirectories(Path.of("build/ui-my"));Files.writeString(Path.of("build/ui-my",view+".html"),html);
     }
     @Controller
     static class PreviewController {
         @GetMapping("/my-preview/{view}")
         ModelAndView preview(@PathVariable String view) {
-            String kind=view.replace("empty-","");String template=switch(kind){case "page"->"myPage";case "course"->"myCourse";case "item"->"myItem";case "review"->"myReview";default->"myPurchase";};
+            String kind=view.replace("empty-","");String template=switch(kind){case "page"->"myPage";case "course"->"myCourse";case "item", "review", "purchase"->"myShop";default->"activity";};
             var item=Item.create("여행길에 읽는 길고 긴 이름의 작은 안내서",6000,0,"설명",true,false,ItemType.BOOK,DeliveryType.STANDARD,1L,null,null);item.setId(10L);
             var closed=Item.create("판매를 마친 작은 여행 안내서",6000,2,"설명",false,false,ItemType.BOOK,DeliveryType.STANDARD,1L,null,null);closed.setId(11L);
             var course=Map.of("id",10L,"title","숲과 강을 따라 천천히 걷는 길고 긴 이름의 산책 코스","distance",1200,"createdAt",LocalDateTime.of(2026,10,31,10,0));
@@ -50,8 +55,17 @@ class MyTemplateTest {
             var purchaseItem=mock(PurchaseItem.class);when(purchaseItem.getItem()).thenReturn(item);
             var order=mock(Purchase.class);when(order.getId()).thenReturn(1L);when(order.getStatus()).thenReturn(PurchaseStatus.ORDER);when(order.getPurchaseItems()).thenReturn(List.of(purchaseItem,purchaseItem));when(order.getTotalPrice()).thenReturn(12000);when(order.getCreatedAt()).thenReturn(LocalDateTime.of(2026,10,31,10,0));
             var cancelled=mock(Purchase.class);when(cancelled.getId()).thenReturn(2L);when(cancelled.getStatus()).thenReturn(PurchaseStatus.CANCEL);when(cancelled.getPurchaseItems()).thenReturn(List.of(purchaseItem));when(cancelled.getTotalPrice()).thenReturn(6000);when(cancelled.getCreatedAt()).thenReturn(LocalDateTime.of(2026,10,30,10,0));
-            var result=new ModelAndView("member/"+template).addObject("member",Map.of("name","여행자","memberType",MemberType.USER,"signInId","traveler","email","traveler.with.a.long.email.address@example.com"));
+            var result=new ModelAndView("member/"+template).addObject("tab",kind.equals("course")?"my-course":kind.equals("purchase")?"order":kind).addObject("member",Map.of("name","여행자","memberType",MemberType.USER,"signInId","traveler","email","traveler.with.a.long.email.address@example.com"));
             boolean empty=view.startsWith("empty-");
+            if(template.equals("activity")) {
+                boolean talk=List.of("post", "comment").contains(kind);
+                String tab=talk?kind:"my-"+kind;
+                String url=talk?"/member/my-talk?tab="+kind:"/member/"+tab;
+                var entry=new com.kdj.commerce.service.MyService.Entry("내가 작성한 길고 긴 제목의 활동 기록", "숲과 강을 따라 걷는 산책 코스", "/walk/course/10?pin=1", LocalDateTime.of(2026,11,1,12,0));
+                result.setViewName(talk?"member/myTalk":"member/myCourse");
+                return result.addObject("section",talk?"Talk":"Course").addObject("tab",tab).addObject("listUrl",url)
+                        .addObject("entries",empty?Page.empty():new PageImpl<>(List.of(entry),PageRequest.of(1,7),35));
+            }
             return result.addObject("myCourses",empty?Page.empty():new PageImpl<>(List.of(course,course,course),PageRequest.of(1,7),35))
                     .addObject("myItems",empty?Page.empty():new PageImpl<>(List.of(item,closed),PageRequest.of(1,7),35))
                     .addObject("myReviews",empty?Page.empty():new PageImpl<>(List.of(review,review),PageRequest.of(1,7),35))

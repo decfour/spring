@@ -37,6 +37,7 @@ public class WalkCourseReviewController {
 
         model.addAttribute("courseId", courseId);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("course", walkCourseReviewService.findCourse(courseId));
 
         return "walk/review/list";
     }

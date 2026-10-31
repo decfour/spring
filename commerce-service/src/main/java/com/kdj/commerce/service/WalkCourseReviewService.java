@@ -3,6 +3,7 @@ import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.review.WalkCourseReview;
 import com.kdj.commerce.domain.review.WalkCourseReviewRepository;
 import com.kdj.commerce.domain.walk.WalkCourseRepository;
+import com.kdj.commerce.domain.walk.WalkCourse;
 import com.kdj.commerce.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,11 @@ public class WalkCourseReviewService {
         if (!courseRepository.existsById(courseId)) {
             throw new ResourceNotFoundException("산책 코스를 찾을 수 없습니다.");
         }
+    }
+
+    public WalkCourse findCourse(Long courseId) {
+        return courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("산책 코스를 찾을 수 없습니다."));
     }
 
     public Page<WalkCourseReview> findByCourseId(Long courseId, Pageable pageable) {

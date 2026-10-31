@@ -52,7 +52,7 @@ class SharedTemplateTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"community/list", "community/hit", "community/detail", "review/list",
-            "shop/list", "member/myItem", "member/myReview", "member/myCourse", "member/myPurchase", "walk/hit", "chat/home"})
+            "shop/list", "member/myShop", "member/myCourse", "member/myTalk", "walk/hit", "chat/home"})
     void paginationRendersAcrossAllConsumers(String view) throws Exception {
         String body = render(view, 0, 100);
         assertThat(body).contains("aria-label=\"페이지 탐색\"", "aria-current=\"page\"")
@@ -119,10 +119,12 @@ class SharedTemplateTest {
         @GetMapping("/shared-preview/{area}/{name}")
         ModelAndView preview(@PathVariable String area, @PathVariable String name,
                              @RequestParam int page, @RequestParam int total) {
-            var result = new ModelAndView(area + "/" + name);
+            var result = new ModelAndView(area + "/" + name)
+                    .addObject("tab", name.equals("myCourse") ? "my-course" : name.equals("myShop") ? "item" : "post")
+                    .addObject("listUrl", "/member/my-talk?tab=post");
             var data = new PageImpl<>(List.of(), PageRequest.of(page, 10), total);
             for (String key : List.of("posts", "comments", "notices", "reviews", "items", "myItems",
-                    "myReviews", "myCourses", "purchases", "courses", "rooms")) {
+                    "myReviews", "myCourses", "purchases", "courses", "rooms", "entries")) {
                 result.addObject(key, data);
             }
             Item item = new Item();

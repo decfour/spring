@@ -24,7 +24,9 @@
         </div>
     </div>
 
-    <div class="account-section">
+    <nav th:replace="~{member/components :: tabs('Course', ${tab})}"></nav>
+
+    <div class="account-section" th:if="${tab == 'my-course'}">
 
         <!-- 등록한 코스가 없는 경우 -->
         <div th:if="${myCourses == null or myCourses.isEmpty()}"
@@ -74,6 +76,10 @@
         <div th:replace="~{common/pagination :: pager(${myCourses}, @{/member/my-course})}"></div>
 
     </div>
+
+    <th:block th:if="${tab != 'my-course'}">
+        <th:block th:replace="~{member/components :: list(${entries}, ${listUrl})}"></th:block>
+    </th:block>
 
 </div>
 

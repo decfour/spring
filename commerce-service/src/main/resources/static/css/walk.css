@@ -1,5 +1,9 @@
 /* Walk theme: shared by courses, reviews and course chat. */
 .walk-page { --map-height: clamp(320px, 40svh, 380px); }
+.course-summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.course-summary h2 { min-width: 0; margin: 0; overflow-wrap: anywhere; font-size: 1.05rem; }
+.course-summary .distance { flex-shrink: 0; text-align: right; font-size: .85rem; }
+.course-summary .meta { margin: 4px 0 0; color: var(--muted); font-size: .85rem; }
 
 /* One frame and height rule for every course map. */
 .map-frame {
