@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.util.List;
 
 public interface WalkCourseRepository extends JpaRepository<WalkCourse, Long> {
     @Query(value = """
@@ -37,7 +38,7 @@ public interface WalkCourseRepository extends JpaRepository<WalkCourse, Long> {
 
     Page<WalkCourse> findByCreatorIdOrderByCreatedAtDesc(Long id, Pageable pageable);
 
-    Page<WalkCourse> findAllByOrderByLikeCountDescCreatedAtDesc(Pageable pageable);
+    List<WalkCourse> findTop30ByOrderByLikeCountDescCreatedAtDescIdDesc();
 }
 
 

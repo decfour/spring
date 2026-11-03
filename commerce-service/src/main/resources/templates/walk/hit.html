@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div th:replace="~{walk/components :: map('추천수가 높은 산책 코스', false)}"></div>
+    <div th:replace="~{walk/components :: map('추천수 기준 상위 30개 산책 코스', false)}"></div>
 
     <div class="course-section">
         <div th:if="${courses == null or courses.isEmpty()}" class="course-empty">

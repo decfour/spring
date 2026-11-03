@@ -11,6 +11,7 @@ import com.kdj.commerce.web.dto.walk.WalkCourseResponse;
 import com.kdj.commerce.web.dto.walk.WalkRouteResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +58,14 @@ public class WalkCourseService {
     }
 
     public Page<WalkCourse> findBest(Pageable pageable) {
-        return walkCourseRepository.findAllByOrderByLikeCountDescCreatedAtDesc(pageable);
+        var courses = walkCourseRepository.findTop30ByOrderByLikeCountDescCreatedAtDescIdDesc();
+        if (pageable.isUnpaged()) {
+            return new PageImpl<>(courses);
+        }
+        int from = (int) Math.min(pageable.getOffset(), courses.size());
+        int to = from + Math.min(pageable.getPageSize(), courses.size() - from);
+
+        return new PageImpl<>(courses.subList(from, to), pageable, courses.size());
     }
 
     @Transactional
