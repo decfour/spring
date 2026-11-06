@@ -1,9 +1,9 @@
 package com.kdj.commerce.web.controller;
 
 import com.kdj.commerce.domain.item.Item;
-import com.kdj.commerce.domain.review.ItemReview;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberType;
+import com.kdj.commerce.domain.review.ItemReview;
 import com.kdj.commerce.service.ItemReviewService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ class ItemReviewControllerTest {
 
     private void reviewCreatedBy(Member creator) {
         Item item = mock(Item.class);
-        
+
         ItemReview review = ItemReview.create("title", "content", item, creator);
         when(service.findById(20L)).thenReturn(review);
     }

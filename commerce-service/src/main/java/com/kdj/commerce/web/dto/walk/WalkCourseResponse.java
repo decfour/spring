@@ -21,7 +21,8 @@ public class WalkCourseResponse {
 
     private Integer distance;
     private Integer duration;
-    private Integer likeCount;
+    private double averageRating;
+    private long ratingCount;
 
     public static WalkCourseResponse from(WalkCourse course) {
         return new WalkCourseResponse(
@@ -35,7 +36,8 @@ public class WalkCourseResponse {
                 course.getRouteData(),
                 course.getDistance(),
                 course.getDuration(),
-                course.getLikeCount()
+                course.getAverageRating(),
+                course.getRatingCount()
         );
     }
 }

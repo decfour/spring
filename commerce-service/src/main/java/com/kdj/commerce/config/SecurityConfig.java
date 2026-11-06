@@ -47,7 +47,7 @@ public class SecurityConfig {
                                 "/walk/course/*/review/*/delete",
                                 "/walk/course/*/delete",
                                 "/walk/course/route",
-                                "/walk/course/*/like",
+                                "/walk/course/*/rating",
                                 "/walk/course/*/tag",
 
                                 "/shop/add",

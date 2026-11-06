@@ -9,7 +9,7 @@
 | `AuthenticationRequiredException` | 401 | 로그인 정보 없음 |
 | `PermissionDeniedException` | 403 | 로그인했으나 해당 작업의 권한 없음 |
 | `ResourceNotFoundException` | 404 | 조회 대상 없음 |
-| `BusinessConflictException` | 409 | 중복 추천, 정원 초과, 종료된 채팅방 등 현재 상태와 충돌 |
+| `BusinessConflictException` | 409 | 게시글 중복 추천, 본인 코스 평가, 정원 초과, 종료된 채팅방 등 현재 상태와 충돌 |
 | `DuplicateMemberException` | 409 | 이메일·아이디 중복. `Field`로 오류 입력란 구분 |
 | `NotEnoughStockException` | 409 | 재고 부족 |
 
@@ -18,7 +18,7 @@
 - 기본 처리는 `GlobalExceptionHandler`에 둔다. HTTP 상태를 설정하고 일반 페이지는 오류 뷰, `@ResponseBody`·`@RestController` 요청이나 JSON을 요청한 클라이언트에는 `{status, message}`를 반환한다.
 - 회원가입은 중복 필드에 `BindingResult` 오류를 표시한다. 오류 문구로 필드를 추측하지 않는다.
 - 채팅 화면에서 업무 실패 후 목록으로 돌아가야 할 때는 `BusinessException`만 잡아 플래시 메시지를 표시한다. 이 흐름은 3xx 리다이렉트다.
-- 코스 추천의 중복 안내처럼 별도 응답이 필요한 기존 흐름은 컨트롤러에서 구체적인 업무 예외만 잡는다.
+- 별점 평가의 입력값·본인 평가 안내처럼 별도 JSON 응답이 필요한 흐름은 컨트롤러에서 구체적인 업무 예외만 잡는다.
 - 입력 DTO의 `@Valid`와 폼 오류 표시는 유지한다.
 
 ## 서버 오류

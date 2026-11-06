@@ -30,7 +30,7 @@ class PostCommentControllerTest {
     }
 
     @Test
-    @DisplayName("회원 객체가 달라도 회원 번호가 같으면 작성자가 댓글를 삭제할 수 있다")
+    @DisplayName("회원 객체가 달라도 회원 번호가 같으면 작성자가 댓글을 삭제할 수 있다")
     void creatorCanDeleteUsingAnotherMemberInstanceWithSameId() {
         commentCreatedBy(member(1L, MemberType.USER));
         assertThat(controller.delete(member(1L, MemberType.USER), 20L))
@@ -39,7 +39,7 @@ class PostCommentControllerTest {
     }
 
     @Test
-    @DisplayName("작성자가 아닌 일반 회원은 댓글를 삭제할 수 없다")
+    @DisplayName("작성자가 아닌 일반 회원은 댓글을 삭제할 수 없다")
     void otherMemberCannotDelete() {
         commentCreatedBy(member(1L, MemberType.USER));
         assertThat(controller.delete(member(2L, MemberType.USER), 20L))
@@ -48,7 +48,7 @@ class PostCommentControllerTest {
     }
 
     @Test
-    @DisplayName("관리자는 다른 회원이 작성한 댓글를 삭제할 수 있다")
+    @DisplayName("관리자는 다른 회원이 작성한 댓글을 삭제할 수 있다")
     void administratorCanDelete() {
         commentCreatedBy(member(1L, MemberType.USER));
         assertThat(controller.delete(member(2L, MemberType.ADMIN), 20L))

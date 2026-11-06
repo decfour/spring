@@ -1,44 +1,39 @@
 package com.kdj.commerce.web.controller;
 
-import com.kdj.commerce.exception.BusinessConflictException;
 import com.kdj.commerce.domain.member.Member;
-import com.kdj.commerce.service.WalkCourseService;
-import com.kdj.commerce.service.WalkCourseTagService;
+import com.kdj.commerce.service.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 class WalkControllerTest {
-    private final WalkCourseService service = mock(WalkCourseService.class);
-    private final WalkController controller = new WalkController(service, mock(WalkCourseTagService.class));
+    private final WalkCourseRatingService ratings = mock(WalkCourseRatingService.class);
+    private final WalkController controller = new WalkController(mock(WalkCourseService.class), mock(WalkCourseTagService.class), ratings);
     private final Member member = mock(Member.class);
 
     @Test
-    @DisplayName("코스 추천에 성공하면 갱신된 추천 수를 반환한다")
-    void likeReturnsUpdatedCount() {
-        when(service.increaseLikeCount(10L, member)).thenReturn(3);
-        var response = controller.like(member, 10L);
-        assertThat(response.getStatusCode().value()).isEqualTo(200);
-        assertThat(response.getBody()).isEqualTo(3);
+    @DisplayName("별점 저장과 취소가 성공하면 204로 응답한다")
+    void savesScoreAndAllowsCancellation() {
+        assertThat(controller.rate(member, 10L, new WalkController.RatingRequest(4)).getStatusCode().value()).isEqualTo(204);
+        verify(ratings).rate(10L, member, 4);
+        assertThat(controller.cancelRating(member, 10L).getStatusCode().value()).isEqualTo(204);
+        verify(ratings).cancel(10L, member);
     }
 
     @Test
-    @DisplayName("이미 추천한 코스는 409 상태와 중복 추천 안내를 반환한다")
-    void duplicateLikeReturnsConflict() {
-        when(service.increaseLikeCount(10L, member))
-                .thenThrow(new BusinessConflictException("이미 추천한 코스입니다"));
-        var response = controller.like(member, 10L);
-        assertThat(response.getStatusCode().value()).isEqualTo(409);
-        assertThat(response.getBody()).isEqualTo(Map.of("message", "이미 추천했습니다"));
+    @DisplayName("비로그인 사용자의 별점 저장과 취소를 거부한다")
+    void anonymousCannotRateOrCancel() {
+        assertThat(controller.rate(null, 10L, new WalkController.RatingRequest(4)).getStatusCode().value()).isEqualTo(401);
+        assertThat(controller.cancelRating(null, 10L).getStatusCode().value()).isEqualTo(401);
+        verifyNoInteractions(ratings);
     }
 
     @Test
-    @DisplayName("비로그인 회원의 추천 요청은 401 상태를 반환하고 추천을 저장하지 않는다")
-    void anonymousLikeReturnsUnauthorized() {
-        var response = controller.like(null, 10L);
-        assertThat(response.getStatusCode().value()).isEqualTo(401);
-        verifyNoInteractions(service);
+    @DisplayName("잘못된 별점 요청은 400으로 응답한다")
+    void invalidScoreReturnsBadRequest() {
+        doThrow(new IllegalArgumentException("별점은 1~5점으로 선택해주세요.")).when(ratings).rate(10L, member, 6);
+        assertThat(controller.rate(member, 10L, new WalkController.RatingRequest(6)).getStatusCode().value()).isEqualTo(400);
     }
 }

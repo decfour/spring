@@ -28,6 +28,7 @@ import java.util.Map;
 public class WalkController {
     private final WalkCourseService walkCourseService;
     private final WalkCourseTagService walkCourseTagService;
+    private final com.kdj.commerce.service.WalkCourseRatingService ratingService;
 
     @GetMapping
     public String map() {
@@ -70,6 +71,7 @@ public class WalkController {
 
         model.addAttribute("loginMember", loginMember);
         model.addAttribute("course", walkCourse);
+        model.addAttribute("myRating", ratingService.findScore(id, loginMember == null ? null : loginMember.getId()));
         model.addAttribute("tags", tags);
 
         return "walk/detail";
@@ -133,20 +135,34 @@ public class WalkController {
         );
     }
 
-    @PostMapping("/course/{id}/like")
+    public record RatingRequest(Integer score) {}
+
+    @PostMapping("/course/{id}/rating")
     @ResponseBody
-    public ResponseEntity<?> like(
-            @Login Member loginMember,
-            @PathVariable Long id
-    ) {
-        if (loginMember == null) {
+    public ResponseEntity<?> rate(@Login Member loginMember, @PathVariable Long id,
+                                  @RequestBody RatingRequest request) {
+        if (loginMember == null)
             return ResponseEntity.status(401).build();
-        }
+
         try {
-            return ResponseEntity.ok(walkCourseService.increaseLikeCount(id, loginMember));
+            ratingService.rate(id, loginMember, request.score());
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         } catch (BusinessConflictException e) {
-            return ResponseEntity.status(409).body(Map.of("message", "이미 추천했습니다"));
+            return ResponseEntity.status(409).body(Map.of("message", e.getMessage()));
         }
+    }
+
+    @DeleteMapping("/course/{id}/rating")
+    @ResponseBody
+    public ResponseEntity<?> cancelRating(@Login Member loginMember, @PathVariable Long id) {
+        if (loginMember == null)
+            return ResponseEntity.status(401).build();
+
+        ratingService.cancel(id, loginMember);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/course/{id}/tag")
@@ -160,9 +176,12 @@ public class WalkController {
             String tagCode = request.get("tag");
             tag = WalkTag.valueOf(tagCode == null ? "" : tagCode);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("status", 400, "message", "올바른 태그를 선택해주세요."));
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of("status", 400, "message", "올바른 태그를 선택해주세요."));
         }
         walkCourseTagService.create(id, tag);
+
         return ResponseEntity.ok().build();
     }
 

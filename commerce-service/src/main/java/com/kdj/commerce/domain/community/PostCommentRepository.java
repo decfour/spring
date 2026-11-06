@@ -26,7 +26,5 @@ public interface PostCommentRepository extends JpaRepository<PostComment, Long> 
                     """)
     Page<PostComment> findByPostIdWithCreator(@Param("postId") Long postId, Pageable pageable);
 
-    Page<PostComment> findByPostIdOrderByCreatedAtAsc(Long id, Pageable pageable);
-
     void deleteByPostId (Long id);
 }

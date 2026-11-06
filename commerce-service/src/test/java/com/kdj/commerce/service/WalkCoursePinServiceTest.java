@@ -5,11 +5,13 @@ import com.kdj.commerce.domain.member.*;
 import com.kdj.commerce.domain.walk.*;
 import com.kdj.commerce.exception.*;
 import com.kdj.commerce.web.dto.walk.WalkCoursePinRequest;
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -20,6 +22,7 @@ class WalkCoursePinServiceTest {
     private final String route = "[[127.0,37.5],[127.01,37.5]]";
 
     @Test
+    @DisplayName("쪽지 위치는 경로 선분으로부터 30미터 이내여야 한다")
     void checksSegmentsBetweenDistantNodesAndThirtyMeterBoundary() {
         double degreePerMeter = 180 / (Math.PI * 6371008.8);
         assertThat(service.isNearRoute(route, 37.5 + 29.9 * degreePerMeter, 127.005)).isTrue();
@@ -34,11 +37,13 @@ class WalkCoursePinServiceTest {
     @NullAndEmptySource
     @ValueSource(strings = {"invalid", "null", "[]", "[[127,37.5]]", "[[127,37.5],[null,37.5]]",
             "[[127,37.5],[181,37.5]]", "{}"})
+    @DisplayName("잘못된 경로에는 쪽지를 등록할 수 없다")
     void invalidRoutesCannotAcceptPins(String data) {
         assertThat(service.isNearRoute(data, 37.5, 127)).isFalse();
     }
 
     @Test
+    @DisplayName("로그인 회원만 코스 근처에 쪽지를 등록할 수 있다")
     void savesPinOnCourseAndRejectsFarAwayOrAnonymousSubmissions() {
         var member = member(1L, MemberType.USER);
         var course = WalkCourse.create(member, "course", "", 37.5, 127.0, 37.5, 127.01, route, 1000, 600);
@@ -56,6 +61,7 @@ class WalkCoursePinServiceTest {
     }
 
     @Test
+    @DisplayName("쪽지는 해당 코스의 작성자 또는 관리자만 삭제한다")
     void deletionRequiresMatchingCourseAndOwnerOrAdmin() {
         var pin = WalkCoursePin.create(null, member(1L, MemberType.USER), "Title", "Content", 37.5, 127);
         when(pins.findByIdAndCourseId(20L, 10L)).thenReturn(Optional.of(pin));

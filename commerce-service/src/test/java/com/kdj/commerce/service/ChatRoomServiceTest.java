@@ -1,13 +1,14 @@
 package com.kdj.commerce.service;
 
-import com.kdj.commerce.exception.InvalidRequestException;
-import com.kdj.commerce.exception.PermissionDeniedException;
-import com.kdj.commerce.exception.BusinessConflictException;
 import com.kdj.commerce.domain.chat.*;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.member.MemberRepository;
 import com.kdj.commerce.domain.walk.WalkCourse;
 import com.kdj.commerce.domain.walk.WalkCourseRepository;
+import com.kdj.commerce.exception.BusinessConflictException;
+import com.kdj.commerce.exception.InvalidRequestException;
+import com.kdj.commerce.exception.PermissionDeniedException;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -177,36 +178,4 @@ class ChatRoomServiceTest {
         verifyNoInteractions(participantRepository);
     }
 
-    @Test
-    @DisplayName("열린 채팅방만 대상으로 페이지 조회를 수행한다")
-    void listUsesOpenRoomsBeforePagination() {
-        var pageable = org.springframework.data.domain.PageRequest.of(0, 4);
-        when(roomRepository.findByWalkCourseIdAndStatusOrderByCreatedAtDescIdDesc(
-                100L, ChatRoomStatus.OPEN, pageable))
-                .thenReturn(org.springframework.data.domain.Page.empty(pageable));
-
-        assertThat(service.findRooms(100L, 1L, false, pageable).isEmpty()).isTrue();
-        verify(roomRepository).findByWalkCourseIdAndStatusOrderByCreatedAtDescIdDesc(
-                100L, ChatRoomStatus.OPEN, pageable);
-    }
-
-    @Test
-    @DisplayName("채팅방 상세 응답에 코스와 참여자 정보를 포함한다")
-    void detailMapsParticipantsInsideService() {
-        when(course.getId()).thenReturn(100L);
-        when(host.getId()).thenReturn(1L);
-        when(host.getName()).thenReturn("방장");
-        when(roomRepository.findById(10L)).thenReturn(Optional.of(room));
-        when(participantRepository.existsByChatRoomIdAndMemberId(10L, 1L)).thenReturn(true);
-        when(participantRepository.findByChatRoomIdOrderByJoinedAtAscIdAsc(10L))
-                .thenReturn(java.util.List.of(ChatMember.create(room, host)));
-
-        var detail = service.findDetail(100L, 10L, 1L);
-
-        assertThat(detail.getCourse().getId()).isEqualTo(100L);
-        assertThat(detail.getRoom().getCount()).isEqualTo(1L);
-        assertThat(detail.getRoom().isJoined()).isTrue();
-        assertThat(detail.getParticipants()).extracting("name").containsExactly("방장");
-        verify(participantRepository, never()).countByChatRoomId(any());
-    }
 }

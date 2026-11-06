@@ -44,6 +44,10 @@
         </div>
     </div>
 
+    <div class="author-meta mb-3" th:if="${authorRating != null}">
+        <span th:text="${#strings.repeat('★', authorRating) + #strings.repeat('☆', 5 - authorRating)}">★★★★☆</span>
+    </div>
+
     <div class="panel post-card" th:text="${review?.content}" aria-label="리뷰 내용">
         내용
     </div>

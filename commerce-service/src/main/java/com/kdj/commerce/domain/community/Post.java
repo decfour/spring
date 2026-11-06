@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -32,14 +31,6 @@ public class Post {
     private int likeCount;
 
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    public void increaseViewCount() {
-        this.viewCount++;
-    }
-
-    public void increaseLikeCount() {
-        this.likeCount++;
-    }
 
     public static Post create(String title, String content, Member member) {
         Post post = new Post();

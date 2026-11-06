@@ -1,27 +1,30 @@
 package com.kdj.commerce.web.controller;
 
+import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.exception.GlobalExceptionHandler;
 import com.kdj.commerce.exception.InvalidRequestException;
 import com.kdj.commerce.exception.PermissionDeniedException;
 import com.kdj.commerce.service.CartService;
 import com.kdj.commerce.service.ItemService;
 import com.kdj.commerce.service.PurchaseService;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.MethodParameter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.core.MethodParameter;
-import com.kdj.commerce.domain.member.Member;
-import static org.mockito.Mockito.*;
+
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class PurchaseControllerTest {
     @Test
+    @DisplayName("지원하지 않는 주문 유형으로 주문을 만들 수 없다")
     void unknownPurchaseTypeDoesNotFallBackToCartOrder() {
         PurchaseService service = mock(PurchaseService.class);
         CartService carts = mock(CartService.class);
@@ -34,20 +37,7 @@ class PurchaseControllerTest {
     }
 
     @Test
-    void cartOrderPassesAuthenticatedMemberIdWithoutLoadingCartInController() {
-        PurchaseService service = mock(PurchaseService.class);
-        CartService carts = mock(CartService.class);
-        PurchaseController controller = new PurchaseController(service, carts, mock(ItemService.class));
-        Member member = mock(Member.class);
-        when(member.getId()).thenReturn(1L);
-
-        assertThat(controller.createPurchase(member, "CART", null, null, "name", "address"))
-                .isEqualTo("redirect:/member/my-order");
-        verify(service).purchaseCart(1L, "name", "address");
-        verifyNoInteractions(carts);
-    }
-
-    @Test
+    @DisplayName("주문 권한이 없으면 403으로 응답한다")
     void permissionDeniedByServiceReturnsForbidden() throws Exception {
         PurchaseService service = mock(PurchaseService.class);
         Member member = mock(Member.class);

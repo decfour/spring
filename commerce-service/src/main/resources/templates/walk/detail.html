@@ -51,11 +51,19 @@
     <div th:replace="~{walk/components :: map(null, false)}"></div>
 
     <section class="pin-toolbar" aria-label="코스 활동">
-        <button type="button" id="likeBtn" class="btn-like" aria-label="코스 추천">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use th:href="@{/images/icons/heart.svg#heart}"/></svg>
-            <span id="likeCount" th:text="${course.likeCount}" aria-live="polite">0</span>
-        </button>
         <span class="author-meta" th:text="${course.creator != null ? course.creator.name : '익명'}">사용자</span>
+        <div class="course-rating text-center">
+            <button id="ratingBtn" type="button" class="btn-like rating-trigger" data-bs-toggle="modal" data-bs-target="#ratingModal"
+                    th:disabled="${loginMember == null}"
+                    th:attr="aria-label=${course.ratingCount > 0 ? '평균 ' + #numbers.formatDecimal(course.averageRating, 1, 1) + '점, 별점 평가' : '아직 평가 없음, 별점 평가'}"
+                    th:title="${loginMember == null ? '로그인 후 평가할 수 있습니다' : '별점 평가'}">
+                <svg width="24" height="24" viewBox="0 0 100 100" aria-hidden="true">
+                    <path d="M50 5 63 33 94 37 71 59 77 90 50 75 23 90 29 59 6 37 37 33Z" fill="var(--surface)" stroke="currentColor" stroke-width="7.5" stroke-linejoin="round"/>
+                </svg>
+                <span class="rating-average" th:if="${course.ratingCount > 0}" th:text="${#numbers.formatDecimal(course.averageRating, 1, 1)}">4.5</span>
+            </button>
+        </div>
+        <small class="rating-count text-muted" th:text="${'평가 ' + course.ratingCount + '명'}">평가 0</small>
     </section>
 
     <div class="tag-bar panel">
@@ -108,6 +116,28 @@
 
 </div>
 
+<div th:if="${loginMember != null}" class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h6 class="modal-title" id="ratingTitle">평가</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted" th:if="${course.creator != null and course.creator.id == loginMember.id}">본인 코스는 평가 할 수 없습니다.</p>
+                <div th:unless="${course.creator != null and course.creator.id == loginMember.id}">
+                    <p class="text-muted">별점을 선택해주세요.</p>
+                    <div class="rating-choices d-flex gap-2 flex-wrap">
+                        <button th:each="score : ${#numbers.sequence(1, 5)}" type="button" class="btn-action"
+                                th:attr="data-score=${score},aria-pressed=${myRating == score}" th:text="${'★ ' + score}"></button>
+                    </div>
+                </div>
+                <p id="ratingError" class="text-danger mt-2 mb-0" role="alert"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="tagsModal" tabindex="-1" aria-labelledby="tagsTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -142,8 +172,7 @@
         endLng: /*[[${course.endLng}]]*/ 126.9800,
         routeData: /*[[${course.routeData}]]*/ '[]',
         distance: /*[[${course.distance}]]*/ 0,
-        duration: /*[[${course.duration}]]*/ 0,
-        likeCount: /*[[${course.likeCount}]]*/ 0
+        duration: /*[[${course.duration}]]*/ 0
     };
 
     const map = new kakao.maps.Map(
@@ -160,10 +189,31 @@
     showCourseOnMap();
     const pinMemberLoggedIn = /*[[${loginMember != null}]]*/ false;
 
-    const likeBtn = document.getElementById('likeBtn');
-    likeBtn.addEventListener('click', function() {
-        likeCourse();
+    document.querySelectorAll('[data-score]').forEach(button => {
+        button.addEventListener('click', () => saveRating(Number(button.dataset.score)));
     });
+    async function saveRating(score) {
+        const buttons = document.querySelectorAll('#ratingModal .btn-action');
+        const errorMessage = document.getElementById('ratingError');
+        buttons.forEach(button => button.disabled = true);
+        errorMessage.textContent = '';
+        try {
+            const response = await fetch(`/walk/course/${course.id}/rating`, {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({score})
+            });
+            if (response.status === 401 || response.redirected) {
+                location.href = '/member/sign-in?redirectURL=' + encodeURIComponent(location.pathname);
+                return;
+            }
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || '별점 저장에 실패했습니다.');
+            }
+            location.reload();
+        } catch (error) { errorMessage.textContent = error.message; }
+        finally { buttons.forEach(button => button.disabled = false); }
+    }
 
     function showCourseOnMap() {
         let routeData;
@@ -193,32 +243,6 @@
         const bounds = new kakao.maps.LatLngBounds();
         path.forEach(position => bounds.extend(position));
         map.setBounds(bounds, 40, 40, 40, 40);
-    }
-
-    function likeCourse() {
-        fetch(`/walk/course/${course.id}/like`, { method: 'POST' })
-            .then(response => {
-                if (response.status === 401 ||
-                    (response.redirected && new URL(response.url).pathname === '/member/sign-in')) {
-                    const returnUrl = location.pathname + location.search + location.hash;
-                    location.href = '/member/sign-in?redirectURL=' + encodeURIComponent(returnUrl);
-                    return null;
-                }
-                if (response.status === 409) {
-                    alert('이미 추천했습니다');
-                    return null;
-                }
-                if (!response.ok) throw new Error('추천 요청 실패');
-                return response.json();
-            })
-            .then(likeCount => {
-                if (likeCount === null) return;
-                document.getElementById('likeCount').innerText = likeCount;
-            })
-            .catch(error => {
-                console.error(error);
-                alert('추천 처리에 실패했습니다.');
-            });
     }
 
     function addTag(tagCode) {

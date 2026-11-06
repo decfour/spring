@@ -3,27 +3,25 @@ package com.kdj.commerce.domain.walk;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface WalkCourseRepository extends JpaRepository<WalkCourse, Long> {
     @Query(value = """
-                        SELECT *
-                        FROM walk_course
-                        WHERE start_lat BETWEEN :minLat AND :maxLat
-                          AND start_lng BETWEEN :minLng AND :maxLng
-                          AND ST_Distance_Sphere(
-                              POINT(start_lng, start_lat),
-                              POINT(:longitude, :latitude)
+                        SELECT w
+                        FROM WalkCourse w
+                        WHERE w.startLat BETWEEN :minLat AND :maxLat
+                          AND w.startLng BETWEEN :minLng AND :maxLng
+                          AND function('ST_Distance_Sphere',
+                              function('POINT', w.startLng, w.startLat),
+                              function('POINT', :longitude, :latitude)
                           ) <= 1000
-                        ORDER BY ST_Distance_Sphere(
-                            POINT(start_lng, start_lat),
-                            POINT(:longitude, :latitude)
+                        ORDER BY function('ST_Distance_Sphere',
+                            function('POINT', w.startLng, w.startLat),
+                            function('POINT', :longitude, :latitude)
                         )
-                        """,
-                        nativeQuery = true)
+                        """)
     Page<WalkCourse> findNearbyCourses(@Param("latitude") Double latitude,
                                        @Param("longitude") Double longitude,
                                        @Param("minLat") Double minLat,
@@ -32,13 +30,9 @@ public interface WalkCourseRepository extends JpaRepository<WalkCourse, Long> {
                                        @Param("maxLng") Double maxLng,
                                        Pageable pageable);
 
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE WalkCourse w SET w.likeCount = w.likeCount + 1 WHERE w.id = :id")
-    int increaseLikeCount(@Param("id") Long id);
-
     Page<WalkCourse> findByCreatorIdOrderByCreatedAtDesc(Long id, Pageable pageable);
 
-    List<WalkCourse> findTop30ByOrderByLikeCountDescCreatedAtDescIdDesc();
+    List<WalkCourse> findTop30ByOrderByAverageRatingDescRatingCountDescCreatedAtDescIdDesc();
 }
 
 

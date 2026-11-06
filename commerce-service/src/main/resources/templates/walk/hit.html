@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <div th:replace="~{walk/components :: map('추천수 기준 상위 30개 산책 코스', false)}"></div>
+    <div th:replace="~{walk/components :: map('평균 별점 기준 상위 30개 산책 코스', false)}"></div>
 
     <div class="course-section">
         <div th:if="${courses == null or courses.isEmpty()}" class="course-empty">
@@ -65,11 +65,11 @@
 
                         <span>•</span>
 
-                        <span class="course-likes" aria-live="polite">추천 <span class="like-num" th:text="${course.likeCount ?: 0}">0</span></span>
+                        <span class="course-ratings" aria-live="polite"><span th:text="${course.ratingCount > 0 ? '★ ' + #numbers.formatDecimal(course.averageRating, 1, 1) + ' · 평가 ' + course.ratingCount + '명' : '아직 평가 없음'}"></span></span>
                     </div>
                 </div>
             <div class="course-actions">
-                <button type="button" class="btn-circle course-like" th:data-id="${course.id}" onclick="likeCourse(event, this)" title="코스 추천" aria-label="코스 추천"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="/images/icons/heart.svg#heart"/></svg></button>
+                
                 <a th:href="@{/walk/course/{id}/chat(id=${course.id})}" onclick="event.stopPropagation();" class="btn-circle course-chat" title="코스 채팅 홈" aria-label="코스 채팅 홈"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg></a>
             </div>
             </div>
@@ -138,35 +138,6 @@
         }
     }
 
-    function likeCourse(event, btn) {
-        event.stopPropagation();
-        const courseId = btn.dataset.id;
-
-        fetch(`/walk/course/${courseId}/like`, { method: 'POST' })
-            .then(response => {
-                if (response.status === 401 ||
-                    (response.redirected && new URL(response.url).pathname === '/member/sign-in')) {
-                    const returnUrl = location.pathname + location.search + location.hash;
-                    location.href = '/member/sign-in?redirectURL=' + encodeURIComponent(returnUrl);
-                    return null;
-                }
-                if (response.status === 409) {
-                    alert('이미 추천했습니다');
-                    return null;
-                }
-                if (!response.ok) throw new Error('추천 요청 실패');
-                return response.json();
-            })
-            .then(likeCount => {
-                if (likeCount === null) return;
-                const numSpan = btn.closest('.course-card').querySelector('.like-num');
-                if (numSpan) numSpan.innerText = likeCount;
-            })
-            .catch(error => {
-                console.error(error);
-                alert('추천 처리에 실패했습니다.');
-            });
-    }
 </script>
 
 </body>

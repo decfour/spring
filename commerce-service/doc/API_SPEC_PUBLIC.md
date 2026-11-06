@@ -1,11 +1,10 @@
-
 # API 명세서
 
 **The Hitchhiker's Guide to Earth**  
 
 본 문서는 프로젝트의 주요 API와 기능을 정리한 공개용 명세서입니다.
 
-코드 대조 기준: 2026-11-01.
+코드 대조 기준: 2026-11-06.
 
 ## 1. 공통 사항
 
@@ -63,8 +62,14 @@
 | POST | `/walk` | 코스 등록 | 필요 |
 | POST | `/walk/course/{id}/delete` | 코스 삭제 | 작성자/관리자 |
 | POST | `/walk/course/route` | 경로 계산 | 필요 |
-| POST | `/walk/course/{id}/like` | 코스 추천 | 필요 |
+| POST | `/walk/course/{id}/rating` | 별점 등록·수정 | 필요 |
+| DELETE | `/walk/course/{id}/rating` | 본인 별점 취소 | 필요 |
 | POST | `/walk/course/{id}/tag` | 코스 태그 등록 | 필요 |
+
+- 인기 코스는 평균 별점 내림차순, 평가 수 내림차순, 생성일·ID 내림차순으로 상위 30개를 조회합니다.
+- 코스 목록과 주변 검색 JSON에는 `averageRating`, `ratingCount`가 포함됩니다. 평가가 없으면 두 값은 0입니다.
+- 상세 화면은 왼쪽 작성자, 중앙 별 버튼과 소수점 첫째 자리 평균, 오른쪽 평가 수를 표시합니다. 비로그인 상태에서는 별 버튼이 비활성화됩니다.
+- 데이터 구조는 [산책·채팅 ERD](erd/course.md)를 참고합니다.
 
 ### 산책 리뷰
 
@@ -77,6 +82,8 @@
 | GET | `/walk/course/{courseId}/review/{reviewId}/edit` | 리뷰 수정 페이지 | 작성자 |
 | POST | `/walk/course/{courseId}/review/{reviewId}/edit` | 리뷰 수정 | 작성자 |
 | POST | `/walk/course/{courseId}/review/{reviewId}/delete` | 리뷰 삭제 | 작성자/관리자 |
+
+별점은 리뷰와 별도로 남길 수 있습니다. 리뷰 상세 상단에는 리뷰 작성자가 해당 코스에 남긴 현재 별점이 표시되며, 별점이 없으면 표시하지 않습니다. 별점 수정·취소는 리뷰 표시에도 반영됩니다.
 
 리뷰 목록은 기본 10개씩 `id` 내림차순으로 조회합니다. 등록·수정은 폼의 `title`, `content`를 사용하고, 성공하면 해당 리뷰 상세로 이동합니다. 삭제 성공 시 해당 코스의 리뷰 목록으로 이동합니다.
 
@@ -134,9 +141,14 @@ Content-Type: application/json
 
 경로 계산 응답은 `routeData`(경도·위도 순서의 좌표 배열을 담은 JSON 문자열), `distance`(m), `duration`(초)입니다.
 
-### 추천·태그 응답
+### 별점·태그 응답
 
-- `POST /walk/course/{id}/like`: 요청 본문 없이 호출합니다. 성공 시 `200`과 갱신된 추천 수(JSON 숫자)를 반환합니다. 중복 추천은 `409`와 `{"message":"이미 추천했습니다"}`, 컨트롤러에서 로그인 사용자를 찾지 못하면 `401`입니다.
+- `POST /walk/course/{id}/rating`: JSON `{"score":4}`를 전달합니다. 점수는 1~5 사이의 정수이며 성공 시 `204`, 본문은 없습니다. 회원당 코스 하나에 별점 하나를 저장하며 재요청은 점수를 수정합니다.
+- `DELETE /walk/course/{id}/rating`: 본인 평가를 취소합니다. 성공 시 `204`, 평가가 없어도 동일하게 응답합니다. 현재 화면에는 취소 버튼을 제공하지 않으며 API로 지원합니다.
+- 잘못된 점수는 `400`, 본인 코스 평가는 `409`, 없는 코스는 `404`입니다. 컨트롤러에 로그인 정보가 없으면 `401`이며, 인증 쿠키가 없는 일반 요청은 보안 설정에 따라 로그인 화면으로 이동할 수 있습니다.
+- `walk_course_rating`의 `(course_id, member_id)`는 유일합니다. `walk_course.rating_count`는 최초 평가 시 증가하고 취소 시 감소하며 점수 수정 시 유지됩니다. 평가는 코스 잠금 안에서 같은 트랜잭션으로 처리합니다.
+- `averageRating`은 DB 칼럼이 아니라 Hibernate `@Formula`로 코스를 읽을 때 계산하는 평균입니다. 평균이 없으면 0을 반환하며, 이미 로딩한 엔티티의 값은 별점 변경 직후 자동 갱신되지 않습니다.
+- 기존 DB의 추천 테이블·칼럼 정리 및 평가 수 보정은 [마이그레이션 SQL](../scripts/sql/migrate-course-rating-count.sql)을 사용합니다. 별점 테이블이 생성된 DB에서 애플리케이션 쓰기를 중단한 상태로 실행합니다.
 - `POST /walk/course/{id}/tag`: JSON `{"tag":"NATURE"}`를 전달합니다. 성공 시 `200`이며 본문은 없습니다. 잘못된 태그 코드는 `400`, 중복 태그는 `409`입니다.
 - 태그 코드: `NATURE`, `CITY`, `QUIET`, `HOT`, `NIGHT`, `MORNING`, `LONG_DISTANCE`, `SHORT_DISTANCE`, `LOVE`, `PET`, `FAMILY`.
 
@@ -237,7 +249,7 @@ GET /community/hits?page=1&size=10&noticePage=2
 | POST | `/notice/{id}/edit` | 공지 수정 | 관리자 |
 | POST | `/notice/{id}/delete` | 공지 삭제 | 관리자 |
 
-- 별도 공지 목록 화면은 제거되었으며, 공지 목록은 Talk 일반·HIT 화면에 포함됩니다.
+- 공지 목록은 Talk 일반·HIT 화면에 표시합니다.
 - `GET /notice?page=2`는 `302`로 `/community?noticePage=2`에 이동합니다. `page` 기본값은 0입니다.
 - 등록·수정 성공 시 `/notice/{id}` 상세 화면으로, 삭제 성공 시 `/community`로 리다이렉트합니다. 관리자 권한이 없는 등록·수정·삭제 요청도 컨트롤러에서 `/community`로 돌려보냅니다. 비로그인 요청은 보안 설정에 의해 먼저 로그인 화면으로 이동할 수 있습니다.
 

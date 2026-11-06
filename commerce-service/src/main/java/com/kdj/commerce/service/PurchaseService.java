@@ -44,10 +44,6 @@ public class PurchaseService {
         return purchaseRepository.findByMemberIdWithMember(pageable, id);
     }
 
-    public List<Purchase> findAll() {
-        return purchaseRepository.findAll();
-    }
-
     @Transactional
     public Long purchase(
             Long memberId,

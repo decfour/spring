@@ -17,6 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class WalkCourseReviewService {
     private final WalkCourseReviewRepository reviewRepository;
     private final WalkCourseRepository courseRepository;
+    private final WalkCourseRatingService ratingService;
+
+    public Integer findAuthorRating(WalkCourseReview review) {
+        return ratingService.findScore(review.getCourse().getId(), review.getCreator() == null ? null : review.getCreator().getId());
+    }
 
     public WalkCourseReview findById(Long courseId, Long reviewId) {
         return reviewRepository.findByIdAndCourseId(reviewId, courseId)

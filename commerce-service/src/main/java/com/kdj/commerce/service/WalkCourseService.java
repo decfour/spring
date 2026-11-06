@@ -1,11 +1,8 @@
 package com.kdj.commerce.service;
 
-import com.kdj.commerce.exception.BusinessConflictException;
 import com.kdj.commerce.exception.ResourceNotFoundException;
 import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.domain.walk.WalkCourse;
-import com.kdj.commerce.domain.walk.WalkCourseLike;
-import com.kdj.commerce.domain.walk.WalkCourseLikeRepository;
 import com.kdj.commerce.domain.walk.WalkCourseRepository;
 import com.kdj.commerce.web.dto.walk.WalkCourseResponse;
 import com.kdj.commerce.web.dto.walk.WalkRouteResult;
@@ -22,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class WalkCourseService {
     private final WalkCourseRepository walkCourseRepository;
     private final KakaoRouteService kakaoRouteService;
-    private final WalkCourseLikeRepository walkCourseLikeRepository;
 
     public WalkCourse findById(long id) {
         WalkCourse walkCourse = walkCourseRepository.findById(id)
@@ -58,7 +54,7 @@ public class WalkCourseService {
     }
 
     public Page<WalkCourse> findBest(Pageable pageable) {
-        var courses = walkCourseRepository.findTop30ByOrderByLikeCountDescCreatedAtDescIdDesc();
+        var courses = walkCourseRepository.findTop30ByOrderByAverageRatingDescRatingCountDescCreatedAtDescIdDesc();
         if (pageable.isUnpaged()) {
             return new PageImpl<>(courses);
         }
@@ -102,26 +98,7 @@ public class WalkCourseService {
     public void delete(Long id) {
         WalkCourse walkCourse = walkCourseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("찾을 수 없습니다 id=" + id));
-        walkCourseLikeRepository.deleteByWalkCourseId(id);
         walkCourseRepository.delete(walkCourse);
-    }
-
-    @Transactional
-    public int increaseLikeCount(Long courseId, Member member) {
-         WalkCourse walkCourse = walkCourseRepository.findById(courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("존재하지 않는 게시글입니다 id=" + courseId));
-
-        if (walkCourseLikeRepository.existsByMemberAndWalkCourse(member, walkCourse)) {
-            throw new BusinessConflictException("이미 추천한 코스입니다");
-        }
-
-        walkCourseLikeRepository.save(WalkCourseLike.create(member, walkCourse));
-
-        walkCourseRepository.increaseLikeCount(courseId);
-
-        return walkCourseRepository.findById(courseId)
-                .orElseThrow(() -> new ResourceNotFoundException("코스를 찾을 수 없습니다."))
-                .getLikeCount();
     }
 
     public WalkRouteResult findRoute(Double startLat,

@@ -52,6 +52,7 @@ public class WalkCourseReviewController {
         WalkCourseReview review = walkCourseReviewService.findById(courseId, reviewId);
 
         model.addAttribute("review", review);
+        model.addAttribute("authorRating", walkCourseReviewService.findAuthorRating(review));
         model.addAttribute("courseId", courseId);
         model.addAttribute("member", loginMember);
 

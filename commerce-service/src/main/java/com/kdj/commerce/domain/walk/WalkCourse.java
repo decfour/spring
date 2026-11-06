@@ -39,7 +39,14 @@ public class WalkCourse {
     private Integer distance;
     private Integer duration;
 
-    private int likeCount;
+    @org.hibernate.annotations.Formula("(select coalesce(avg(r.score), 0) from walk_course_rating r where r.course_id = id)")
+    private double averageRating;
+
+    @Column(nullable = false, columnDefinition = "BIGINT DEFAULT 0")
+    private long ratingCount;
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WalkCourseRating> ratings = new ArrayList<>();
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -79,14 +86,16 @@ public class WalkCourse {
         course.routeData = routeData;
         course.distance = distance;
         course.duration = duration;
-        course.likeCount = 0;
 
         return course;
     }
 
-    public void update (String title, String content) {
-        this.title = title;
-        this.content = content;
+    public void addRating() {
+        ratingCount++;
+    }
+
+    public void removeRating() {
+        if (ratingCount > 0) ratingCount--;
     }
 }
 

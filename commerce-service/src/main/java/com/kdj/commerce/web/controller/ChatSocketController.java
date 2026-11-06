@@ -1,8 +1,6 @@
 package com.kdj.commerce.web.controller;
 
-import com.kdj.commerce.domain.member.Member;
 import com.kdj.commerce.service.ChatMessageService;
-import com.kdj.commerce.service.MemberService;
 import com.kdj.commerce.web.dto.chat.ChatMessageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;

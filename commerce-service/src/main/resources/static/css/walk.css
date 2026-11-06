@@ -61,7 +61,7 @@
 .course-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .course-arrow { flex-shrink: 0; color: var(--muted); }
 .course-info { display: flex; flex-wrap: wrap; gap: 8px; font-size: .85rem; color: var(--muted); }
-.course-likes { white-space: nowrap; }
+.course-ratings { white-space: nowrap; }
 .course-actions { display: flex; flex-shrink: 0; align-items: center; gap: 8px; }
 .course-actions .btn-circle { border: 0; }
 .course-rank { min-width: 24px; text-align: center; font-size: 1.2rem; color: var(--muted); }

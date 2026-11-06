@@ -6,12 +6,14 @@ import com.kdj.commerce.domain.member.*;
 import com.kdj.commerce.domain.review.WalkCourseReview;
 import com.kdj.commerce.domain.walk.*;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -21,6 +23,7 @@ class MyServiceTest {
     @Autowired MyService service;
 
     @Test
+    @DisplayName("내 활동은 본인 기록과 해당 상세 경로만 조회한다")
     void activityQueriesOnlyReturnTheMembersOwnRecordsAndPreserveDestinations() {
         String suffix = java.util.UUID.randomUUID().toString().substring(0, 8);
         var owner = Member.create("작성자", "my-"+suffix+"@example.com", "my-"+suffix, "password", MemberType.USER);
