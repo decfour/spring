@@ -26,14 +26,13 @@ button, input, select, textarea {
 }
 
 h1, h2, h3, h4, h5, h6, .page-title, .site-logo,
-:where([data-view="home"]) .link-item {
+:where([data-view="home"]) .home-link {
     font-family: var(--font-heading);
     font-weight: 400;
 }
 
 .page-title {
     font-size: 2rem;
-    font-weight: 400;
     letter-spacing: -0.8px;
     min-width: 0;
     line-height: 1.25;
@@ -45,7 +44,14 @@ h1, h2, h3, h4, h5, h6, .page-title, .site-logo,
     font-weight: 400;
 }
 
-.page-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; min-height: 44px; gap: 12px; margin-bottom: 24px; }
+.page-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    min-height: 44px;
+    gap: 12px;
+    margin-bottom: 24px;
+}
 
 .page-head > .d-flex {
     flex-wrap: wrap;
@@ -67,23 +73,51 @@ h1, h2, h3, h4, h5, h6, .page-title, .site-logo,
 }
 
 @media (max-height: 800px) and (min-width: 769px) {
-    :root { --page-gap: 24px; }
+    :root {
+        --page-gap: 24px;
+    }
 }
 
 @media (max-width: 768px) {
-    :root { --page-gap: 24px; }
-    .page-title { font-size: 1.6rem; }
+    :root {
+        --page-gap: 24px;
+    }
+    .page-title {
+        font-size: 1.6rem;
+    }
 }
 
 /* 공통 - 버튼과 카드 */
-a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.panel { border: 2px solid #000; border-radius: var(--frame-radius, 12px); padding: 16px; margin-bottom: 20px; }
+a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+.panel {
+    border: 2px solid #000;
+    border-radius: var(--frame-radius, 12px);
+    padding: 16px;
+    margin-bottom: 20px;
+}
 
 /* 공통 - 입력 필드와 폼 동작 */
-.email-fields { display: flex; align-items: center; gap: 8px; }
-.email-fields .field { flex: 1; min-width: 0; }
-.email-separator { flex-shrink: 0; }
-.field-label { display: block; font-size: .9rem; font-weight: 600; margin-bottom: 6px; }
+.email-fields {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.email-fields .field {
+    flex: 1;
+    min-width: 0;
+}
+.email-separator {
+    flex-shrink: 0;
+}
+.field-label {
+    display: block;
+    font-size: .9rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
 .field {
     width: 100%;
     border: 2px solid #000;
@@ -95,18 +129,48 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
     line-height: 1.6;
     outline: none;
 }
-.field:focus { border-color: #000; outline: 1px solid #000; }
-.field::placeholder { color: var(--muted); }
-.field.field-error, .field.is-invalid { border-color: var(--danger); }
-.field.field-error:focus, .field.is-invalid:focus { border-color: var(--danger); outline-color: var(--danger); }
-textarea.field { resize: vertical; }
-.field-group { margin-bottom: 16px; }
-.field-feedback { color: var(--danger); font-size: .85rem; margin-top: 6px; font-weight: 500; }
-.form-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; margin-top: 24px; }
+.field:focus {
+    border-color: #000;
+    outline: 1px solid #000;
+}
+.field::placeholder {
+    color: var(--muted);
+}
+.field.is-invalid {
+    border-color: var(--danger);
+}
+.field.is-invalid:focus {
+    border-color: var(--danger);
+    outline-color: var(--danger);
+}
+textarea.field {
+    resize: vertical;
+}
+.field-group {
+    margin-bottom: 16px;
+}
+.field-feedback {
+    color: var(--danger);
+    font-size: .85rem;
+    margin-top: 6px;
+    font-weight: 500;
+}
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 24px;
+}
 
 @media (max-height: 800px) and (min-width: 769px) {
-    .field-group { margin-bottom: 8px; }
-    .page .field-label { margin-bottom: 4px; }
+    .field-group {
+        margin-bottom: 8px;
+    }
+    .page .field-label {
+        margin-bottom: 4px;
+    }
 }
 
 /* Home - 공통 헤더와 메뉴 */
@@ -236,15 +300,18 @@ textarea.field { resize: vertical; }
     margin-top: 24px;
 }
 
-.course-list {
+.entry-list, .account-list {
     display: flex;
     flex-direction: column;
+}
+
+.entry-list {
     gap: 0;
 }
 
 /* Talk - 게시글 목록과 상세 정보 */
 
-.detail-meta {
+.post-footer {
     padding: 0 4px 16px 4px;
     margin-bottom: 8px;
 }
@@ -282,8 +349,15 @@ textarea.field { resize: vertical; }
     color: var(--accent);
 }
 
-.post-card, .review-card, .comment-content, .item-card { overflow-wrap: anywhere; }
-.entry-date { color: var(--muted); font-size: .85rem; font-weight: 500; text-align: right; }
+.post-card, .course-text, .comment-content, .item-card {
+    overflow-wrap: anywhere;
+}
+.entry-date {
+    color: var(--muted);
+    font-size: .85rem;
+    font-weight: 500;
+    text-align: right;
+}
 
 /* Talk - 추천과 더보기 메뉴 */
 
@@ -386,8 +460,17 @@ textarea.field { resize: vertical; }
     color: var(--ink);
 }
 
-.modal-content { background: var(--paper); border: 2px solid #000; border-radius: var(--frame-radius); }
+.modal-content {
+    background: var(--paper);
+    border: 2px solid #000;
+    border-radius: var(--frame-radius);
+}
 @media (max-width: 600px) {
-    .page-head { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 40px; }
-    .page-head > :last-child { justify-self: start; }
+    .page-head {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto 40px;
+    }
+    .page-head > :last-child {
+        justify-self: start;
+    }
 }

@@ -3,164 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <title>THGTE - Walking Chat</title>
-    <th:block th:replace="~{walk/components :: styles}"></th:block>
+    <th:block th:replace="~{walk/fragments :: styles}"></th:block>
+
     <link rel="stylesheet" th:href="@{/css/chat.css}">
-    <script th:src="@{/js/dialog.js}" defer></script>
-
-    <script
-            src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.2.0/bundles/stomp.umd.min.js"
-            defer>
-    </script>
-    <script th:src="@{/chat-room.js}" defer></script>
+    <script th:src="@{/js/chat-dialog.js}" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.2.0/bundles/stomp.umd.min.js" defer></script>
+    <script th:src="@{/js/chat-room.js}" defer></script>
 </head>
-
 <body class="theme walk-page chat-page">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <main class="page">
+        <div class="page-head">
+            <h1 class="page-title m-0">Walking <span class="subtitle">Chat</span></h1>
 
-<main class="page">
-
-    <div class="page-head">
-        <h1 class="page-title m-0">
-            Walking <span class="subtitle">Chat</span>
-        </h1>
-
-        <div class="d-flex gap-2">
-            <button
-                    type="button"
-                    class="btn-action"
-                    data-open="leave-room">퇴장
-            </button>
-
-            <a
-                    th:href="@{/walk/course/{id}/chat(id=${course.id})}"
-                    class="btn-action">뒤로
-            </a>
-        </div>
-    </div>
-
-    <section
-            id="chat-room"
-            class="panel chat-shell"
-            th:attr="data-room-id=${room.id}, data-course-id=${course.id}, data-member-id=${memberId}"
-            aria-label="채팅방">
-        <header class="chat-head">
-            <div>
-                <h2 th:text="${room.title}"></h2>
-                <p class="meta" th:text="${course.title}"></p>
+            <div class="d-flex gap-2">
+                <button type="button" class="btn-action" data-open="leave-room">            퇴장</button>
+                <a th:href="@{/walk/course/{id}/chat(id=${course.id})}" class="btn-action"> 뒤로</a>
             </div>
+        </div>
 
-            <button
-                    type="button"
-                    class="btn-action"
-                    data-open="participants">참여자
+        <section id="chat-room" class="panel chat-shell"
+                 th:attr="data-room-id=${room.id}, data-course-id=${course.id}, data-member-id=${memberId}"
+                 aria-label="채팅방">
+            <header class="chat-head">
+                <div>
+                    <h2 th:text="${room.title}"></h2>
+                    <p class="meta" th:text="${course.title}"></p>
+                </div>
+
+                <button type="button" class="btn-action" data-open="participants">
+                    참여자
                     <span th:text="${participants.size() + ' / 5'}"></span>
-            </button>
-        </header>
+                </button>
+            </header>
 
-        <div
-                id="conversation"
-                class="conversation"
-                aria-label="대화 내용">
+            <div id="conversation" class="conversation" aria-label="대화 내용"></div>
+
+            <form id="message-form" class="composer">
+                <div class="compose-row">
+                    <textarea id="message-content" class="field" rows="1"
+                              placeholder="메시지를 입력하세요" maxlength="1000"
+                              aria-label="메시지" required></textarea>
+
+                    <button id="send-message" class="btn-action btn-primary" type="submit">전송</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <dialog class="panel" id="participants" aria-labelledby="participants-title">
+        <div class="dialog-heading">
+            <h2 id="participants-title">참여자</h2>
         </div>
 
-        <form
-                id="message-form"
-                class="composer">
-            <div class="compose-row">
-                <textarea
-                        id="message-content"
-                        class="field"
-                        placeholder="메시지를 입력하세요"
-                        rows="1"
-                        maxlength="1000"
-                        aria-label="메시지"
-                        required>
-                </textarea>
+        <div class="participant" th:each="participant : ${participants}">
+            <span th:text="${participant.name}"></span>
+            <small th:if="${participant.id == room.hostId}">방장</small>
+        </div>
 
-                <button
-                        id="send-message"
-                        class="btn-action btn-primary"
-                        type="submit">전송
-                </button>
-            </div>
-        </form>
+        <div class="form-actions">
+            <button class="btn-action" data-close>닫기</button>
+        </div>
+    </dialog>
 
-    </section>
+    <dialog class="panel" id="leave-room" aria-labelledby="leave-title">
+        <div class="dialog-heading">
+            <h2 id="leave-title">정말 퇴장 할까요?</h2>
+        </div>
 
-</main>
-
-<dialog class="panel"
-        id="participants"
-        aria-labelledby="participants-title">
-
-    <div class="dialog-heading">
-        <h2 id="participants-title">
-            참여자
-        </h2>
-    </div>
-
-    <div
-            class="participant"
-            th:each="participant : ${participants}">
-        <span th:text="${participant.name}"></span>
-
-        <small th:if="${participant.id == room.hostId}">
-            방장
-        </small>
-    </div>
-
-    <div class="form-actions">
-        <button
-                class="btn-action"
-                data-close>
-            닫기
-        </button>
-    </div>
-
-</dialog>
-
-<dialog class="panel"
-        id="leave-room"
-        aria-labelledby="leave-title">
-
-    <div class="dialog-heading">
-        <h2 id="leave-title">
-            정말 퇴장 할까요?
-        </h2>
-    </div>
-
-    <p
-            class="intro"
-            th:text="${room.hostId == memberId
+        <p class="intro"
+           th:text="${room.hostId == memberId
                 ? '방장이 나가면 채팅방이 종료됩니다'
                 : '채팅방에서 나갑니다'}">
-    </p>
+        </p>
 
-    <form
-            method="post"
-            th:action="@{/walk/course/{courseId}/chat/{roomId}/leave(
+        <form method="post"
+              th:action="@{/walk/course/{courseId}/chat/{roomId}/leave(
                 courseId=${course.id},
                 roomId=${room.id}
             )}"
-            class="form-actions">
+              class="form-actions">
 
-        <button
-                type="button"
-                class="btn-action"
-                data-close>
-            취소
-        </button>
-
-        <button
-                type="submit"
-                class="btn-action">
-            퇴장
-        </button>
-
-    </form>
-
-</dialog>
-
+            <button type="button" class="btn-action" data-close>취소</button>
+            <button type="submit" class="btn-action">           퇴장</button>
+        </form>
+    </dialog>
 </body>
 </html>

@@ -4,292 +4,237 @@
     <meta charset="UTF-8">
     <title>THGTE - Course Detail</title>
 
-    <th:block th:replace="~{walk/components :: styles}"></th:block>
-    <link rel="stylesheet" th:href="@{/css/pin.css}">
-    <link rel="stylesheet" th:href="@{/css/tag.css}">
+    <link rel="stylesheet" th:href="@{/css/walk-pins.css}">
+    <link rel="stylesheet" th:href="@{/css/walk-tags.css}">
+    <th:block th:replace="~{walk/fragments :: styles}"></th:block>
     <th:block th:replace="~{common/fold :: styles}"></th:block>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
 </head>
 
 <body class="theme walk-page" data-view="walk-detail">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">
+                <span>Walking</span>
 
-<div class="page">
+                <span class="course-label"
+                      th:text="${course.title}"
+                      th:title="${course.title}">
+                    코스 이름
+                </span>
+            </h2>
 
-    <div class="page-head">
-        <h2 class="page-title m-0">
-            <span>Walking</span>
-            <span class="course-label" th:text="${course.title}" th:title="${course.title}">코스 이름</span>
-        </h2>
+            <div class="d-flex gap-2 align-items-center">
+                <!-- 작성자 or 관리자 삭제 권한 -->
+                <div class="dropdown"
+                     th:if="${loginMember != null and (
+                         (course.creator != null and course.creator.id == loginMember.id) or
+                         loginMember.memberType == T(com.kdj.commerce.domain.member.MemberType).ADMIN
+                     )}">
+                    <button class="btn-menu" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        •••
+                    </button>
 
-        <div class="d-flex gap-2 align-items-center">
-            <div class="dropdown"
-                 th:if="${loginMember != null and (
-                     (course.creator != null and course.creator.id == loginMember.id) or
-                     loginMember.memberType == T(com.kdj.commerce.domain.member.MemberType).ADMIN
-                 )}">
-                <button class="btn-menu" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    •••
+                    <ul class="dropdown-menu dropdown-menu-end menu">
+                        <li>
+                            <form th:action="@{/walk/course/{id}/delete(id=${course.id})}"
+                                  method="post" class="m-0">
+                                <button type="submit"
+                                        class="dropdown-item text-danger"
+                                        onclick="return confirm('정말 삭제하시겠습니까?');">
+                                    삭제
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+
+                <a th:href="@{/walk/course/{id}/chat(id=${course.id})}"     class="btn-action">채팅</a>
+                <a th:href="@{/walk/course/{id}/review(id=${course.id})}"   class="btn-action">리뷰</a>
+                <button type="button" id="backBtn"                          class="btn-action">뒤로</button>
+            </div>
+        </div>
+
+        <div th:replace="~{walk/fragments :: map(
+            message=null, showLocation=false, showDetails=true
+        )}"></div>
+
+        <section class="course-bar" aria-label="코스 활동">
+            <span class="author-meta"
+                  th:text="${course.creator != null ? course.creator.name : '익명'}">사용자</span>
+
+            <div class="rating-box text-center">
+                <button id="ratingBtn" type="button" class="btn-like rating-button"
+                        data-bs-toggle="modal" data-bs-target="#ratingModal"
+                        th:disabled="${loginMember == null}"
+                        th:aria-label="${course.ratingCount > 0
+                            ? '평균 ' + #numbers.formatDecimal(course.averageRating, 1, 1) + '점, 별점 평가'
+                            : '아직 평가 없음, 별점 평가'}"
+                        th:title="${loginMember == null ? '로그인 후 평가할 수 있습니다' : '별점 평가'}">
+
+                    <svg width="24" height="24" viewBox="0 0 100 100" aria-hidden="true">
+                        <path d="M50 5 63 33 94 37 71 59 77 90 50 75 23 90 29 59 6 37 37 33Z"
+                              fill="var(--surface)" stroke="currentColor"
+                              stroke-width="7.5" stroke-linejoin="round"/>
+                    </svg>
+
+                    <span class="rating-value"
+                          th:if="${course.ratingCount > 0}"
+                          th:text="${#numbers.formatDecimal(course.averageRating, 1, 1)}">4.5</span>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end menu">
-                    <li>
-                        <form th:action="@{/walk/course/{id}/delete(id=${course.id})}" method="post" class="m-0">
-                            <button type="submit" class="dropdown-item text-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</button>
-                        </form>
-                    </li>
-                </ul>
             </div>
 
-            <a th:href="@{/walk/course/{id}/chat(id=${course.id})}" class="btn-action">채팅</a>
-            <a th:href="@{/walk/course/{id}/review(id=${course.id})}" class="btn-action">리뷰</a><button type="button" id="backBtn" class="btn-action">뒤로</button>
-        </div>
-    </div>
+            <small class="rating-count text-muted"
+                   th:text="${'평가 ' + course.ratingCount + '명'}">평가 0</small>
+        </section>
 
+        <div class="tag-bar panel">
+            <div class="tag-list">
+                <span th:each="t : ${tags}"
+                      class="tag-chip"
+                      th:data-tag="${t.code}"
+                      th:text="${t.description}">
+                    자연
+                </span>
+            </div>
 
-    <div th:replace="~{walk/components :: map(null, false)}"></div>
+            <div class="tag-actions">
+                <div class="dropdown">
+                    <button class="btn-circle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false"
+                            title="태그 추가">
+                        <svg width="12" height="12" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2.5"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
 
-    <section class="pin-toolbar" aria-label="코스 활동">
-        <span class="author-meta" th:text="${course.creator != null ? course.creator.name : '익명'}">사용자</span>
-        <div class="course-rating text-center">
-            <button id="ratingBtn" type="button" class="btn-like rating-trigger" data-bs-toggle="modal" data-bs-target="#ratingModal"
-                    th:disabled="${loginMember == null}"
-                    th:attr="aria-label=${course.ratingCount > 0 ? '평균 ' + #numbers.formatDecimal(course.averageRating, 1, 1) + '점, 별점 평가' : '아직 평가 없음, 별점 평가'}"
-                    th:title="${loginMember == null ? '로그인 후 평가할 수 있습니다' : '별점 평가'}">
-                <svg width="24" height="24" viewBox="0 0 100 100" aria-hidden="true">
-                    <path d="M50 5 63 33 94 37 71 59 77 90 50 75 23 90 29 59 6 37 37 33Z" fill="var(--surface)" stroke="currentColor" stroke-width="7.5" stroke-linejoin="round"/>
-                </svg>
-                <span class="rating-average" th:if="${course.ratingCount > 0}" th:text="${#numbers.formatDecimal(course.averageRating, 1, 1)}">4.5</span>
-            </button>
-        </div>
-        <small class="rating-count text-muted" th:text="${'평가 ' + course.ratingCount + '명'}">평가 0</small>
-    </section>
+                    <ul class="dropdown-menu dropdown-menu-end menu">
+                        <li th:each="tagEnum : ${T(com.kdj.commerce.domain.walk.WalkTag).values()}">
+                            <button type="button"
+                                    class="dropdown-item"
+                                    th:onclick="addTag([[${tagEnum.name()}]])"
+                                    th:text="${tagEnum.description}">
+                                태그명
+                            </button>
+                        </li>
+                    </ul>
+                </div>
 
-    <div class="tag-bar panel">
-        <div class="tag-list">
-            <span th:each="t : ${tags}"
-                  class="tag-chip"
-                  th:attr="data-tag=${t.code}"
-                  th:text="${t.description}">
-                자연
-            </span>
-        </div>
-
-        <div class="tag-actions">
-            <div class="dropdown">
-                <button class="btn-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="태그 추가">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                <button type="button" class="btn-circle"
+                        data-bs-toggle="modal" data-bs-target="#tagsModal"
+                        title="태그 전체보기" aria-label="태그 전체보기">
+                    <svg width="12" height="12" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2.5"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         aria-hidden="true">
+                        <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end menu">
-                    <li th:each="tagEnum : ${T(com.kdj.commerce.domain.walk.WalkTag).values()}">
-                        <button type="button" class="dropdown-item"
-                                th:onclick="addTag([[${tagEnum.name()}]])"
-                                th:text="${tagEnum.description}">
-                            태그명
-                        </button>
-                    </li>
-                </ul>
             </div>
-            <button type="button" class="btn-circle" data-bs-toggle="modal" data-bs-target="#tagsModal" title="태그 전체보기" aria-label="태그 전체보기">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-            </button>
+        </div>
+
+        <div class="panel">
+            <div class="course-text" data-fold>
+                <div id="courseReview" class="fold-text"
+                     th:if="${course.content != null and !course.content.isBlank()}"
+                     th:text="${course.content}">
+                    리뷰
+                </div>
+
+                <span class="course-note"
+                      th:if="${course.content == null or course.content.isBlank()}">
+                    등록된 코스 소개가 없습니다
+                </span>
+
+                <th:block th:replace="~{common/fold :: toggle('courseReview')}"></th:block>
+            </div>
         </div>
     </div>
 
-    <div class="review-section panel">
-        <div class="review-card" data-fold>
-            <div id="courseReview" class="fold-text" th:if="${course.content != null and !course.content.isBlank()}" th:text="${course.content}">
-                리뷰
+    <div th:if="${loginMember != null}"
+         class="modal fade" id="ratingModal" tabindex="-1"
+         aria-labelledby="ratingTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title" id="ratingTitle">평가</h6>
+                    <button type="button" class="btn-close"
+                            data-bs-dismiss="modal" aria-label="닫기"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted"
+                       th:if="${course.creator != null and course.creator.id == loginMember.id}">
+                        본인 코스는 평가 할 수 없습니다.
+                    </p>
+
+                    <div th:unless="${course.creator != null and course.creator.id == loginMember.id}">
+                        <p class="text-muted">별점을 선택해주세요.</p>
+                        <div class="rating-choices d-flex gap-2 flex-wrap">
+                            <button th:each="score : ${#numbers.sequence(1, 5)}"
+                                    type="button" class="btn-action"
+                                    th:data-score="${score}"
+                                    th:aria-pressed="${myRating == score}"
+                                    th:text="${'★ ' + score}"></button>
+                        </div>
+                    </div>
+
+                    <p id="ratingError" class="text-danger mt-2 mb-0" role="alert"></p>
+                </div>
             </div>
-            <span th:if="${course.content == null or course.content.isBlank()}" class="review-empty">
-                등록된 코스 소개가 없습니다
-            </span>
-            <th:block th:replace="~{common/fold :: toggle('courseReview')}"></th:block>
         </div>
     </div>
 
-</div>
+    <div class="modal fade" id="tagsModal" tabindex="-1"
+         aria-labelledby="tagsTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h6 class="modal-title font-weight-bold" id="tagsTitle">전체 태그</h6>
 
-<div th:if="${loginMember != null}" class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0 pb-0">
-                <h6 class="modal-title" id="ratingTitle">평가</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
-            </div>
-            <div class="modal-body">
-                <p class="text-muted" th:if="${course.creator != null and course.creator.id == loginMember.id}">본인 코스는 평가 할 수 없습니다.</p>
-                <div th:unless="${course.creator != null and course.creator.id == loginMember.id}">
-                    <p class="text-muted">별점을 선택해주세요.</p>
-                    <div class="rating-choices d-flex gap-2 flex-wrap">
-                        <button th:each="score : ${#numbers.sequence(1, 5)}" type="button" class="btn-action"
-                                th:attr="data-score=${score},aria-pressed=${myRating == score}" th:text="${'★ ' + score}"></button>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <span th:each="t : ${tags}"
+                              class="tag-chip"
+                              th:data-tag="${t.code}"
+                              th:text="${t.description}">
+                            자연
+                        </span>
                     </div>
                 </div>
-                <p id="ratingError" class="text-danger mt-2 mb-0" role="alert"></p>
             </div>
         </div>
     </div>
-</div>
 
-<div class="modal fade" id="tagsModal" tabindex="-1" aria-labelledby="tagsTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-0 pb-0">
-                <h6 class="modal-title font-weight-bold" id="tagsTitle">전체 태그</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="d-flex gap-2 flex-wrap">
-                    <span th:each="t : ${tags}"
-                          class="tag-chip"
-                          th:attr="data-tag=${t.code}"
-                          th:text="${t.description}">
-                        자연
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <script th:inline="javascript">
+        const course = {
+            id: /*[[${course.id}]]*/ 0,
+            startLat: /*[[${course.startLat}]]*/ 37.5665,
+            startLng: /*[[${course.startLng}]]*/ 126.9780,
+            endLat: /*[[${course.endLat}]]*/ 37.5700,
+            endLng: /*[[${course.endLng}]]*/ 126.9800,
+            routeData: /*[[${course.routeData}]]*/ '[]',
+            distance: /*[[${course.distance}]]*/ 0,
+            duration: /*[[${course.duration}]]*/ 0
+        };
 
-<script th:inline="javascript">
-    document.getElementById('backBtn').addEventListener('click', function () {
-        history.back();
-    });
-
-    const course = {
-        id: /*[[${course.id}]]*/ 0,
-        startLat: /*[[${course.startLat}]]*/ 37.5665,
-        startLng: /*[[${course.startLng}]]*/ 126.9780,
-        endLat: /*[[${course.endLat}]]*/ 37.5700,
-        endLng: /*[[${course.endLng}]]*/ 126.9800,
-        routeData: /*[[${course.routeData}]]*/ '[]',
-        distance: /*[[${course.distance}]]*/ 0,
-        duration: /*[[${course.duration}]]*/ 0
-    };
-
-    const map = new kakao.maps.Map(
-        document.getElementById('map'),
-        {
-            center: new kakao.maps.LatLng(course.startLat, course.startLng),
-            level: 3
-        }
-    );
-
-    document.getElementById('distance').innerText = formatDistance(course.distance);
-    document.getElementById('duration').innerText = formatDuration(course.duration);
-
-    showCourseOnMap();
-    const pinMemberLoggedIn = /*[[${loginMember != null}]]*/ false;
-
-    document.querySelectorAll('[data-score]').forEach(button => {
-        button.addEventListener('click', () => saveRating(Number(button.dataset.score)));
-    });
-    async function saveRating(score) {
-        const buttons = document.querySelectorAll('#ratingModal .btn-action');
-        const errorMessage = document.getElementById('ratingError');
-        buttons.forEach(button => button.disabled = true);
-        errorMessage.textContent = '';
-        try {
-            const response = await fetch(`/walk/course/${course.id}/rating`, {
-                method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({score})
-            });
-            if (response.status === 401 || response.redirected) {
-                location.href = '/member/sign-in?redirectURL=' + encodeURIComponent(location.pathname);
-                return;
-            }
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || '별점 저장에 실패했습니다.');
-            }
-            location.reload();
-        } catch (error) { errorMessage.textContent = error.message; }
-        finally { buttons.forEach(button => button.disabled = false); }
-    }
-
-    function showCourseOnMap() {
-        let routeData;
-        try {
-            routeData = typeof course.routeData === 'string'
-                ? JSON.parse(course.routeData)
-                : course.routeData;
-        } catch (error) {
-            console.error(error);
-            return;
-        }
-
-        if (!routeData || routeData.length === 0) return;
-
-        const path = routeData.map(point => new kakao.maps.LatLng(point[1], point[0]));
-
-        const polyline = new kakao.maps.Polyline({
-            path: path,
-            strokeWeight: 5,
-            strokeColor: '#1d1d1f',
-            strokeOpacity: 0.8,
-            strokeStyle: 'solid'
-        });
-
-        polyline.setMap(map);
-
-        const bounds = new kakao.maps.LatLngBounds();
-        path.forEach(position => bounds.extend(position));
-        map.setBounds(bounds, 40, 40, 40, 40);
-    }
-
-    function addTag(tagCode) {
-        fetch(`/walk/course/${course.id}/tag`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ tag: tagCode })
-        })
-        .then(response => {
-            if (response.status === 401 ||
-                (response.redirected && new URL(response.url).pathname === '/member/sign-in')) {
-                const returnUrl = location.pathname + location.search + location.hash;
-                location.href = '/member/sign-in?redirectURL=' + encodeURIComponent(returnUrl);
-                return;
-            }
-            if (!response.ok) {
-                const contentType = response.headers.get('Content-Type') || '';
-                if (contentType.includes('application/json')) {
-                    return response.json().then(error => { throw new Error(error.message); });
-                }
-                return response.text().then(msg => { throw new Error(msg); });
-            }
-            location.reload();
-        })
-        .catch(error => {
-            alert(error.message || '태그 추가 실패');
-        });
-    }
-
-    function formatDistance(distance) {
-        if (distance == null) return '';
-        return distance >= 1000
-            ? (distance / 1000).toFixed(1) + ' km'
-            : distance + ' m';
-    }
-
-    function formatDuration(duration) {
-        if (duration == null) return '';
-        return Math.round(duration / 60) + '분';
-    }
-
-</script>
-
-<script th:src="@{/js/walk-pins.js}"></script>
-
+        const pinMemberLoggedIn = /*[[${loginMember != null}]]*/ false;
+    </script>
+    <script th:src="@{/js/walk-detail.js}"></script>
+    <script th:src="@{/js/walk-pins.js}"></script>
 </body>
 </html>
 

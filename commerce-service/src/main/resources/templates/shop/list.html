@@ -4,98 +4,59 @@
     <meta charset="utf-8">
     <title>THGTE - Shop</title>
 
-    <th:block th:replace="~{shop/components :: styles}"></th:block>
+    <th:block th:replace="~{shop/fragments :: styles}"></th:block>
 </head>
-
 <body class="theme shop-page" data-view="shop-list">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">Shop</h2>
 
-<div class="page">
-
-    <!-- 제목 -->
-    <div class="page-head">
-        <h2 class="page-title m-0">Shop</h2>
-
-        <div class="d-flex gap-2">
-            <a th:href="@{/shop/add}" class="btn-action">등록</a>
-            <a th:href="@{/}" class="btn-action">뒤로</a>
+            <div class="d-flex gap-2">
+                <a th:href="@{/shop/add}"   class="btn-action">등록</a>
+                <a th:href="@{/}"           class="btn-action">뒤로</a>
+            </div>
         </div>
-    </div>
 
-    <!-- 상품 없음 -->
-    <div th:if="${items.isEmpty()}"
-         class="panel text-center">
-        등록된 상품이 없습니다
-    </div>
+        <div th:if="${items.isEmpty()}" class="panel text-center">
+            등록된 상품이 없습니다
+        </div>
 
-    <!-- 상품 목록 -->
-    <div th:if="${not items.isEmpty()}"
-         class="product-grid">
+        <div th:if="${not items.isEmpty()}" class="product-grid">
+            <a th:each="item : ${items}"
+               th:href="@{/shop/item/{itemId}(itemId=${item.id})}"
+               class="panel product-card">
+                <div class="product-image">
+                    <img th:if="${item.storedFileName != null}"
+                         th:src="@{/images/{fileName}(fileName=${item.storedFileName})}"
+                         th:alt="${item.name}">
 
-        <a th:each="item : ${items}"
-           th:href="@{/shop/item/{itemId}(itemId=${item.id})}"
-           class="panel product-card">
-
-            <!-- 이미지 -->
-            <div class="product-image">
-
-                <img th:if="${item.storedFileName != null}"
-                     th:src="@{/images/{fileName}(fileName=${item.storedFileName})}"
-                     th:alt="${item.name}">
-
-                <span th:unless="${item.storedFileName != null}"
-                      class="no-image">
-                    이미지 없음
-                </span>
-
-            </div>
-
-            <!-- 상품 정보 -->
-            <div class="product-info">
-
-                <div class="product-name"
-                     th:text="${item.name}">
-                    상품명
+                    <span th:if="${item.storedFileName == null}" class="no-image">
+                        이미지 없음
+                    </span>
                 </div>
 
-                <div class="product-price"
-                     th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
-                    10,000원
+                <div class="product-info">
+                    <div class="product-name" th:text="${item.name}">상품명</div>
+
+                    <div class="product-price"
+                         th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
+                        10,000원
+                    </div>
+
+                    <div class="product-meta">
+                        <span th:if="${item.stock > 0}" th:text="${'재고 ' + item.stock + '개'}">
+                            재고 5개
+                        </span>
+                        <span th:unless="${item.stock > 0}">품절</span>
+                        <span th:text="${item.open} ? '판매 중' : '판매 중지'">판매 상태</span>
+                    </div>
                 </div>
+            </a>
+        </div>
 
-                <div class="product-meta">
-
-                    <span th:if="${item.stock > 0}"
-                          th:text="'재고 ' + ${item.stock} + '개'">
-                        재고 5개
-                    </span>
-
-                    <span th:unless="${item.stock > 0}"
-                          >
-                        품절
-                    </span>
-
-                    <span th:if="${item.open}">
-                        판매 중
-                    </span>
-
-                    <span th:unless="${item.open}">
-                        판매 중지
-                    </span>
-
-                </div>
-
-            </div>
-
-        </a>
-
+        <div th:replace="~{common/pagination :: pager(${items}, @{/shop})}"></div>
     </div>
-
-    <!-- 페이지네이션 -->
-    <div th:replace="~{common/pagination :: pager(${items}, @{/shop})}"></div>
-
-</div>
-
 </body>
 </html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <nav th:fragment="tabs(section, tab)" class="account-tabs" aria-label="내 활동">
+        <th:block th:if="${section == 'Course'}">
+            <a class="btn-action" th:href="@{/member/my-course}"
+               th:attr="aria-current=${tab == 'my-course' ? 'page' : null}">        내 코스</a>
+            <a class="btn-action" th:href="@{/member/my-pin}"
+               th:attr="aria-current=${tab == 'my-pin' ? 'page' : null}">           내 쪽지</a>
+            <a class="btn-action" th:href="@{/member/my-chat}"
+               th:attr="aria-current=${tab == 'my-chat' ? 'page' : null}">          내 채팅</a>
+            <a class="btn-action" th:href="@{/member/my-course-review}"
+               th:attr="aria-current=${tab == 'my-course-review' ? 'page' : null}"> 내 후기</a>
+        </th:block>
+
+        <th:block th:if="${section == 'Talk'}">
+            <a class="btn-action" th:href="@{/member/my-talk}"
+               th:attr="aria-current=${tab == 'post' ? 'page' : null}">             내 글</a>
+            <a class="btn-action" th:href="@{/member/my-talk(tab='comment')}"
+               th:attr="aria-current=${tab == 'comment' ? 'page' : null}">          내 댓글</a>
+        </th:block>
+
+        <th:block th:if="${section == 'Shop'}">
+            <a class="btn-action" th:href="@{/member/my-shop}"
+               th:attr="aria-current=${tab == 'item' ? 'page' : null}">             내 상품</a>
+            <a class="btn-action" th:href="@{/member/my-order}"
+               th:attr="aria-current=${tab == 'order' ? 'page' : null}">            내 주문</a>
+            <a class="btn-action" th:href="@{/member/my-review}"
+               th:attr="aria-current=${tab == 'review' ? 'page' : null}">           내 후기</a>
+            <a class="btn-action" th:href="@{/cart}">장바구니</a>
+        </th:block>
+    </nav>
+
+    <th:block th:fragment="list(entries, listUrl)">
+        <p th:if="${entries.empty}" class="panel text-center">아직 활동 내역이 없습니다</p>
+
+        <div class="account-list">
+            <a class="panel account-card" th:each="entry : ${entries}" th:href="${entry.url}">
+                <div class="account-info">
+                    <div class="account-title" th:text="${entry.title}">제목</div>
+
+                    <div class="account-meta">
+                        <span th:if="${!#strings.isEmpty(entry.context)}" th:text="${entry.context}">코스 이름</span>
+                        <time th:text="${#temporals.format(entry.date, 'yyyy.MM.dd')}"></time>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div th:replace="~{common/pagination :: pager(${entries}, ${listUrl})}"></div>
+    </th:block>
+</body>
+</html>

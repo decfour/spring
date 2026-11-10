@@ -2,42 +2,37 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-
-    <title th:text="${isEdit ?: false} ? 'THGTE - Edit Post' : 'THGTE - Add Post'">
-        THGTE - Add Post
-    </title>
+    <title th:text="${isEdit ?: false} ? 'THGTE - Edit Post' : 'THGTE - Add Post'">THGTE - Add Post</title>
 
     <th:block th:replace="~{common/header :: styles}"></th:block>
-    <link rel="stylesheet" th:href="@{/css/talk.css}">
+    <link rel="stylesheet" th:href="@{/css/community.css}">
 </head>
-
 <body class="theme" data-view="community-form">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">
+                Talk
+                <span class="subtitle" th:text="${isEdit ?: false} ? 'Edit' : 'Add'">Add</span>
+            </h2>
 
-<div class="page">
+            <a th:href="@{/community}" class="btn-action">목록</a>
+        </div>
 
-    <div class="page-head">
-        <h2 class="page-title m-0">
-            Talk <span class="subtitle" th:text="${isEdit ?: false} ? 'Edit' : 'Add'">Add</span>
-        </h2>
-        <a th:href="@{/community}" class="btn-action">목록</a>
+        <form th:action th:object="${postForm}" method="post">
+            <input type="hidden" th:if="${isEdit ?: false}" th:field="*{id}">
+
+            <th:block th:replace="~{common/writing-form :: fields('제목을 입력하세요', '내용', '내용을 입력하세요...')}"></th:block>
+
+            <div th:replace="~{common/writing-form :: actions(
+                ${isEdit ?: false}
+                    ? @{/community/post/{id}(id=${postForm.id})}
+                    : @{/community},
+                ${isEdit ?: false}
+            )}">
+            </div>
+        </form>
     </div>
-
-    <form th:action th:object="${postForm}" method="post">
-
-        <!-- 수정 모드일 때 ID 전달 -->
-        <input type="hidden"
-               th:if="${isEdit ?: false}"
-               th:field="*{id}">
-
-        <th:block th:replace="~{common/writingForm :: fields('제목을 입력하세요', '내용', '내용을 입력하세요...')}"></th:block>
-
-        <div th:replace="~{common/writingForm :: actions(${isEdit ?: false} ? @{/community/post/{id}(id=${postForm.id})} : @{/community}, ${isEdit ?: false})}"></div>
-
-    </form>
-
-</div>
-
 </body>
 </html>

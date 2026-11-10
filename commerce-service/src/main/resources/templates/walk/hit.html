@@ -4,141 +4,92 @@
     <meta charset="UTF-8">
     <title>THGTE - Walk Hit</title>
 
-    <th:block th:replace="~{walk/components :: styles}"></th:block>
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
+    <th:block th:replace="~{walk/fragments :: styles}"></th:block>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
 </head>
 
 <body class="theme walk-page" data-view="walk-hit">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">
+                Walking <span class="subtitle">Hit</span>
+            </h2>
 
-<div class="page">
-
-    <div class="page-head">
-        <h2 class="page-title m-0">
-            Walking <span class="subtitle">Hit</span>
-        </h2>
-
-        <div class="d-flex gap-2">
-            <a th:href="@{/walk}" class="btn-action">뒤로</a>
-        </div>
-    </div>
-
-    <div th:replace="~{walk/components :: map('평균 별점 기준 상위 30개 산책 코스', false)}"></div>
-
-    <div class="course-section">
-        <div th:if="${courses == null or courses.isEmpty()}" class="course-empty">
-            추천 산책 코스가 없습니다.
+            <div class="d-flex gap-2">
+                <a th:href="@{/walk}" class="btn-action">뒤로</a>
+            </div>
         </div>
 
-        <div th:if="${courses != null and !courses.isEmpty()}" id="courseList" class="course-list">
+        <div th:replace="~{walk/fragments :: map(
+            message='평균 별점 기준 상위 30개 산책 코스', showLocation=false, showDetails=false
+        )}"></div>
 
-            <div th:each="course, iterStat : ${courses}"
-                 class="course-card"
-                 th:data-id="${course.id}"
-                 th:data-route="${course.routeData}"
-                 th:data-lat="${course.startLat}"
-                 th:data-lng="${course.startLng}">
+        <div class="course-section">
+            <div th:if="${courses == null or courses.isEmpty()}" class="course-empty">
+                추천 산책 코스가 없습니다.
+            </div>
 
-                <th:block th:with="rank=${courses.number * courses.size + iterStat.count}">
-                    <div class="course-rank"
-                         th:text="${rank}">
-                        1
+            <div th:if="${courses != null and !courses.isEmpty()}" id="courseList" class="entry-list">
+                <div th:each="course, iterStat : ${courses}"
+                     class="course-card"
+                     th:data-id="${course.id}"
+                     th:data-route="${course.routeData}"
+                     th:data-lat="${course.startLat}"
+                     th:data-lng="${course.startLng}">
+
+                    <div class="course-rank" th:text="${courses.number * courses.size + iterStat.count}">1</div>
+
+                    <div class="course-body">
+                        <div class="course-name">
+                            <a th:href="@{/walk/course/{id}(id=${course.id})}"
+                               title="코스 상세보기"
+                               class="course-link"
+                               onclick="event.stopPropagation();">
+                                <span class="course-title" th:text="${course.title}">코스 이름</span>
+                                <span class="course-arrow" aria-hidden="true">↗</span>
+                            </a>
+                        </div>
+
+                        <div class="course-meta">
+                            <span th:text="${course.distance >= 1000
+                                ? #numbers.formatDecimal(course.distance / 1000.0, 1, 1) + ' km'
+                                : course.distance + ' m'}">
+                                0 m
+                            </span>
+
+                            <span>•</span>
+
+                            <span class="course-rating" aria-live="polite">
+                                <span th:text="${course.ratingCount > 0
+                                    ? '★ ' + #numbers.formatDecimal(course.averageRating, 1, 1) + ' · 평가 ' + course.ratingCount + '명'
+                                    : '아직 평가 없음'}"></span>
+                            </span>
+                        </div>
                     </div>
-                </th:block>
 
-                <div class="course-content">
-                    <div class="course-name">
-                        <a th:href="@{/walk/course/{id}(id=${course.id})}"
-                           title="코스 상세보기"
-                           class="course-link"
-                           onclick="event.stopPropagation();">
-                            <span class="course-title" th:text="${course.title}">코스 이름</span>
-                            <span class="course-arrow" aria-hidden="true">↗</span>
+                    <div class="course-actions">
+                        <a th:href="@{/walk/course/{id}/chat(id=${course.id})}"
+                           onclick="event.stopPropagation();"
+                           class="btn-circle course-chat"
+                           title="코스 채팅 홈"
+                           aria-label="코스 채팅 홈">
+                            <svg width="14" height="14" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="1.8"
+                                 stroke-linecap="round" stroke-linejoin="round"
+                                 aria-hidden="true">
+                                <use th:href="@{/images/icons/chat.svg#chat}"/>
+                            </svg>
                         </a>
                     </div>
-
-                    <div class="course-info">
-                        <span th:text="${course.distance >= 1000 ? #numbers.formatDecimal(course.distance / 1000.0, 1, 1) + ' km' : course.distance + ' m'}">
-                            0 m
-                        </span>
-
-                        <span>•</span>
-
-                        <span class="course-ratings" aria-live="polite"><span th:text="${course.ratingCount > 0 ? '★ ' + #numbers.formatDecimal(course.averageRating, 1, 1) + ' · 평가 ' + course.ratingCount + '명' : '아직 평가 없음'}"></span></span>
-                    </div>
                 </div>
-            <div class="course-actions">
-                
-                <a th:href="@{/walk/course/{id}/chat(id=${course.id})}" onclick="event.stopPropagation();" class="btn-circle course-chat" title="코스 채팅 홈" aria-label="코스 채팅 홈"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z"/></svg></a>
-            </div>
             </div>
 
+            <div th:replace="~{common/pagination :: pager(${courses}, @{/walk/course/hit})}"></div>
         </div>
-        <div th:replace="~{common/pagination :: pager(${courses}, @{/walk/course/hit})}"></div>
     </div>
 
-</div>
-
-<script>
-    const map = new kakao.maps.Map(
-        document.getElementById('map'),
-        {
-            center: new kakao.maps.LatLng(37.5665, 126.9780),
-            level: 3
-        }
-    );
-
-    let currentMarker = null;
-    let currentRoute = null;
-
-    document.querySelectorAll('.course-card').forEach(card => {
-        card.addEventListener('click', function() {
-            document.querySelectorAll('.course-card').forEach(c => c.classList.remove('selected'));
-            this.classList.add('selected');
-            showCourseOnMap(this);
-        });
-    });
-
-    function showCourseOnMap(card) {
-        try {
-            const routeData = JSON.parse(card.dataset.route);
-            const startLat = parseFloat(card.dataset.lat);
-            const startLng = parseFloat(card.dataset.lng);
-            const startPosition = new kakao.maps.LatLng(startLat, startLng);
-
-            map.setCenter(startPosition);
-
-            if (currentRoute) {
-                currentRoute.setMap(null);
-            }
-
-            if (currentMarker) {
-                currentMarker.setMap(null);
-            }
-
-            currentMarker = new kakao.maps.Marker({
-                position: startPosition,
-                map: map
-            });
-
-            const path = routeData.map(point => new kakao.maps.LatLng(point[1], point[0]));
-
-            currentRoute = new kakao.maps.Polyline({
-                path: path,
-                strokeWeight: 5,
-                strokeColor: '#1d1d1f',
-                strokeOpacity: 0.85,
-                strokeStyle: 'solid'
-            });
-
-            currentRoute.setMap(map);
-        } catch (e) {
-            console.error('코스 데이터 파싱 실패:', e);
-        }
-    }
-
-</script>
-
+    <script th:src="@{/js/walk-hit.js}"></script>
 </body>
 </html>

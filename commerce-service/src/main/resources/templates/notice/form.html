@@ -2,40 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-
-    <title th:text="${isEdit ?: false} ? 'THGTE - Edit Notice' : 'THGTE - Add Notice'">
-        THGTE - Add Notice
-    </title>
+    <title th:text="${isEdit ?: false} ? 'THGTE - Edit Notice' : 'THGTE - Add Notice'">THGTE - Add Notice</title>
 
     <th:block th:replace="~{common/header :: styles}"></th:block>
 </head>
-
 <body class="theme" data-view="notice-form">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">
+                Talk
+                <span class="subtitle" th:text="${isEdit ?: false} ? 'Notice Edit' : 'Notice Add'">Notice Add</span>
+            </h2>
 
-<div class="page">
+            <a th:href="@{/community}" class="btn-action">목록</a>
+        </div>
 
-    <div class="page-head">
-        <h2 class="page-title m-0">
-            Talk <span class="subtitle" th:text="${isEdit ?: false} ? 'Notice Edit' : 'Notice Add'">Notice Add</span>
-        </h2>
-        <a th:href="@{/community}" class="btn-action">목록</a>
+        <form th:action th:object="${noticeForm}" method="post">
+            <input type="hidden" th:if="${isEdit ?: false}" th:field="*{id}">
+
+            <th:block th:replace="~{common/writing-form :: fields('공지사항 제목을 입력하세요', '본문 내용', '공지사항 내용을 작성하세요...')}"></th:block>
+
+            <div th:replace="~{common/writing-form :: actions(
+                ${isEdit ?: false}
+                    ? @{/notice/{id}(id=${noticeForm.id})}
+                    : @{/community},
+                ${isEdit ?: false}
+            )}"></div>
+        </form>
     </div>
-
-    <form th:action th:object="${noticeForm}" method="post">
-
-        <input type="hidden"
-               th:if="${isEdit ?: false}"
-               th:field="*{id}">
-
-        <th:block th:replace="~{common/writingForm :: fields('공지사항 제목을 입력하세요', '본문 내용', '공지사항 내용을 작성하세요...')}"></th:block>
-
-        <div th:replace="~{common/writingForm :: actions(${isEdit ?: false} ? @{/notice/{id}(id=${noticeForm.id})} : @{/community}, ${isEdit ?: false})}"></div>
-
-    </form>
-
-</div>
-
 </body>
 </html>

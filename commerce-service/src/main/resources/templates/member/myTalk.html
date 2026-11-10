@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>THGTE - My Talk</title>
+
     <th:block th:replace="~{common/header :: styles}"></th:block>
-    <link rel="stylesheet" th:href="@{/css/my.css}">
+    <link rel="stylesheet" th:href="@{/css/account.css}">
 </head>
 <body class="theme">
-<div th:replace="~{common/header :: mainHeader}"></div>
-<main class="page">
-    <div class="page-head">
-        <h1 class="page-title m-0">My <span class="subtitle">Talk</span></h1>
-        <a class="btn-action" th:href="@{/member/my-page}">마이페이지</a>
-    </div>
-    <nav th:replace="~{member/components :: tabs('Talk', ${tab})}"></nav>
-    <th:block th:replace="~{member/components :: list(${entries}, ${listUrl})}"></th:block>
-</main>
+    <div th:replace="~{common/header :: mainHeader}"></div>
+
+    <main class="page">
+        <div class="page-head">
+            <h1 class="page-title m-0">My <span class="subtitle">Talk</span></h1>
+
+            <a class="btn-action" th:href="@{/member/my-page}">마이페이지</a>
+        </div>
+
+        <nav th:replace="~{member/fragments :: tabs('Talk', ${tab})}"></nav>
+        <th:block th:replace="~{member/fragments :: list(${entries}, ${listUrl})}"></th:block>
+    </main>
 </body>
 </html>

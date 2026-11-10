@@ -5,232 +5,125 @@
     <title>THGTE - My Shop</title>
 
     <th:block th:replace="~{common/header :: styles}"></th:block>
-    <link rel="stylesheet" th:href="@{/css/my.css}">
+    <link rel="stylesheet" th:href="@{/css/account.css}">
 </head>
 
 <body class="theme" data-view="member-myShop">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">My <span class="subtitle">Shop</span></h2>
 
-<div class="page">
-
-    <div class="page-head">
-        <h2 class="page-title m-0">
-            My <span class="subtitle">Shop</span>
-        </h2>
-
-        <div class="d-flex gap-2">
-            <a th:href="@{/member/my-page}" class="btn-action">마이페이지</a>
-        </div>
-    </div>
-
-    <nav th:replace="~{member/components :: tabs('Shop', ${tab})}"></nav>
-
-    <div class="account-section" th:if="${tab == 'item'}">
-
-        <!-- 등록한 상품이 없는 경우 -->
-        <div th:if="${myItems == null or myItems.isEmpty()}"
-             class="panel text-center">
-            등록된 상품이 없습니다
+            <div class="d-flex gap-2">
+                <a th:href="@{/member/my-page}" class="btn-action">마이페이지</a>
+            </div>
         </div>
 
-        <!-- 등록한 상품이 있는 경우 -->
-        <div th:if="${myItems != null and !myItems.isEmpty()}"
-             class="account-list">
+        <nav th:replace="~{member/fragments :: tabs('Shop', ${tab})}"></nav>
 
-            <a th:each="item : ${myItems}"
-               th:href="@{/shop/item/{itemId}(itemId=${item.id})}"
-               class="panel account-card">
+        <div class="account-section" th:if="${tab == 'item'}">
+            <!-- 등록한 상품이 없는 경우 -->
+            <div th:if="${myItems == null or myItems.isEmpty()}" class="panel text-center">등록된 상품이 없습니다</div>
 
-                <div class="account-info">
+            <!-- 등록한 상품이 있는 경우 -->
+            <div th:if="${myItems != null and !myItems.isEmpty()}" class="account-list">
+                <a th:each="item : ${myItems}" th:href="@{/shop/item/{itemId}(itemId=${item.id})}"
+                   class="panel account-card">
+                    <div class="account-info">
+                        <div class="account-title" th:text="${item.name}">내 등록 상품</div>
 
-                    <div class="account-title"
-                         th:text="${item.name}">
-                        내 등록 상품
+                        <div class="account-meta">
+                            <span>ID: <span th:text="${item.id}">1</span></span>
+
+                            <span>•</span>
+
+                            <span th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">10,000원</span>
+
+                            <span>•</span>
+
+                            <span th:if="${item.stock > 0}" th:text="${item.stock} + '개'">5개</span>
+                            <span th:unless="${item.stock > 0}" class="account-state">품절</span>
+                        </div>
                     </div>
 
-                    <div class="account-meta">
-
-                        <span>
-                            ID:
-                            <span th:text="${item.id}">1</span>
-                        </span>
-
-                        <span>•</span>
-
-                        <span th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'">
-                            10,000원
-                        </span>
-
-                        <span>•</span>
-
-                        <span th:if="${item.stock > 0}"
-                              th:text="${item.stock} + '개'">
-                            5개
-                        </span>
-
-                        <span th:unless="${item.stock > 0}"
-                              class="account-state">
-                            품절
-                        </span>
-
+                    <div class="account-actions">
+                        <span th:if="${item.open}"      class="account-state">판매 중</span>
+                        <span th:unless="${item.open}"  class="account-state">판매 중지</span>
                     </div>
-
-                </div>
-
-                <div class="account-right">
-
-                    <span th:if="${item.open}"
-                          class="account-state">
-                        판매 중
-                    </span>
-
-                    <span th:unless="${item.open}"
-                          class="account-state">
-                        판매 중지
-                    </span>
-
-                </div>
-
-            </a>
-
-        </div>
-
-        <!-- 페이지네이션 -->
-        <div th:replace="~{common/pagination :: pager(${myItems}, @{/member/my-shop})}"></div>
-
-    </div>
-
-    <div class="account-section" th:if="${tab == 'review'}">
-
-        <div th:if="${myReviews == null or myReviews.isEmpty()}"
-             class="panel text-center">
-            작성한 리뷰가 없습니다
-        </div>
-
-        <div th:if="${myReviews != null and !myReviews.isEmpty()}"
-             class="account-list">
-
-            <a th:each="review : ${myReviews}"
-               th:href="@{/shop/item/{itemId}/review/{reviewId}(itemId=${review.item.id}, reviewId=${review.id})}"
-               class="panel account-card">
-
-                <div class="account-info">
-
-                    <div class="account-title"
-                         th:text="${review.title}">
-                        리뷰 제목
-                    </div>
-
-                    <div class="account-meta">
-
-                    <span>
-                        ID:
-                        <span th:text="${review.id}">1</span>
-                    </span>
-
-                        <span>•</span>
-
-                        <span
-                              th:text="${review.item.name}">
-                        상품명
-                    </span>
-
-                    </div>
-
-                </div>
-
-            </a>
-
-        </div>
-
-        <!-- 페이지네이션 -->
-        <div th:replace="~{common/pagination :: pager(${myReviews}, @{/member/my-review})}"></div>
-
-    </div>
-
-    <div class="account-section" th:if="${tab == 'order'}">
-
-        <div th:if="${purchases == null or purchases.isEmpty()}" class="panel text-center">
-            주문 내역이 없습니다
-        </div>
-
-        <div th:if="${purchases != null and !purchases.isEmpty()}" class="account-list">
-
-            <div th:each="purchase : ${purchases}" class="panel account-card">
-
-                <div class="account-info">
-
-                    <div class="account-title">
-                    <span th:text="${purchase.purchaseItems[0].item.name}">
-                        상품명
-                    </span>
-
-                        <span th:if="${purchase.purchaseItems.size() > 1}"
-                              th:text="${'외 ' + (purchase.purchaseItems.size() - 1) + '건'}"
-                              class="purchase-count">
-                            외 1건
-                        </span>
-                    </div>
-
-                    <div class="account-meta">
-                    <span>
-                        주문번호:
-                        <span th:text="${purchase.id}">1</span>
-                    </span>
-
-                        <span>•</span>
-
-                        <span th:text="${#numbers.formatInteger(purchase.getTotalPrice(), 0, 'COMMA')} + '원'">
-                        10,000원
-                    </span>
-
-                        <span>•</span>
-
-                        <span th:text="${#temporals.format(purchase.createdAt, 'yyyy-MM-dd HH:mm')}">
-                        2026-05-24 14:00
-                    </span>
-                    </div>
-
-                </div>
-
-                <div class="account-right">
-
-                <span th:if="${purchase.status.name() == 'ORDER'}"
-                      class="account-state">
-                    주문 완료
-                </span>
-
-                    <span th:unless="${purchase.status.name() == 'ORDER'}"
-                          class="account-state">
-                    주문 취소
-                </span>
-
-                    <form th:if="${purchase.status.name() == 'ORDER'}"
-                          th:action="@{/order/{id}/cancel(id=${purchase.id})}"
-                          method="post"
-                          class="m-0 d-inline-block">
-
-                        <button type="submit"
-                                class="btn-action"
-                                onclick="return confirm('정말 취소하시겠습니까?');">
-                            취소
-                        </button>
-
-                    </form>
-
-                </div>
-
+                </a>
             </div>
 
+            <div th:replace="~{common/pagination :: pager(${myItems}, @{/member/my-shop})}"></div>
         </div>
 
-        <!-- 페이지네이션 -->
-        <div th:replace="~{common/pagination :: pager(${purchases}, @{/member/my-order})}"></div>
+        <div class="account-section" th:if="${tab == 'review'}">
+            <div th:if="${myReviews == null or myReviews.isEmpty()}" class="panel text-center">작성한 리뷰가 없습니다</div>
 
+            <div th:if="${myReviews != null and !myReviews.isEmpty()}" class="account-list">
+                <a th:each="review : ${myReviews}"
+                   th:href="@{/shop/item/{itemId}/review/{reviewId}(itemId=${review.item.id}, reviewId=${review.id})}"
+                   class="panel account-card">
+                    <div class="account-info">
+                        <div class="account-title" th:text="${review.title}">리뷰 제목</div>
+
+                        <div class="account-meta">
+                            <span>ID: <span th:text="${review.id}">1</span></span>
+
+                            <span>•</span>
+
+                            <span th:text="${review.item.name}">상품명</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div th:replace="~{common/pagination :: pager(${myReviews}, @{/member/my-review})}"></div>
+        </div>
+
+        <div class="account-section" th:if="${tab == 'order'}">
+            <div th:if="${purchases == null or purchases.isEmpty()}" class="panel text-center">주문 내역이 없습니다</div>
+
+            <div th:if="${purchases != null and !purchases.isEmpty()}" class="account-list">
+                <div th:each="purchase : ${purchases}" class="panel account-card">
+                    <div class="account-info">
+                        <div class="account-title">
+                            <span th:text="${purchase.purchaseItems[0].item.name}">상품명</span>
+
+                            <span th:if="${purchase.purchaseItems.size() > 1}"
+                                  th:text="${'외 ' + (purchase.purchaseItems.size() - 1) + '건'}"
+                                  class="purchase-count">외 1건</span>
+                        </div>
+
+                        <div class="account-meta">
+                            <span>주문번호: <span th:text="${purchase.id}">1</span></span>
+
+                            <span>•</span>
+
+                            <span th:text="${#numbers.formatInteger(purchase.getTotalPrice(), 0, 'COMMA')} + '원'">10,000원</span>
+
+                            <span>•</span>
+
+                            <span th:text="${#temporals.format(purchase.createdAt, 'yyyy-MM-dd HH:mm')}">2026-05-24 14:00</span>
+                        </div>
+                    </div>
+
+                    <div class="account-actions">
+                        <span th:if="${purchase.status.name() == 'ORDER'}"      class="account-state">주문 완료</span>
+                        <span th:unless="${purchase.status.name() == 'ORDER'}"  class="account-state">주문 취소</span>
+
+                        <form th:if="${purchase.status.name() == 'ORDER'}"
+                              th:action="@{/order/{id}/cancel(id=${purchase.id})}" method="post"
+                              class="m-0 d-inline-block">
+                            <button type="submit" class="btn-action"
+                                    onclick="return confirm('정말 취소하시겠습니까?');">취소</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div th:replace="~{common/pagination :: pager(${purchases}, @{/member/my-order})}"></div>
+        </div>
     </div>
-
-</div>
-
 </body>
 </html>

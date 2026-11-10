@@ -4,47 +4,55 @@
     <meta charset="UTF-8">
     <title>THGTE - Cart</title>
 
-    <th:block th:replace="~{shop/components :: styles}"></th:block>
+    <th:block th:replace="~{shop/fragments :: styles}"></th:block>
 </head>
 <body class="theme shop-page" data-view="cart-cartList">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">Cart</h2>
+            <a th:href="@{/shop}" class="btn-action">상점</a>
+        </div>
 
-<div class="page">
-    <div class="page-head">
-        <h2 class="page-title m-0">Cart</h2>
-        <a th:href="@{/shop}" class="btn-action">상점</a>
-    </div>
+        <div th:if="${#lists.isEmpty(cartItems)}" class="panel text-center">장바구니가 비어 있습니다</div>
 
-    <div th:if="${#lists.isEmpty(cartItems)}" class="panel text-center">
-        장바구니가 비어 있습니다
-    </div>
+        <div th:if="${not #lists.isEmpty(cartItems)}">
+            <article th:each="cartItem : ${cartItems}" class="panel cart-row">
+                <div>
+                    <a th:href="@{/shop/item/{itemId}(itemId=${cartItem.item.id})}"
+                       th:text="${cartItem.item.name}" class="cart-item-link">상품명</a>
 
-    <div th:if="${not #lists.isEmpty(cartItems)}">
-        <article th:each="cartItem : ${cartItems}" class="panel cart-row">
-            <div>
-                <a th:href="@{/shop/item/{itemId}(itemId=${cartItem.item.id})}" th:text="${cartItem.item.name}" class="cart-item-link">상품명</a>
-                <div class="cart-meta">
-                    <span th:text="${#numbers.formatInteger(cartItem.item.price, 0, 'COMMA')} + '원'"></span>
-                    <span th:text="${cartItem.quantity} + '개'"></span>
-                    <strong th:text="${#numbers.formatInteger(cartItem.item.price * cartItem.quantity, 0, 'COMMA')} + '원'"></strong>
+                    <div class="cart-meta">
+                        <span th:text="${#numbers.formatInteger(cartItem.item.price, 0, 'COMMA')} + '원'"></span>
+                        <span th:text="${cartItem.quantity} + '개'"></span>
+                        <strong th:text="${#numbers.formatInteger(cartItem.item.price * cartItem.quantity, 0, 'COMMA')} + '원'"></strong>
+                    </div>
                 </div>
-            </div>
-            <form th:action="@{/cart/item/{id}/delete(id=${cartItem.id})}" method="post" class="m-0">
-                <button type="submit" class="btn-circle" aria-label="상품 삭제" title="상품 삭제">×</button>
-            </form>
-        </article>
 
-        <div class="summary-card">
-            <div th:replace="~{common/priceSummary :: total('총 결제 금액', ${totalPrice})}"></div>
-            <div class="form-actions">
-                <form th:action="@{/order/cart}" method="get" class="m-0">
-                    <button type="submit" class="btn-action">전체 주문</button>
+                <form th:action="@{/cart/item/{id}/delete(id=${cartItem.id})}" method="post" class="m-0">
+                    <button type="submit"
+                            class="btn-circle"
+                            aria-label="상품 삭제"
+                            title="상품 삭제">
+                        ×
+                    </button>
                 </form>
+            </article>
+
+            <div class="summary-card">
+                <div th:replace="~{common/price-summary :: total('총 결제 금액', ${totalPrice})}"></div>
+
+                <div class="form-actions">
+                    <form th:action="@{/order/cart}" method="get" class="m-0">
+                        <button type="submit"
+                                class="btn-action">
+                            전체 주문
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
 </body>
 </html>

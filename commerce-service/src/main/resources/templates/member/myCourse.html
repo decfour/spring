@@ -5,83 +5,55 @@
     <title>THGTE - My Course</title>
 
     <th:block th:replace="~{common/header :: styles}"></th:block>
-    <link rel="stylesheet" th:href="@{/css/my.css}">
+    <link rel="stylesheet" th:href="@{/css/account.css}">
 </head>
 
 <body class="theme" data-view="member-myCourse">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">My <span class="subtitle">Course</span></h2>
 
-<div class="page">
-
-    <div class="page-head">
-        <h2 class="page-title m-0">
-            My <span class="subtitle">Course</span>
-        </h2>
-
-        <div class="d-flex gap-2">
-            <a th:href="@{/member/my-page}" class="btn-action">마이페이지</a>
-        </div>
-    </div>
-
-    <nav th:replace="~{member/components :: tabs('Course', ${tab})}"></nav>
-
-    <div class="account-section" th:if="${tab == 'my-course'}">
-
-        <!-- 등록한 코스가 없는 경우 -->
-        <div th:if="${myCourses == null or myCourses.isEmpty()}"
-             class="panel text-center">
-            등록한 산책 코스가 없습니다
+            <div class="d-flex gap-2">
+                <a th:href="@{/member/my-page}" class="btn-action">마이페이지</a>
+            </div>
         </div>
 
-        <!-- 등록한 코스가 있는 경우 -->
-        <div th:if="${myCourses != null and !myCourses.isEmpty()}"
-             class="account-list">
+        <nav th:replace="~{member/fragments :: tabs('Course', ${tab})}"></nav>
 
-            <a th:each="course : ${myCourses}"
-               th:href="@{/walk/course/{courseId}(courseId=${course.id})}"
-               class="panel account-card">
+        <div class="account-section" th:if="${tab == 'my-course'}">
+            <!-- 등록한 코스가 없는 경우 -->
+            <div th:if="${myCourses == null or myCourses.isEmpty()}" class="panel text-center">등록한 산책 코스가 없습니다</div>
 
-                <div class="account-info">
+            <!-- 등록한 코스가 있는 경우 -->
+            <div th:if="${myCourses != null and !myCourses.isEmpty()}" class="account-list">
+                <a th:each="course : ${myCourses}"
+                   th:href="@{/walk/course/{courseId}(courseId=${course.id})}" class="panel account-card">
+                    <div class="account-info">
+                        <div class="account-title" th:text="${course.title}">산책 코스 이름</div>
 
-                    <div class="account-title"
-                         th:text="${course.title}">
-                        산책 코스 이름
+                        <div class="account-meta">
+                            <span>ID: <span th:text="${course.id}">1</span></span>
+
+                            <span>•</span>
+
+                            <span th:text="${course.distance + 'm'}">1200m</span>
+
+                            <span>•</span>
+
+                            <span th:text="${#temporals.format(course.createdAt, 'yyyy.MM.dd')}">2026.08.19</span>
+                        </div>
                     </div>
+                </a>
+            </div>
 
-                    <div class="account-meta">
-                        <span>ID: <span
-                                        th:text="${course.id}">1</span></span>
-
-                        <span>•</span>
-
-                        <span th:text="${course.distance + 'm'}">
-                            1200m
-                        </span>
-
-                        <span>•</span>
-
-                        <span th:text="${#temporals.format(course.createdAt, 'yyyy.MM.dd')}">
-                            2026.08.19
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </a>
-
+            <div th:replace="~{common/pagination :: pager(${myCourses}, @{/member/my-course})}"></div>
         </div>
 
-        <div th:replace="~{common/pagination :: pager(${myCourses}, @{/member/my-course})}"></div>
-
+        <th:block th:if="${tab != 'my-course'}">
+            <th:block th:replace="~{member/fragments :: list(${entries}, ${listUrl})}"></th:block>
+        </th:block>
     </div>
-
-    <th:block th:if="${tab != 'my-course'}">
-        <th:block th:replace="~{member/components :: list(${entries}, ${listUrl})}"></th:block>
-    </th:block>
-
-</div>
-
 </body>
 </html>

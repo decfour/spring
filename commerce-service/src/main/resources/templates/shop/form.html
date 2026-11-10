@@ -6,157 +6,123 @@
         THGTE - Add Product
     </title>
 
-    <th:block th:replace="~{shop/components :: styles}"></th:block>
+    <th:block th:replace="~{shop/fragments :: styles}"></th:block>
 </head>
 
 <body class="theme shop-page" data-view="shop-form">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">
+                Shop <span class="subtitle" th:text="${isEdit ?: false} ? 'Edit' : 'Add'">Add</span>
+            </h2>
 
-<div class="page">
-
-    <div class="page-head">
-        <h2 class="page-title m-0">
-            Shop <span class="subtitle" th:text="${isEdit ?: false} ? 'Edit' : 'Add'">Add</span>
-        </h2>
-        <a th:href="@{/shop}" class="btn-action">뒤로</a>
-    </div>
-
-    <form id="itemForm"
-          th:action
-          th:object="${item}"
-          method="post"
-          enctype="multipart/form-data">
-
-        <div class="field-group">
-            <label for="name" class="field-label">상품명</label>
-            <input type="text"
-                   id="name"
-                   th:field="*{name}"
-                   class="field"
-                   placeholder="상품명을 입력하세요"
-                   maxlength="30"
-                   th:errorclass="field-error">
-
-            <div class="field-feedback" th:errors="*{name}"></div>
+            <a th:href="@{/shop}" class="btn-action">뒤로</a>
         </div>
 
-        <div class="row field-group">
-            <div class="col-md-6">
-                <label for="price" class="field-label">가격</label>
-                <input type="number"
-                       id="price"
-                       th:field="*{price}"
-                       class="field"
-                       placeholder="가격을 입력하세요"
-                       th:errorclass="field-error">
+        <form id="itemForm" th:action th:object="${item}"
+              method="post" enctype="multipart/form-data">
+            <div class="field-group">
+                <label for="name" class="field-label">상품명</label>
+                <input type="text" id="name" class="field"
+                       th:field="*{name}"
+                       placeholder="상품명을 입력하세요" maxlength="30"
+                       th:errorclass="is-invalid">
 
-                <div class="field-feedback" th:errors="*{price}"></div>
+                <div class="field-feedback" th:errors="*{name}"></div>
             </div>
 
-            <div class="col-md-6 mt-4 mt-md-0">
-                <label for="stock" class="field-label">수량</label>
-                <input type="number"
-                       id="stock"
-                       th:field="*{stock}"
-                       class="field"
-                       placeholder="수량을 입력하세요"
-                       th:errorclass="field-error">
+            <div class="row field-group">
+                <div class="col-md-6">
+                    <label for="price" class="field-label">가격</label>
+                    <input type="number" id="price" class="field"
+                           th:field="*{price}"
+                           placeholder="가격을 입력하세요"
+                           th:errorclass="is-invalid">
 
-                <div class="field-feedback" th:errors="*{stock}"></div>
-            </div>
-        </div>
+                    <div class="field-feedback" th:errors="*{price}"></div>
+                </div>
 
-        <div class="field-group">
-            <label for="description" class="field-label">설명</label>
-            <textarea id="description"
-                      rows="4"
-                      th:field="*{description}"
-                      class="field"
-                      placeholder="상품 설명을 입력하세요..."
+                <div class="col-md-6 mt-4 mt-md-0">
+                    <label for="stock" class="field-label">수량</label>
+                    <input type="number" id="stock" class="field"
+                           th:field="*{stock}"
+                           placeholder="수량을 입력하세요"
+                           th:errorclass="is-invalid">
 
-                      th:errorclass="field-error"></textarea>
-
-            <div class="field-feedback" th:errors="*{description}"></div>
-        </div>
-
-        <div class="field-group">
-            <label class="field-label">카테고리</label>
-            <div class="d-flex flex-wrap gap-3 pt-1">
-                <div th:each="type : ${itemTypes}" class="form-check">
-                    <input type="radio"
-                           th:field="*{itemType}"
-                           th:value="${type.name()}"
-                           class="form-check-input">
-                    <label th:for="${#ids.prev('itemType')}"
-                           th:text="${type.description}"
-                           class="form-check-label">
-                    </label>
+                    <div class="field-feedback" th:errors="*{stock}"></div>
                 </div>
             </div>
-            <div class="field-feedback" th:errors="*{itemType}"></div>
-        </div>
 
-        <div class="field-group">
-            <label for="deliveryType" class="field-label">배송 방식</label>
-            <select id="deliveryType"
-                    th:field="*{deliveryType}"
-                    class="field"
-                    th:errorclass="field-error">
-                <option value="">배송 방식을 선택하세요</option>
-                <option th:each="type : ${deliveryTypes}"
-                        th:value="${type.name()}"
-                        th:text="${type.description}">
-                </option>
-            </select>
-            <div class="field-feedback" th:errors="*{deliveryType}"></div>
-        </div>
+            <div class="field-group">
+                <label for="description" class="field-label">설명</label>
+                <textarea id="description" class="field" rows="4"
+                          th:field="*{description}"
+                          placeholder="상품 설명을 입력하세요..."
+                          th:errorclass="is-invalid"></textarea>
 
-        <div class="field-group">
-            <label for="imageFile"
-                   class="field-label"
-                   th:text="${isEdit ?: false} ? '상품 이미지 변경' : '상품 대표 이미지'">
-                상품 대표 이미지
-            </label>
-            <input type="file"
-                   id="imageFile"
-                   th:field="*{imageFile}"
-                   class="field">
-        </div>
+                <div class="field-feedback" th:errors="*{description}"></div>
+            </div>
 
-        <div class="form-check mb-4">
-            <input type="checkbox"
-                   id="open"
-                   th:field="*{open}"
-                   class="form-check-input">
-            <label for="open" class="form-check-label">
-                판매 중
-            </label>
-        </div>
+            <div class="field-group">
+                <label class="field-label">카테고리</label>
+                <div class="d-flex flex-wrap gap-3 pt-1">
+                    <div th:each="type : ${itemTypes}" class="form-check">
+                        <input type="radio"
+                               th:field="*{itemType}"
+                               th:value="${type.name()}"
+                               class="form-check-input">
+                        <label th:for="${#ids.prev('itemType')}"
+                               th:text="${type.description}"
+                               class="form-check-label"></label>
+                    </div>
+                </div>
 
-        <div class="form-actions">
-            <a th:if="${isEdit ?: false}"
-               th:href="@{/shop/item/{id}(id=${item.id})}"
-               class="btn-action">
-                취소
-            </a>
+                <div class="field-feedback" th:errors="*{itemType}"></div>
+            </div>
 
-            <a th:unless="${isEdit ?: false}"
-               th:href="@{/shop}"
-               class="btn-action">
-                취소
-            </a>
+            <div class="field-group">
+                <label for="deliveryType" class="field-label">배송 방식</label>
+                <select id="deliveryType" class="field"
+                        th:field="*{deliveryType}"
+                        th:errorclass="is-invalid">
+                    <option value="">배송 방식을 선택하세요</option>
+                    <option th:each="type : ${deliveryTypes}"
+                            th:value="${type.name()}"
+                            th:text="${type.description}"></option>
+                </select>
 
-            <button type="submit"
-                    class="btn-action btn-primary"
-                    th:text="${isEdit ?: false} ? '수정' : '등록'">
-                등록
-            </button>
-        </div>
+                <div class="field-feedback" th:errors="*{deliveryType}"></div>
+            </div>
 
-    </form>
+            <div class="field-group">
+                <label for="imageFile" class="field-label"
+                       th:text="${isEdit ?: false} ? '상품 이미지 변경' : '상품 대표 이미지'">
+                    상품 대표 이미지
+                </label>
 
-</div>
+                <input type="file" id="imageFile" class="field" th:field="*{imageFile}">
+            </div>
 
+            <div class="form-check mb-4">
+                <input type="checkbox" id="open" class="form-check-input" th:field="*{open}">
+                <label for="open" class="form-check-label">판매 중</label>
+            </div>
+
+            <div class="form-actions">
+                <a th:href="${isEdit ?: false} ? @{/shop/item/{id}(id=${item.id})} : @{/shop}"
+                   class="btn-action">
+                    취소
+                </a>
+
+                <button type="submit"
+                        class="btn-action btn-primary"
+                        th:text="${isEdit ?: false} ? '수정' : '등록'">
+                    등록
+                </button>
+            </div>
+        </form>
+    </div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-/* Shared action buttons; page navigation lives in page_button.css. */
+/* Shared action buttons; page navigation lives in pagination.css. */
 .btn-action, .btn-like, .btn-circle {
     display: inline-flex;
     align-items: center;
@@ -62,5 +62,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .btn-action, .btn-like, .btn-circle { transition: none; }
+    .btn-action, .btn-like, .btn-circle {
+        transition: none;
+    }
 }

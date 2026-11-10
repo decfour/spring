@@ -5,53 +5,47 @@
     <title>THGTE - My Page</title>
 
     <th:block th:replace="~{common/header :: styles}"></th:block>
-    <link rel="stylesheet" th:href="@{/css/my.css}">
+    <link rel="stylesheet" th:href="@{/css/account.css}">
 </head>
 
 <body class="theme" data-view="member-myPage">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">My <span class="subtitle">Page</span></h2>
 
-<div class="page">
+            <div class="d-flex gap-2">
+                <a th:href="@{/}" class="btn-action">뒤로</a>
+            </div>
+        </div>
 
-    <div class="page-head">
-        <h2 class="page-title m-0">
-            My <span class="subtitle">Page</span>
-        </h2>
+        <div class="account-section">
+            <div class="panel">
+                <div class="profile-row">
+                    <span class="profile-label">이름</span>
+                    <span class="profile-value" th:text="${member.name}">       홍길동</span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-label">등급</span>
+                    <span class="profile-value" th:text="${member.memberType}"> USER</span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-label">ID</span>
+                    <span class="profile-value" th:text="${member.signInId}">   memberid</span>
+                </div>
+                <div class="profile-row">
+                    <span class="profile-label">Email</span>
+                    <span class="profile-value" th:text="${member.email}">      user@example.com</span>
+                </div>
+            </div>
 
-        <div class="d-flex gap-2">
-            <a th:href="@{/}" class="btn-action">뒤로</a>
+            <div class="account-menu">
+                <a th:href="@{/member/my-course}"   class="panel account-link">Course</a>
+                <a th:href="@{/member/my-talk}"     class="panel account-link">Talk</a>
+                <a th:href="@{/member/my-shop}"     class="panel account-link">Shop</a>
+            </div>
         </div>
     </div>
-
-    <div class="account-section">
-        <div class="panel">
-            <div class="profile-row">
-                <span class="profile-label">이름</span>
-                <span class="profile-value" th:text="${member.name}">홍길동</span>
-            </div>
-            <div class="profile-row">
-                <span class="profile-label">등급</span>
-                <span class="profile-value" th:text="${member.memberType}">USER</span>
-            </div>
-            <div class="profile-row">
-                <span class="profile-label">ID</span>
-                <span class="profile-value" th:text="${member.signInId}">memberid</span>
-            </div>
-            <div class="profile-row">
-                <span class="profile-label">Email</span>
-                <span class="profile-value" th:text="${member.email}">user@example.com</span>
-            </div>
-        </div>
-
-        <div class="action-grid">
-            <a th:href="@{/member/my-course}" class="panel action-card">Course</a>
-            <a th:href="@{/member/my-talk}" class="panel action-card">Talk</a>
-            <a th:href="@{/member/my-shop}" class="panel action-card">Shop</a>
-        </div>
-    </div>
-
-</div>
-
 </body>
 </html>

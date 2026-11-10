@@ -6,37 +6,39 @@
         THGTE - Add Review
     </title>
 
-    <th:block th:replace="~{walk/components :: styles}"></th:block>
+    <th:block th:replace="~{walk/fragments :: styles}"></th:block>
 </head>
 
 <body class="theme walk-page" data-view="review-form">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">
+                산책 후기 <span class="subtitle" th:text="${isEdit ?: false} ? '수정' : '작성'">작성</span>
+            </h2>
 
-<div class="page">
+            <a th:href="@{/walk/course/{courseId}/review(courseId=${courseId})}" class="btn-action">목록</a>
+        </div>
 
-    <div class="page-head">
-        <h2 class="page-title m-0">
-            산책 후기 <span class="subtitle" th:text="${isEdit ?: false} ? '수정' : '작성'">작성</span>
-        </h2>
-        <a th:href="@{/walk/course/{courseId}/review(courseId=${courseId})}" class="btn-action">목록</a>
+        <form th:action th:object="${reviewForm}" method="post">
+            <!-- 수정 모드일 때 ID 전달 -->
+            <input type="hidden"
+                   th:if="${isEdit ?: false}"
+                   th:field="*{id}">
+
+            <th:block th:replace="~{common/writing-form :: fields(
+                '후기 제목을 입력하세요', '내용', '산책하며 느낀 점을 남겨주세요'
+            )}"></th:block>
+
+            <div th:replace="~{common/writing-form :: actions(
+                ${isEdit ?: false}
+                    ? @{/walk/course/{courseId}/review/{reviewId}(courseId=${courseId}, reviewId=${reviewForm.id})}
+                    : @{/walk/course/{courseId}/review(courseId=${courseId})},
+                ${isEdit ?: false}
+            )}"></div>
+        </form>
     </div>
-
-    <form th:action th:object="${reviewForm}" method="post">
-
-        <!-- 수정 모드일 때 ID 전달 -->
-        <input type="hidden"
-               th:if="${isEdit ?: false}"
-               th:field="*{id}">
-
-        <th:block th:replace="~{common/writingForm :: fields('후기 제목을 입력하세요', '내용', '산책하며 느낀 점을 남겨주세요')}"></th:block>
-
-        <div th:replace="~{common/writingForm :: actions(${isEdit ?: false} ? @{/walk/course/{courseId}/review/{reviewId}(courseId=${courseId},reviewId=${reviewForm.id})} : @{/walk/course/{courseId}/review(courseId=${courseId})}, ${isEdit ?: false})}"></div>
-
-    </form>
-
-</div>
-
 </body>
 </html>
 

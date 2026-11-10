@@ -4,269 +4,66 @@
     <meta charset="UTF-8">
     <title>THGTE - Add Course</title>
 
-    <th:block th:replace="~{walk/components :: styles}"></th:block>
-
-    <script type="text/javascript"
-            src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
+    <th:block th:replace="~{walk/fragments :: styles}"></th:block>
+    <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=baba859c014dd12bcc8c5450d67968c7"></script>
 </head>
 
 <body class="theme walk-page" data-view="walk-form">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">
+                Walking <span class="subtitle">Add</span>
+            </h2>
 
-<div class="page">
+            <a th:href="@{/walk}" class="btn-action">
+                뒤로
+            </a>
+        </div>
 
-    <div class="page-head">
-        <h2 class="page-title m-0">
-            Walking <span class="subtitle">Add</span>
-        </h2>
+        <div th:replace="~{walk/fragments :: map(
+            message='출발지를 선택하세요', showLocation=true, showDetails=false
+        )}"></div>
 
-        <a th:href="@{/walk}" class="btn-action">
-            뒤로
-        </a>
+        <form th:action="@{/walk}" method="post">
+            <div class="field-group">
+                <label class="field-label" for="title">이름</label>
+                <input type="text" id="title" name="title" class="field"
+                       placeholder="코스 이름" maxlength="30" required>
+            </div>
+
+            <div class="field-group">
+                <label class="field-label" for="content">설명</label>
+                <textarea id="content" name="content" class="field" rows="2"
+                          placeholder="코스 설명" maxlength="500" required></textarea>
+            </div>
+
+            <input type="hidden" id="startLat"  name="startLat">
+            <input type="hidden" id="startLng"  name="startLng">
+            <input type="hidden" id="endLat"    name="endLat">
+            <input type="hidden" id="endLng"    name="endLng">
+            <input type="hidden" id="routeData" name="routeData">
+            <input type="hidden" id="distance"  name="distance">
+            <input type="hidden" id="duration"  name="duration">
+
+            <div class="form-actions">
+                <button type="button"
+                        id="resetBtn"
+                        class="btn-action">
+                    초기화
+                </button>
+
+                <button type="submit"
+                        id="submitBtn"
+                        class="btn-action btn-primary"
+                        disabled>
+                    등록
+                </button>
+            </div>
+        </form>
     </div>
 
-    <div th:replace="~{walk/components :: map('출발지를 선택하세요', true)}"></div>
-
-    <form th:action="@{/walk}" method="post">
-        <div class="field-group">
-            <label class="field-label" for="title">이름</label>
-            <input type="text"
-                   id="title"
-                   name="title"
-                   class="field"
-                   placeholder="코스 이름"
-                   maxlength="30"
-                   required>
-        </div>
-
-        <div class="field-group">
-            <label class="field-label" for="content">설명</label>
-            <textarea id="content"
-                      name="content"
-                      class="field"
-                      rows="2"
-                      placeholder="코스 설명"
-                      maxlength="500"
-                      required></textarea>
-        </div>
-
-        <input type="hidden" id="startLat" name="startLat">
-        <input type="hidden" id="startLng" name="startLng">
-        <input type="hidden" id="endLat" name="endLat">
-        <input type="hidden" id="endLng" name="endLng">
-        <input type="hidden" id="routeData" name="routeData">
-        <input type="hidden" id="distance" name="distance">
-        <input type="hidden" id="duration" name="duration">
-
-        <div class="form-actions">
-            <button type="button"
-                    id="resetBtn"
-                    class="btn-action">
-                초기화
-            </button>
-
-            <button type="submit"
-                    id="submitBtn"
-                    class="btn-action btn-primary"
-                    disabled>
-                등록
-            </button>
-        </div>
-    </form>
-
-</div>
-
-<script>
-    // 지도 객체 생성
-    const map = new kakao.maps.Map(
-        document.getElementById('map'),
-        {
-            center: new kakao.maps.LatLng(37.5665, 126.9780),
-            level: 4
-        }
-    );
-
-    const locationBtn = document.getElementById('locationBtn');
-    const status = document.getElementById('status');
-    const submitBtn = document.getElementById('submitBtn');
-    const resetBtn = document.getElementById('resetBtn');
-
-    let startMarker = null;
-    let endMarker = null;
-    let routePolyline = null;
-
-    let startLat = null;
-    let startLng = null;
-    let endLat = null;
-    let endLng = null;
-
-    // 출발지/도착지 지도 클릭 이벤트
-    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-        const latlng = mouseEvent.latLng;
-
-        if (startLat === null) {
-            startLat = latlng.getLat();
-            startLng = latlng.getLng();
-
-            startMarker = new kakao.maps.Marker({
-                position: latlng,
-                map: map
-            });
-
-            document.getElementById('startLat').value = startLat;
-            document.getElementById('startLng').value = startLng;
-
-            status.textContent = '📍 목적지를 선택하세요';
-
-            return;
-        }
-
-        if (endLat === null) {
-            endLat = latlng.getLat();
-            endLng = latlng.getLng();
-
-            endMarker = new kakao.maps.Marker({
-                position: latlng,
-                map: map
-            });
-
-            document.getElementById('endLat').value = endLat;
-            document.getElementById('endLng').value = endLng;
-
-            status.textContent = '⏳ 경로를 찾는 중...';
-
-            findRoute();
-        }
-    });
-
-    // 현재 위치 클릭 이벤트
-    locationBtn.addEventListener('click', function() {
-        if (!navigator.geolocation) {
-            alert('이 브라우저에서는 위치 정보를 사용할 수 없습니다.');
-            return;
-        }
-
-        locationBtn.disabled = true;
-        locationBtn.innerText = '위치 확인 중..';
-
-        navigator.geolocation.getCurrentPosition(
-            function(position) {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-
-                map.setCenter(new kakao.maps.LatLng(lat, lng));
-
-                locationBtn.disabled = false;
-                locationBtn.innerText = '📍 현재 위치';
-            },
-            function(error) {
-                console.error(error);
-                alert('현재 위치를 가져오지 못했습니다.\n위치 권한을 확인해주세요.');
-
-                locationBtn.disabled = false;
-                locationBtn.innerText = '📍 현재 위치';
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 0
-            }
-        );
-    });
-
-    // 초기화 버튼 이벤트
-    resetBtn.addEventListener('click', resetCourse);
-
-    function resetCourse() {
-        if (startMarker) {
-            startMarker.setMap(null);
-        }
-
-        if (endMarker) {
-            endMarker.setMap(null);
-        }
-
-        if (routePolyline) {
-            routePolyline.setMap(null);
-        }
-
-        startMarker = null;
-        endMarker = null;
-        routePolyline = null;
-
-        startLat = null;
-        startLng = null;
-        endLat = null;
-        endLng = null;
-
-        document.getElementById('startLat').value = '';
-        document.getElementById('startLng').value = '';
-        document.getElementById('endLat').value = '';
-        document.getElementById('endLng').value = '';
-        document.getElementById('routeData').value = '';
-        document.getElementById('distance').value = '';
-        document.getElementById('duration').value = '';
-
-        submitBtn.disabled = true;
-        status.textContent = '📍 출발지를 선택하세요';
-    }
-
-    function findRoute() {
-        fetch('/walk/course/route', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                startLat: startLat,
-                startLng: startLng,
-                endLat: endLat,
-                endLng: endLng
-            })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('경로 조회 실패');
-            }
-
-            return response.json();
-        })
-        .then(data => {
-            document.getElementById('routeData').value = data.routeData;
-            document.getElementById('distance').value = data.distance;
-            document.getElementById('duration').value = data.duration;
-
-            const points = JSON.parse(data.routeData);
-
-            const path = points.map(point =>
-                new kakao.maps.LatLng(point[1], point[0])
-            );
-
-            routePolyline = new kakao.maps.Polyline({
-                path: path,
-                strokeWeight: 5,
-                strokeColor: '#1d1d1f',
-                strokeOpacity: 0.8,
-                strokeStyle: 'solid'
-            });
-
-            routePolyline.setMap(map);
-
-            status.textContent =
-                `✅ 경로 조회 완료 (${data.distance}m / ${Math.round(data.duration / 60)}분)`;
-
-            submitBtn.disabled = false;
-        })
-        .catch(error => {
-
-            console.error(error);
-
-            status.textContent = '❌ 경로 조회 실패';
-            submitBtn.disabled = true;
-        });
-    }
-</script>
-
+    <script th:src="@{/js/walk-form.js}"></script>
 </body>
 </html>

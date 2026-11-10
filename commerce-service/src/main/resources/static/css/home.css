@@ -1,5 +1,3 @@
-/* Home - 첫 화면과 이동 링크 */
-
 :where([data-view="home"]) .page {
     max-width: 800px;
     margin: 0 auto;
@@ -9,26 +7,26 @@
     box-sizing: border-box;
 }
 
-:where([data-view="home"]) .main-title {
+:where([data-view="home"]) .home-title {
     width: 100%;
     max-width: 640px;
     margin: 0 0 16px;
 }
 
-:where([data-view="home"]) .home-title-image {
+:where([data-view="home"]) .home-logo {
     display: block;
     width: 100%;
     height: auto;
 }
 
-:where([data-view="home"]) .nav-vertical {
+:where([data-view="home"]) .home-nav {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px;
 }
 
-:where([data-view="home"]) .link-item {
+:where([data-view="home"]) .home-link {
     display: inline-flex;
     align-items: center;
     width: fit-content;
@@ -37,19 +35,19 @@
     transition: all 0.2s ease;
 }
 
-:where([data-view="home"]) .link-item:hover {
+:where([data-view="home"]) .home-link:hover {
     color: var(--accent);
     transform: translateX(6px);
 }
 
-:where([data-view="home"]) .link-item-primary {
+:where([data-view="home"]) .home-link-main {
     font-size: 1.6rem;
     font-weight: 700;
     letter-spacing: -0.5px;
     margin-bottom: 4px;
 }
 
-:where([data-view="home"]) .link-item-secondary {
+:where([data-view="home"]) .home-link-sub {
     font-size: 1.15rem;
     font-weight: 500;
     letter-spacing: -0.3px;

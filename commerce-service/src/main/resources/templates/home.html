@@ -3,35 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <title>Don't Panic!</title>
+
     <th:block th:replace="~{common/header :: styles}"></th:block>
     <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body data-view="home">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <h1 class="home-title">
+            <img class="home-logo"
+                 th:src="@{/images/branding/title.png}"
+                 alt="The Hitchhiker's Guide to Earth"
+                 width="1774"
+                 height="887">
+        </h1>
 
-<div class="page">
-
-    <h1 class="main-title">
-        <img class="home-title-image" th:src="@{/images/branding/title.png}"
-             alt="The Hitchhiker's Guide to Earth" width="1774" height="887">
-    </h1>
-
-    <div class="nav-vertical">
-        <a th:href="@{/walk}" class="link-item link-item-primary">
-            <span>Walk</span>
-        </a>
-
-        <a th:href="@{/community}" class="link-item link-item-secondary">
-            <span>Talk</span>
-        </a>
-
-        <a th:href="@{/shop}" class="link-item link-item-secondary">
-            <span>Shop</span>
-        </a>
-
+        <div class="home-nav">
+            <a th:href="@{/walk}"       class="home-link home-link-main">
+                <span>Walk</span>
+            </a>
+            <a th:href="@{/community}"  class="home-link home-link-sub">
+                <span>Talk</span>
+            </a>
+            <a th:href="@{/shop}"       class="home-link home-link-sub">
+                <span>Shop</span>
+            </a>
+        </div>
     </div>
-</div>
-
 </body>
 </html>

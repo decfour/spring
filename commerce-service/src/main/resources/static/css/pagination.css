@@ -55,12 +55,19 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .btn-page { transition: none; }
+    .btn-page {
+        transition: none;
+    }
 }
 
 @media (max-width: 360px) {
-    .pager { gap: 4px; }
-    .btn-page { width: 36px; height: 36px; }
+    .pager {
+        gap: 4px;
+    }
+    .btn-page {
+        width: 36px;
+        height: 36px;
+    }
 }
 
 /* Fit the full pager inside narrow panels without wrapping the arrows. */

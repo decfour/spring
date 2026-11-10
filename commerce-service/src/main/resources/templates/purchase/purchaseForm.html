@@ -4,89 +4,61 @@
     <meta charset="UTF-8">
     <title>THGTE - Add Purchase</title>
 
-    <th:block th:replace="~{shop/components :: styles}"></th:block>
+    <th:block th:replace="~{shop/fragments :: styles}"></th:block>
 </head>
-
 <body class="theme shop-page" data-view="purchase-purchaseForm">
+    <div th:replace="~{common/header :: mainHeader}"></div>
 
-<div th:replace="~{common/header :: mainHeader}"></div>
+    <div class="page">
+        <div class="page-head">
+            <h2 class="page-title m-0">Purchase <span class="subtitle">Add</span></h2>
 
-<div class="page">
+            <a th:href="@{/shop}" class="btn-action">뒤로</a>
+        </div>
 
-    <div class="page-head">
-        <h2 class="page-title m-0">
-            Purchase <span class="subtitle">Add</span>
-        </h2>
+        <form th:action="@{/order/create}" method="post">
+            <input type="hidden" name="purchaseType" th:value="${purchaseType}">
+            <input type="hidden" name="itemId" th:value="${itemId}">
+            <input type="hidden" name="quantity" th:value="${quantity}">
 
-        <a th:href="@{/shop}" class="btn-action">
-            뒤로
-        </a>
+            <div class="section-title">주문 상품 정보</div>
+
+            <div th:each="purchaseItem : ${purchaseItems}" class="panel item-card">
+                <div class="item-row">
+                    <div>
+                        <span th:text="${purchaseItem.itemName}" class="fw-semibold">상품명</span>
+
+                        <span th:text="' x ' + ${purchaseItem.quantity} + '개'">x 1개</span>
+                    </div>
+
+                    <div th:text="${#numbers.formatInteger(purchaseItem.unitPrice * purchaseItem.quantity, 0, 'COMMA')} + '원'"
+                         class="fw-bold">0원</div>
+                </div>
+            </div>
+
+            <div class="section-title">배송지 정보</div>
+
+            <div class="field-group">
+                <label for="receiverName" class="field-label">수령인</label>
+                <input type="text" id="receiverName" name="receiverName" class="field"
+                       placeholder="이름을 입력해 주세요." required>
+            </div>
+
+            <div class="field-group">
+                <label for="receiverAddress" class="field-label">배송 주소</label>
+                <input type="text" id="receiverAddress" name="receiverAddress" class="field"
+                       placeholder="상세 주소를 입력해 주세요." required>
+            </div>
+
+            <div class="summary-card">
+                <div th:replace="~{common/price-summary :: total('최종 결제 금액', ${totalPrice})}"></div>
+
+                <div class="form-actions">
+                    <a th:href="@{/shop}" class="btn-action">취소</a>
+                    <button type="submit" class="btn-action btn-primary">주문</button>
+                </div>
+            </div>
+        </form>
     </div>
-
-    <form th:action="@{/order/create}" method="post">
-
-        <input type="hidden" name="purchaseType" th:value="${purchaseType}">
-        <input type="hidden" name="itemId" th:value="${itemId}">
-        <input type="hidden" name="quantity" th:value="${quantity}">
-
-        <div class="section-title">주문 상품 정보</div>
-
-        <div th:each="purchaseItem : ${purchaseItems}" class="panel item-card">
-            <div class="item-row">
-                <div>
-                    <span th:text="${purchaseItem.itemName}" class="fw-semibold">상품명</span>
-                    <span th:text="' x ' + ${purchaseItem.quantity} + '개'"
-                         >
-                        x 1개
-                    </span>
-                </div>
-
-                <div th:text="${#numbers.formatInteger(purchaseItem.unitPrice * purchaseItem.quantity, 0, 'COMMA')} + '원'"
-                     class="fw-bold">
-                    0원
-                </div>
-            </div>
-        </div>
-
-        <div class="section-title">배송지 정보</div>
-
-        <div class="field-group">
-            <label for="receiverName" class="field-label">수령인</label>
-            <input type="text"
-                   id="receiverName"
-                   name="receiverName"
-                   class="field"
-                   placeholder="이름을 입력해 주세요."
-                   required>
-        </div>
-
-        <div class="field-group">
-            <label for="receiverAddress" class="field-label">배송 주소</label>
-            <input type="text"
-                   id="receiverAddress"
-                   name="receiverAddress"
-                   class="field"
-                   placeholder="상세 주소를 입력해 주세요."
-                   required>
-        </div>
-
-        <div class="summary-card">
-            <div th:replace="~{common/priceSummary :: total('최종 결제 금액', ${totalPrice})}"></div>
-
-            <div class="form-actions">
-                <a th:href="@{/shop}" class="btn-action">
-                    취소
-                </a>
-
-                <button type="submit" class="btn-action btn-primary">
-                    주문
-                </button>
-            </div>
-        </div>
-
-    </form>
-
-</div>
-
 </body>
 </html>

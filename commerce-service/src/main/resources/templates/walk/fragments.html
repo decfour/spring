@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:fragment="styles">
+        <th:block th:replace="~{common/header :: styles}"></th:block>
+        <link rel="stylesheet" th:href="@{/css/walk.css}">
+    </th:block>
+</head>
+<body>
+    <section th:fragment="summary(course)" class="panel course-summary" aria-label="산책 코스">
+        <h2 th:text="${course.title}">코스 이름</h2>
+
+        <div class="distance">
+            <span th:text="${course.distance + ' m'}"></span>
+            <p class="meta" th:text="${'약 ' + T(java.lang.Math).round(course.duration / 60.0) + '분'}"></p>
+        </div>
+    </section>
+
+    <section th:fragment="map(message, showLocation, showDetails)"
+             class="map-frame" aria-label="산책 코스 지도">
+        <div class="map-status" id="status" role="status" aria-live="polite">
+            <span th:if="${message != null}" th:text="${message}">지도 안내</span>
+
+            <th:block th:if="${showDetails}">
+                <span>거리 <strong id="distance">-</strong></span>
+                <span aria-hidden="true">·</span>
+                <span>예상 <strong id="duration">-</strong></span>
+            </th:block>
+        </div>
+
+        <div id="map" class="map-canvas"></div>
+
+        <button th:if="${showLocation}" type="button" id="locationBtn"
+                class="btn-action btn-map btn-location">현재 위치</button>
+        <button th:if="${showDetails}" type="button" id="addPinBtn"
+                class="btn-action btn-map pin-add" aria-label="발견 장소 추가">
+            <span id="pinLabel">발견</span>
+            <span id="pinTotal">: <span id="pinCount" aria-live="polite">—</span></span>
+        </button>
+
+        <p th:if="${showDetails}" id="pinStatus" role="status" aria-live="polite"></p>
+    </section>
+</body>
+</html>
