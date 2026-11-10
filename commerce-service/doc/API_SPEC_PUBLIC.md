@@ -59,7 +59,7 @@
 | GET | `/walk/course/hit` | 인기 코스 조회 | 공개 |
 | GET | `/walk/course/{id}` | 코스 상세 조회 | 공개 |
 | GET | `/walk/course/add` | 코스 등록 페이지 | 필요 |
-| POST | `/walk` | 코스 등록 | 필요 |
+| POST | `/walk/add` | 코스 등록 | 필요 |
 | POST | `/walk/course/{id}/delete` | 코스 삭제 | 작성자/관리자 |
 | POST | `/walk/course/route` | 경로 계산 | 필요 |
 | POST | `/walk/course/{id}/rating` | 별점 등록·수정 | 필요 |

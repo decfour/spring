@@ -26,7 +26,7 @@
             message='출발지를 선택하세요', showLocation=true, showDetails=false
         )}"></div>
 
-        <form th:action="@{/walk}" method="post">
+        <form th:action="@{/walk/add}" method="post">
             <div class="field-group">
                 <label class="field-label" for="title">이름</label>
                 <input type="text" id="title" name="title" class="field"

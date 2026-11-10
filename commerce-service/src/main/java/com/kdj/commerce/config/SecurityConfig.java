@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers(org.springframework.http.HttpMethod.GET, "/walk/course/*/pins").permitAll()
                         .requestMatchers(
                                 "/walk/course/add",
+                                "/walk/add",
                                 "/walk/course/*/review/add",
                                 "/walk/course/*/review/*/edit",
                                 "/walk/course/*/review/*/delete",

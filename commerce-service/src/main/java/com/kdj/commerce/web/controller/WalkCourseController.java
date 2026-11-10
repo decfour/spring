@@ -25,7 +25,7 @@ import java.util.Map;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/walk")
-public class WalkController {
+public class WalkCourseController {
     private final WalkCourseService walkCourseService;
     private final WalkCourseTagService walkCourseTagService;
     private final com.kdj.commerce.service.WalkCourseRatingService ratingService;
@@ -82,7 +82,7 @@ public class WalkController {
         return "walk/form";
     }
 
-    @PostMapping
+    @PostMapping("/add")
     public String add(
             @Login Member loginMember,
             @Valid @ModelAttribute WalkCourseForm form,
