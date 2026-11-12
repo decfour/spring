@@ -3,12 +3,11 @@
 ### 산책 경로 공유 서비스
 
 주변 산책 경로를 찾고, 경로를 따라가며 발견한 장소와 후기를 공유하는 웹 서비스입니다. 
-
 채팅방에서 함께할 사람을 만나고, 커뮤니티와 중고 거래 상점에서 교류할 수 있습니다.
 
 ### 서비스 접속
 
-[decfour.dev 바로가기](https://decfour.dev)
+[decfour.dev](https://decfour.dev)
 
 | 프로젝트 | 내용 |
 |---|---|
@@ -21,10 +20,8 @@
 | 문서 | 확인할 내용 |
 |---|---|
 | [API 명세](doc/API_SPEC_PUBLIC.md) | HTTP·STOMP 경로, 요청·응답, 인증·권한, 페이징 |
-| [아키텍처](doc/ARCHITECTURE.md) | 전체 구조도, 기술 역할, 패키지와 주요 처리 흐름 |
 | [산책·채팅 ERD](doc/erd/course.md) | 경로·별점·후기·핀·채팅 데이터 관계 |
 | [기술적 판단과 개선 기록](doc/TECHNICAL_DECISIONS.md) | 성능 측정, 채팅 설계, 동시성·조회 개선 |
-| [예외 처리 기준](doc/EXCEPTION_HANDLING.md) | 업무 예외, HTTP 상태 코드, HTML·JSON 오류 응답 |
 | [테스트 안내](doc/TESTING.md) | 테스트 범위, 실행 명령, 테스트 DB 준비 |
 
 ## 사용 기술
@@ -69,7 +66,6 @@
 ## 시스템 아키텍처
 
 단일 Spring Boot 애플리케이션에서 화면·API·실시간 채팅을 처리합니다.<br>
-패키지 구성과 주요 요청 흐름은 [아키텍처 문서](doc/ARCHITECTURE.md)에서 확인할 수 있습니다.
 
 <img src="doc/image/architecture.png" alt="서비스 시스템 아키텍처" width="765">
 
@@ -112,26 +108,22 @@
   <img src="doc/image/chat_02.PNG" alt="실시간 채팅 화면" width="380">
 </p>
 
-### 커뮤니티
+### 커뮤니티 & 중고 장터
 
-게시글과 댓글로 산책 경험과 정보를 나누고 추천할 수 있습니다.<br>
-일반 게시글과 공지사항을 함께 확인하며, **추천 20개 이상인 게시글**은 HIT 목록에서 볼 수 있습니다.
-
-<img src="doc/image/talk_01.PNG" alt="공지사항과 커뮤니티 게시글 목록" width="640">
-
-### 상점
-
-중고 상품을 이미지와 함께 등록하고 상품 상세와 후기를 확인할 수 있습니다.<br>
-상품을 바로 주문하거나 장바구니에 모아 주문하고, 내 주문 내역에서 취소할 수 있습니다.
+게시글과 공지사항을 확인하며, **추천 20개 이상인 게시글**은 HIT 목록에서 볼 수 있습니다.
+중고 상품을 이미지와 함께 등록하고 상세 설명과 후기를 확인할 수 있습니다.<br>
 
 <p>
-  <img src="doc/image/shop_01.PNG" alt="중고 상품 목록" width="380">
-  <img src="doc/image/shop_02.PNG" alt="상품 상세와 주문" width="380">
+  <img src="doc/image/talk_01.PNG" alt="공지사항과 커뮤니티 게시글 목록" width="380">
+  <img src="doc/image/shop_01.PNG" alt="상품 상세와 주문" width="380">
 </p>
 
-### 회원과 마이페이지
+### 마이페이지
 
 회원가입·로그인 후 산책 경로 등록, 후기 작성, 채팅 참여 등의 활동을 이용할 수 있습니다<br>
 마이페이지에서는 **내 산책 경로·발견 장소 메모·참여 채팅방·후기·게시글·댓글·상품·주문 내역**을 모아 볼 수 있습니다.
 
-<img src="doc/image/mypage_01.PNG" alt="마이페이지 회원 정보와 활동 바로가기" width="640">
+<p>
+  <img src="doc/image/mypage_01.PNG" alt="마이페이지" width="380">
+  <img src="doc/image/mypage_02.PNG" alt="마이페이지 상세" width="380">
+</p>
