@@ -2,17 +2,23 @@ package com.kdj.commerce.config;
 
 import com.kdj.commerce.web.security.JwtAuthenticationFilter;
 import com.kdj.commerce.web.security.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -28,42 +34,27 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                // REST API 및 세션 미사용(Stateless) 설정
-                .csrf(csrf -> csrf.disable())
-                .formLogin(form -> form.disable())
-                .httpBasic(basic -> basic.disable())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-
-                // 접근 권한 제어
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/walk/course/*/pins").permitAll()
                         .requestMatchers(
                                 "/walk/course/add",
-                                "/walk/add",
-                                "/walk/course/*/review/add",
-                                "/walk/course/*/review/*/edit",
-                                "/walk/course/*/review/*/delete",
-                                "/walk/course/*/delete",
                                 "/walk/course/route",
-                                "/walk/course/*/rating",
-                                "/walk/course/*/tag",
+                                "/walk/course/*/review/add",
 
-                                "/shop/add",
                                 "/shop/item/*/review/add",
 
-                                "/community/add",
-
                                 "/notice/add"
-
                         ).authenticated()
                         .requestMatchers(
+                                HttpMethod.GET, "/walk/course/*/pins"
+                        ).permitAll()
+                        .requestMatchers(
                                 "/",
-                                "/actuator/health",
-                                "/actuator/metrics",
-                                "/actuator/prometheus",
+                                "/error",
 
                                 "/member/sign-in",
                                 "/member/sign-up",
@@ -85,41 +76,44 @@ public class SecurityConfig {
                                 "/community/hits",
                                 "/community/post/*",
 
-                                "/css/**",
-                                "/js/**",
-                                "/images/**",
-                                "/webjars/**",
-                                "/*.ico",
-                                "/error"
+                                "/css/**", "/js/**", "/images/**", "/webjars/**", "/*.ico"
                         ).permitAll()
-
                         .anyRequest().authenticated()
                 )
-
-                .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            String redirectURL = request.getRequestURI();
-
-                            if (request.getQueryString() != null) {
-                                redirectURL += "?" + request.getQueryString();
-                            }
-
-                            String loginUrl = UriComponentsBuilder
-                                    .fromPath("/member/sign-in")
-                                    .queryParam("redirectURL", redirectURL)
-                                    .build()
-                                    .encode()
-                                    .toUriString();
-
-                            if (!response.isCommitted()) {
-                                response.sendRedirect(loginUrl);
-                            }
-                        })
+                .exceptionHandling(exception -> exception.authenticationEntryPoint(
+                            (request,
+                             response,
+                             authException
+                            ) -> redirectToLogin(request, response)
+                        )
                 )
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .build();
+    }
 
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+    private void redirectToLogin(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        if (response.isCommitted()) {
+            return;
+        }
 
-        return http.build();
+        String redirectUrl = request.getRequestURI();
+        String query = request.getQueryString();
+        if (query != null) {
+            redirectUrl += "?" + query;
+        }
+
+        String loginUrl = UriComponentsBuilder.fromPath("/member/sign-in")
+                .queryParam("redirectURL", redirectUrl)
+                .build()
+                .encode()
+                .toUriString();
+        response.sendRedirect(loginUrl);
     }
 }
 
