@@ -115,8 +115,8 @@ doc/                    API · 예외 처리 · ERD 문서
 
 ### 인증과 일반 요청
 
-1. 로그인 성공 시 회원 PK(`Member.id`)를 JWT의 `sub`에 문자열로 저장하고, JWT를 `Authorization`이라는 **HttpOnly 쿠키**에 담습니다. 쿠키와 기본 토큰 유효기간은 30분입니다.
-2. `JwtAuthenticationFilter`가 쿠키를 검증해 `SecurityContext`에 인증 정보를 넣습니다. 서버 세션은 사용하지 않습니다.
+1. 로그인 성공 시 회원 PK(`Member.id`)를 JWT의 `sub`에 문자열로, 발행자 `dontpanic`을 `iss`에 담습니다. JWT는 `Authorization`이라는 **HttpOnly 쿠키**로 전달하며, 쿠키와 기본 토큰 유효기간은 30분입니다.
+2. `JwtAuthenticationFilter`가 쿠키에서 JWT를 꺼내면 `JwtTokenProvider`가 서명·만료·발행자를 검증하고 회원 PK를 반환합니다. 필터는 인증 객체의 `principal`에 그 PK를 넣어 `SecurityContext`에 등록합니다. 서버 세션은 사용하지 않습니다.
 3. `SecurityConfig`가 경로 접근을 검사하고, `@Login` 인자 리졸버가 인증 정보의 회원 PK로 회원을 조회해 Controller에 주입합니다.
 4. 작성자·관리자 여부는 Controller 또는 Service에서 추가 검사합니다. 보호 경로의 미인증 요청은 로그인 화면으로 리다이렉트합니다.
 
@@ -152,7 +152,7 @@ sequenceDiagram
     M-->>B: 구독자에게 브로드캐스트
 ```
 
-연결 주소는 `/ws/chat`이며 HTTP 핸드셰이크의 JWT 쿠키 인증을 사용합니다. 
+연결 주소는 `/ws/chat`이며 HTTP 핸드셰이크의 JWT 쿠키 인증을 사용합니다. 메시지를 전송할 때는 연결의 인증 정보에 담긴 회원 PK로 발신자를 조회합니다.
 이력은 DB에 저장하고 메시지 전달은 프로세스 내부 Simple Broker가 담당합니다. 
 방 참여·퇴장은 방 잠금으로 정원을 관리합니다. 
 현재 방 화면의 입장 검사와 달리 메시지 이력·STOMP 전송·구독에는 별도 참여 권한 검증이 없습니다.
