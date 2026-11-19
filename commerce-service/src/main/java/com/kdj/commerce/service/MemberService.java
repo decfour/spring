@@ -16,9 +16,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Member findByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("해당 이메일의 회원이 존재하지 않습니다."));
+    public Member findById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("해당 회원이 존재하지 않습니다."));
     }
 
     @Transactional

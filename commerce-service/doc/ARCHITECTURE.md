@@ -115,9 +115,9 @@ doc/                    API · 예외 처리 · ERD 문서
 
 ### 인증과 일반 요청
 
-1. 로그인 성공 시 이메일을 식별자로 JWT를 만들고 `Authorization`이라는 **HttpOnly 쿠키**에 저장합니다. 쿠키와 기본 토큰 유효기간은 30분입니다.
+1. 로그인 성공 시 회원 PK(`Member.id`)를 JWT의 `sub`에 문자열로 저장하고, JWT를 `Authorization`이라는 **HttpOnly 쿠키**에 담습니다. 쿠키와 기본 토큰 유효기간은 30분입니다.
 2. `JwtAuthenticationFilter`가 쿠키를 검증해 `SecurityContext`에 인증 정보를 넣습니다. 서버 세션은 사용하지 않습니다.
-3. `SecurityConfig`가 경로 접근을 검사하고, `@Login` 인자 리졸버가 이메일로 회원을 조회해 Controller에 주입합니다.
+3. `SecurityConfig`가 경로 접근을 검사하고, `@Login` 인자 리졸버가 인증 정보의 회원 PK로 회원을 조회해 Controller에 주입합니다.
 4. 작성자·관리자 여부는 Controller 또는 Service에서 추가 검사합니다. 보호 경로의 미인증 요청은 로그인 화면으로 리다이렉트합니다.
 
 공통 예외 처리는 `GlobalExceptionHandler`가 담당합니다. 

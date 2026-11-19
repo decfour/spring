@@ -94,8 +94,8 @@ public class MemberController {
             return "member/signInForm";
         }
 
-        String token = jwtTokenProvider.createToken(loginMember.getEmail());
-        log.info("회원 로그인 email={}", loginMember.getEmail());
+        String token = jwtTokenProvider.issueToken(loginMember.getId());
+        log.info("회원 로그인 memberId={}", loginMember.getId());
 
         Cookie jwtCookie = new Cookie("Authorization", token);
         jwtCookie.setHttpOnly(true);

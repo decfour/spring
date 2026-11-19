@@ -31,7 +31,7 @@
 
             <span th:if="${#authentication != null and #authentication.principal != 'anonymousUser'}"
                   class="site-links">
-                <a th:href="@{/member/my-page}" th:text="${#authentication.name}" class="site-user">User Email</a>
+                <a th:href="@{/member/my-page}" class="site-user">My</a>
 
                 <a href="/cart" class="site-link">Cart</a>
 

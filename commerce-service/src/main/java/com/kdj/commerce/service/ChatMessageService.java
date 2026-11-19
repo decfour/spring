@@ -23,10 +23,10 @@ public class ChatMessageService {
 
     public ChatMessageResponse send(
             Long roomId,
-            String email,
+            Long memberId,
             String content
     ) {
-        Member sender = memberService.findByEmail(email);
+        Member sender = memberService.findById(memberId);
 
         ChatRoom chatRoom = chatRoomRepository.findById(roomId)
                 .orElseThrow(() -> new ResourceNotFoundException("채팅방을 찾을 수 없습니다."));

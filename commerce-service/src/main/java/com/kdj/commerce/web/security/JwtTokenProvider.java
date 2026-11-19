@@ -1,74 +1,72 @@
 package com.kdj.commerce.web.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 
-@Slf4j
 @Component
 public class JwtTokenProvider {
+    private static final String ISSUER = "dontpanic";
+
     @Value("${jwt.secret}")
     private String secretKey;
 
     @Value("${jwt.expiration-period}")
     private long expirationPeriod;
 
-    private Key key;
+    private Key signingKey;
+    private JwtParser jwtParser;
 
-    // 객체 생성 후 secretKey를 Base64로 인코딩하여 암호화 키를 초기화
     @PostConstruct
-    protected void init() {
-        String encodedKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        this.key = Keys.hmacShaKeyFor(encodedKey.getBytes());
+    protected void initializeSigningKeyAndParser() {
+        String encodedKey = Base64.getEncoder()
+                .encodeToString(secretKey.getBytes());
+        signingKey = Keys.hmacShaKeyFor(encodedKey.getBytes());
+
+        jwtParser = Jwts.parserBuilder()
+                .setSigningKey(signingKey)
+                .requireIssuer(ISSUER)
+                .build();
     }
 
-    public String createToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email); // 토큰 내용(Payload)에 주체로 이메일 저장
+    // JWT 발행
+    public String issueToken(long memberId) {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + expirationPeriod); // 만료 시간 계산
+        Date expiration = new Date(now.getTime() + expirationPeriod);
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(now) // 토큰 발행 시간
-                .setExpiration(validity) // 토큰 만료 시간
-                .signWith(key, SignatureAlgorithm.HS256) // HS256 알고리즘과 키로 서명
+                .signWith(signingKey, SignatureAlgorithm.HS256)
+                .setIssuer(ISSUER)
+                .setSubject(Long.toString(memberId))
+                .setIssuedAt(now)
+                .setExpiration(expiration)
                 .compact();
     }
 
-    public String getEmail(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-    public boolean validateToken(String token) {
+    // JWT 검증
+    public Optional<Long> verifyAndReadMemberId(String token) {
         try {
-            Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token);
+            Claims claims = jwtParser.parseClaimsJws(token).getBody();
+            if (claims.getExpiration() == null) {
+                return Optional.empty();
+            }
 
-            // 만료 시간이 현재 시간보다 이전이 아니라면 true (유효함)
-            return !claims.getBody().getExpiration().before(new Date());
-        } catch (SecurityException | MalformedJwtException e) {
-            log.warn("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-            log.warn("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.warn("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.warn("JWT 토큰이 잘못되었습니다.");
+            long memberId = Long.parseLong(claims.getSubject());
+
+            return memberId > 0 ? Optional.of(memberId) : Optional.empty();
+        } catch (JwtException | IllegalArgumentException e) {
+            return Optional.empty();
         }
-        return false;
     }
 }
